@@ -30,6 +30,7 @@ Migrated from the Project Hub (Claude Docs) on 6 Nov 2026. From now on this file
 | D-19 | Proposed | 6 Nov | Version control and source of truth | Drive only; GitHub + Drive | Private GitHub repo `pbhatt0022/bbbd_mml` for code and docs; data on Drive only. Repo Markdown is the master; the Hub is a reading view | Methods plan §1 | |
 | D-20 | Proposed | 6 Nov | Order of average reference and EOG regression | Reference before; reference after | Reference **before** EOG regression: MNE's `EOGRegression` refuses to run without a reference, and MNE's tutorial sets it first. Found while testing `bbbd.eeg` on 6 Nov | MNE-Python `EOGRegression` | |
 | D-21 | Proposed | 6 Nov | DL window length | 2 s; 4 s; 8 s | 4 s, 50% overlap: long enough for alpha power and several saccades, short enough for thousands of windows per experiment. 8 s for the cardiac encoder if 4 s holds too few beats | Methods plan §6b | |
+| D-22 | Proposed | 7 Nov | Python and core package versions | System default 3.14; 3.12; 3.11 | **Python 3.12** in `.venv`: torch has no 3.14 wheels, and 3.14 is the machine's `py` default, so the version must be pinned or each member gets a different one. Resolved on 6 Nov: numpy 2.5.4, scipy 1.18.1, pandas 3.1.1, scikit-learn 1.9.1, torch 2.15.0, mne 1.13.2, neurokit2 0.3.0, pyarrow 26.0.1. `pyproject.toml` sets only lower bounds, so these are what resolved today, not a guarantee; Colab may differ, which matters for RQ0 beat matching and any seeded split | Repo setup 6 Nov; `pyproject.toml` | |
 
 ## Professor feedback (15 Oct 2026)
 
