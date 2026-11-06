@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+MML_ENV/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Data: never in git (lives on Drive)
+data/
+01_data_raw/
+02_data_interim/
+03_features/
+04_results/
+*.bdf
+*.edf
+*.fif
+*.tsv.gz
+*.parquet
+*.npy
+*.npz
+*.h5
+*.zip
+
+# Model checkpoints
+*.pt
+*.pth
+*.ckpt
+checkpoints/
+lightning_logs/
+runs/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Keep small versioned results
+!results/**/*.json
+!results/**/*.csv
+!results/**/*.png
+!results/**/*.svg
