@@ -100,6 +100,30 @@ def fixations_from_events(n: int, saccades, invalid: np.ndarray, sfreq: float,
     return [(s, e) for s, e in runs(~busy) if e - s >= min_n]
 
 
+def estimate_px_per_deg(gx: np.ndarray, gy: np.ndarray, vdx: np.ndarray, vdy: np.ndarray,
+                        sfreq: float, min_deg_s: float = 1.0) -> float:
+    """Pixels per degree, from gaze in pixels and the sidecar's deg/s velocity columns.
+
+    BBBD Exp 1 ships gaze as screen pixels (`x`, `y`) alongside a smoothed velocity in
+    deg/s (`vdx`, `vdy`), and `config.yaml -> eye.screen` is still unverified, so the
+    scale is recovered from the two signals instead of from screen geometry.
+
+    Ratio of the two speeds, per sample, taken at the median so that saccades and
+    track-loss spikes (where the smoothed velocity lags the raw one) do not drag it.
+    Samples below `min_deg_s` are dropped: there the ratio is 0/0.
+
+    Prefer measured screen geometry with `px_to_deg` once it is known; this is a
+    stand-in, and the value it returns belongs in the decision log.
+    """
+    speed_px = np.hypot(np.gradient(np.asarray(gx, float)),
+                        np.gradient(np.asarray(gy, float))) * sfreq
+    speed_deg = np.hypot(np.asarray(vdx, float), np.asarray(vdy, float))
+    ok = np.isfinite(speed_px) & np.isfinite(speed_deg) & (speed_deg > min_deg_s)
+    if ok.sum() < 100:
+        return float("nan")
+    return float(np.median(speed_px[ok] / speed_deg[ok]))
+
+
 def events_from_speed(speed: np.ndarray, valid: np.ndarray, sfreq: float,
                       threshold_deg_s: float = 30.0, blink_pad_ms: float = 100,
                       max_gap_ms: float = 250, pupil: np.ndarray | None = None,

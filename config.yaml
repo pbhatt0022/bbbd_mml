@@ -51,6 +51,11 @@ eye:                                     # V1 default
     height_px: null
     width_cm: null
     distance_cm: null
+    # D-24. Exp 1 gaze x/y are screen pixels; saccade detection needs degrees.
+    # null = estimate per run from the sidecar vdx/vdy (eye.estimate_px_per_deg,
+    # R-001 follow-up measured ~24.9). Set a number here once the real screen
+    # geometry is known, and log the change.
+    px_per_deg: null
 
 ecg:
   method: neurokit                       # nk.ecg_peaks default

@@ -117,6 +117,25 @@ def test_saccade_and_blink_detection():
     assert len(blinks) == 1 and mask[2960] and mask[3140]
 
 
+def test_estimate_px_per_deg_recovers_known_scale():
+    sf, n, true_scale = 128.0, 4000, 24.9
+    rng = np.random.default_rng(1)
+    # Gaze in degrees: drift plus a few saccades; pixels are degrees * true_scale.
+    x_deg = np.cumsum(rng.normal(0, 0.05, n))
+    y_deg = np.cumsum(rng.normal(0, 0.05, n))
+    for s in (800, 1900, 3100):
+        x_deg[s:] += 8.0
+    gx, gy = x_deg * true_scale, y_deg * true_scale
+    vdx = np.gradient(x_deg) * sf
+    vdy = np.gradient(y_deg) * sf
+
+    est = eye.estimate_px_per_deg(gx, gy, vdx, vdy, sf)
+    assert est == pytest.approx(true_scale, rel=0.02)
+
+    # Too little usable signal -> NaN rather than a confident wrong number.
+    assert np.isnan(eye.estimate_px_per_deg(gx[:50], gy[:50], vdx[:50], vdy[:50], sf))
+
+
 def test_events_from_speed_counts_and_blink_suppression():
     sf, n = 128.0, int(60 * 128)
     rng = np.random.default_rng(0)
