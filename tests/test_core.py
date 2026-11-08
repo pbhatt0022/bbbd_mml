@@ -117,6 +117,15 @@ def test_saccade_and_blink_detection():
     assert len(blinks) == 1 and mask[2960] and mask[3140]
 
 
+def test_px_per_deg_from_screen_matches_bbbd_geometry():
+    # BBBD: 27" 16:9 (59.77 cm wide) at 60 cm. 1920 px -> ~33.6 px/deg.
+    assert eye.px_per_deg_from_screen(1920, 59.77, 60) == pytest.approx(33.64, abs=0.05)
+    assert eye.px_per_deg_from_screen(2560, 59.77, 60) == pytest.approx(44.85, abs=0.05)
+    # Twice as far away -> a degree covers twice the pixels.
+    near = eye.px_per_deg_from_screen(1920, 59.77, 60)
+    assert eye.px_per_deg_from_screen(1920, 59.77, 120) == pytest.approx(2 * near, rel=1e-9)
+
+
 def test_estimate_px_per_deg_recovers_known_scale():
     sf, n, true_scale = 128.0, 4000, 24.9
     rng = np.random.default_rng(1)

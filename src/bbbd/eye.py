@@ -100,6 +100,19 @@ def fixations_from_events(n: int, saccades, invalid: np.ndarray, sfreq: float,
     return [(s, e) for s, e in runs(~busy) if e - s >= min_n]
 
 
+def px_per_deg_from_screen(width_px: float, width_cm: float, distance_cm: float) -> float:
+    """Pixels per degree of visual angle at the screen centre.
+
+    Small-angle conversion: one degree subtends distance_cm * tan(1 deg) at the screen.
+    It is exact only at the centre -- further out, a degree covers more pixels -- so it
+    slightly under-counts the velocity of eccentric gaze. The BBBD authors convert with
+    the EyeLink's per-sample resolution columns instead, but those are not in the
+    released files.
+    """
+    cm_per_deg = distance_cm * np.tan(np.radians(1.0))
+    return float(width_px / width_cm * cm_per_deg)
+
+
 def estimate_px_per_deg(gx: np.ndarray, gy: np.ndarray, vdx: np.ndarray, vdy: np.ndarray,
                         sfreq: float, min_deg_s: float = 1.0) -> float:
     """Pixels per degree, from gaze in pixels and the sidecar's deg/s velocity columns.
