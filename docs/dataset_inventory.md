@@ -33,7 +33,12 @@ What we have **verified on the real files**, per experiment. Anything not in thi
 | Filename entities | `ses-01`/`ses-02` = the two **conditions**; `task-stim01..05` = the five **videos**. Which session is attend is still UNVERIFIED | R-001 |
 | `x`, `y` units | **Screen pixels, not degrees**, despite `visualangle` in the name: x −376.9..1259.2, y −1010.0..1923.8 (one recording) | R-001 diagnostics |
 | `vdx`, `vdy` units | deg/s, but **smoothed**: median speed 5.81, p90 10.04, p99 16.23, p99.9 26.39, only 0.02% above 30 deg/s | R-001 diagnostics |
-| Pixels per degree | ≈ **24.9**, estimated from pixel speed ÷ sidecar deg/s (D-24). Real screen geometry still UNVERIFIED | R-001 diagnostics |
+| Display | **27″ monitor, ~60 cm viewing distance** (VERIFIED, preprint Procedure) → 59.77 cm wide, ~53° of visual angle | bioRxiv 10.1101/2025.04.29.651259 |
+| Eye tracker | **EyeLink 1000, 35 mm lens, recorded at 500 Hz**; all released signals down-sampled to 128 Hz | bioRxiv, same |
+| Screen resolution | **UNVERIFIED — stated in no source we could read.** 1920×1080 inferred (D-26) | — |
+| Pixels per degree | **33.64** from the geometry above (D-26); independent data estimate 34.31, 2% apart. Authors convert with the EyeLink's per-sample resolution columns, absent from the released files | R-002; preprint |
+| Authors' event detection | Blinks and saccades from "the eye tracker's algorithm that is used when saving to BDF files"; no velocity threshold stated. Blinks/artefacts ±100 ms linearly interpolated; pupil outliers at 4×IQR of a 200 ms-median-detrended signal | bioRxiv, Methods |
+| Exp 1 condition order | Attentive session **first**, distracted second ("After they watched all the videos, they watched them again in a distracted condition"). The ses-01/ses-02 *label* mapping is still not stated in any source | bioRxiv, Procedure |
 | Gaze sampling rate | 128 Hz (sidecar), confirmed | R-001 |
 | Invalid gaze samples | **0.00 in all 263 gaze files** — contradicts the 3.03% median recorded on 14 Oct. The released gaze may already be interpolated; UNVERIFIED and worth resolving before any exclusion threshold is applied | R-001 |
 
