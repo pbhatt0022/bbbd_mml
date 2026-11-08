@@ -1,0 +1,1 @@
+run_id,sub,ses,task,file,n_samples,sfreq,duration_min,invalid_frac,n_saccades,n_blinks,n_fixations,saccade_rate_per_min,blink_rate_per_min,fixation_rate_per_min,median_fix_ms,median_speed_deg_s,has_pupil,excluded
