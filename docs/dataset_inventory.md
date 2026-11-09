@@ -21,6 +21,11 @@ What we have **verified on the real files**, per experiment. Anything not in thi
 | Quiz participants | 31 (vs 27 with gaze): 4 have quiz data but no gaze | quick check summary |
 | Items per video | 12, 11, 12, 12, 12 (memory questions) | quick check summary |
 | Quiz means (prop. correct) | 0.64, 0.56, 0.60, 0.60, 0.79; video 5 near ceiling (39% of learners ≥ 90%) | quick check summary |
+| Target, verified | **R-006 reproduces the means exactly**: 0.640, 0.557, 0.600, 0.597, 0.785; video 5 ceiling 38.7% ≥ 90%. Memory items only (D-27) | R-006 |
+| Quiz column layout | `phenotype/stimuli_questionnaire.tsv`: `participant_id, stimulus_id, question_type, question_no, answer, correct_answer, is_correct` | R-006 |
+| Learner overlap | 31 with quiz, 27 with gaze, **27 with both**, 0 with gaze only. Quiz-only: 24, 28, 29, 99 | R-006 |
+| Modellable rows, Exp 1 | **135** (27 learners × 5 videos), against 155 learner×video rows in the quiz alone | R-006 |
+| Participant 99 | Outside the 02-31 run; likely a pilot or test record. Has no gaze, so it already contributes no model rows — but check before Exps 2-5 | R-006 |
 
 ## Experiment 1, file layout (verified 8 Nov 2026 on Colab, run R-001 + diagnostics)
 
