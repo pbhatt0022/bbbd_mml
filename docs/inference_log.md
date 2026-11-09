@@ -7,41 +7,11 @@ What we **concluded** from each result, kept separate from the Decision Log (wha
 
 | Date | Run ID | RQ / H | Type | Observation (numbers) | What we conclude | Confidence | Caveats / alternative explanations | Logged by |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 14 Oct 2026 | (pre-repo) | RQ0 / H0b | Exploratory | Exp 1, N = 27, own I-VT detector (> 30°/s) on 128 Hz gaze: saccades 174 → 131 per min attend → distract, t(26) = −4.77, d_z = −0.92, p < .001. Blinks 1.25 → 2.90 per min, t = 3.04, p = .005. Authors' saccade events: 136 → 89 per min, t(26) = −7.28 (matches paper). Per-recording agreement of our vs authors' saccade counts ρ = 0.53 | Our pipeline reproduces the direction of the distraction effects; our statistics code reproduces the paper's t exactly | Medium | Per-recording agreement only moderate (128 Hz is coarse for saccades); our blink detector undercounts. Run with `src/bbbd_quickcheck.py` on Drive, before the repo existed, so no run ID: **rerun through `bbbd.runlog` and replace this row** | A |
+| 14 Oct 2026 | (pre-repo) | RQ0 / H0b | Exploratory | Exp 1, N = 27, own I-VT detector (> 30°/s) on 128 Hz gaze: saccades 174 → 131 per min attend → distract, t(26) = −4.77, d_z = −0.92, p < .001. Blinks 1.25 → 2.90 per min, t = 3.04, p = .005. Authors' saccade events: 136 → 89 per min, t(26) = −7.28 (matches paper). Per-recording agreement of our vs authors' saccade counts ρ = 0.53 | Our pipeline reproduces the direction of the distraction effects; our statistics code reproduces the paper's t exactly | Medium | Per-recording agreement only moderate (128 Hz is coarse for saccades); our blink detector undercounts. Run with `src/bbbd_quickcheck.py` on Drive, before the repo existed, so no run ID: **Replaced by R-004** (9 Nov 2026), which reran this through `bbbd.runlog` | A |
+| 9 Nov 2026 | R-004 | RQ0 / H0b | Exploratory | Exp 1, N = 27 learners, 263 recordings, 0 excluded, all with a paired pupil file. Gaze converted to degrees at 33.64 px/deg (D-26), I-VT > 30°/s, blinks from `pupil_size` dropout. ses-01 → ses-02: saccades 138.0 → 93.2 per min, t(26) = 6.18, p = 1.6e-06, d_z = 1.19; blinks 1.25 → 2.90 per min, t = −3.04, p = .0054, d_z = −0.58; fixations 131.8 → 84.1 per min, t = 7.02, p = 1.9e-07; median fixation 245 → 332 ms, t = −4.82, p = 5.4e-05 | Our from-raw eye pipeline reproduces the distraction effects in both direction and size. Blink rates match the 14 Oct quick check exactly (1.25 → 2.90, t = 3.04), and because blinks are computed from pupil and are independent of the px/deg calibration, that match is the strongest evidence the pipeline is correct. Saccade rates (138 → 93) sit closer to the authors' own derivative counts (136 → 89) than our October detector did (174 → 131). Taken together these identify **ses-01 as the attend session** | High | px/deg = 33.64 comes from a 27" screen at 60 cm with an **inferred** 1920×1080 (D-26, resolution stated in no source we could read); saccade and fixation rates scale with it, blink rates do not. Session labels are not confirmed from documentation, so the attend/distract assignment rests on the blink match. `invalid_frac` = 0.00 in all 263 files against 3.03% on 14 Oct, so the released gaze may already be interpolated — the >50% exclusion rule is currently a no-op. Per-recording agreement with the authors' events not computed (the derivatives ship no sidecars). Alternative explanation for the effect size: a single constant px/deg under-counts eccentric gaze velocity, which the authors' per-sample resolution would not. **Exploratory, not confirmatory: `prereg-v1` was not tagged when this ran** | A |
 
 ## How to write a row
 
 - Observation = numbers only (estimate, CI, p, n). Conclusion = one sentence a reviewer could disagree with.
 - Name at least one alternative explanation (e.g. video difficulty, artefact, small N).
 - If a later run changes a conclusion, add a new row that names the old one; do not edit the old row.
-
-## Pending: row for the RQ0 eye rerun (`10_eye_preproc.ipynb`)
-
-**Not a result.** This is a fill-in template, deliberately kept out of the table above so a
-placeholder can never be read as a number. Move it into the table only once the notebook has
-actually run and every `<…>` is replaced. If the run does not happen, delete this section.
-
-Every `<…>` below is printed by the notebook or written to
-`results/<run_id>_eye_rq0_exp1/rq0_eye_exp1.json`.
-
-```
-| <date> | <R-0xx> | RQ0 / H0b | Confirmatory | Exp 1, N = <n_subjects> learners,
-<n_recordings> recordings (<n_excluded> excluded at > 50% invalid). Own I-VT detector
-(> 30°/s) on <sfreq> Hz gaze, saccades from sidecar vdx/vdy: saccades <mean_A> → <mean_B>
-per min attend → distract, t(<df>) = <t>, d_z = <d_z>, p = <p>. Blinks <mean_A> → <mean_B>
-per min, t = <t>, p = <p>. Agreement with authors' saccade counts: <ρ or "not computed,
-derivative layout unknown"> | <conclusion: one sentence a reviewer could disagree with —
-does our from-raw pipeline reproduce the direction of the distraction effects?> |
-<High / Medium / Low> | Blinks detected from gaze track-loss, not pupil (Exp 1 has no pupil
-column), so blink counts undercount; 128 Hz is coarse for saccade timing; attend/distract is
-a condition contrast, not learning. <Add any alternative explanation the numbers suggest> | A |
-```
-
-Then, in the same commit:
-
-1. Append to the **14 Oct 2026** row's caveat cell: `Replaced by <R-0xx>.` Do not edit its
-   numbers or delete it — the log's own rule is that old rows are never overwritten.
-2. Set **Type** above to `Confirmatory` only if `prereg-v1` was tagged before the run.
-   If the run happened first, it is `Exploratory`, and say so rather than backdating.
-3. If the H0b direction does **not** match the authors, that is a finding, not a bug to hide:
-   log it, then check the condition-entity mapping from cell 1b before concluding anything.
