@@ -52,14 +52,88 @@ alone.
 | Tag | **none** |
 | CI | GitHub Actions runs `pytest` + a notebook-parse check on every push to `main` and every PR |
 
-Done: Exp 1 eye pipeline, RQ0/H0b (R-004), quiz targets (R-006), shared folds (R-007),
-individual eye features (`50_features_individual`, written, not yet run).
-
 Not started: **everything of yours** — EEG, ECG, respiration, and Exps 2–5, which are not
 even downloaded.
 
 `60_classical_models` is the next notebook and it **needs the tag**, because it is the
 first thing that relates a feature to quiz score.
+
+### 2.1 What was done, 6–9 Nov
+
+**Repo (6 Nov).** `git init` on the skeleton, first commit on `main`, pushed. The remote
+was empty, so there was no README to reconcile. Data, `.venv` and archives stay out via
+`.gitignore` — verified, not assumed. `prereg-v1` was **not** tagged, per the plan that
+you and A would do it together.
+
+**Infrastructure.** Local `pytest` became unusable mid-project (Windows Smart App Control
+started blocking pandas' binaries), so the suite now runs in **GitHub Actions** on every
+push to `main` and every PR. It also parses every notebook. That has already caught a
+broken notebook before it reached Colab, and it is the reason the environment is known to
+be reproducible from `pyproject.toml` alone.
+
+**Eye pipeline — four runs, because the first was wrong.**
+
+| Run | What happened |
+| --- | --- |
+| R-001 | Ran end to end and produced **nonsense**: 2.7 saccades/min, 82-second fixations. Cause: it thresholded the sidecar's `vdx`/`vdy`, which are smoothed below the saccade threshold. Half the files also errored — the `_pupil_` files have no `x` column. |
+| R-002 | Fixed: gaze converted to degrees and differentiated; pupil files paired properly. Sensible numbers for the first time. |
+| R-003 | Superseded by a rerun; kept for the audit trail. |
+| **R-004** | Current. px/deg from sourced screen geometry rather than a data estimate. |
+
+**The RQ0 result (R-004), Exp 1, 27 learners, 263 recordings, 0 excluded:**
+
+| Metric | ses-01 | ses-02 | t(26) | p | d_z |
+| --- | --- | --- | --- | --- | --- |
+| Saccades/min | 138.0 | 93.2 | 6.18 | 1.6e-06 | 1.19 |
+| Blinks/min | 1.25 | 2.90 | −3.04 | .0054 | −0.58 |
+| Fixations/min | 131.8 | 84.1 | 7.02 | 1.9e-07 | 1.35 |
+| Median fixation | 245 ms | 332 ms | −4.82 | 5.4e-05 | −0.93 |
+
+Two things make this trustworthy. **The blink numbers reproduce the 14 Oct quick check
+exactly** (1.25 → 2.90, t = 3.04) — and blinks come from pupil, so they are independent of
+the px/deg calibration, which is the one free parameter. And the saccade rates (138 → 93)
+sit close to the **authors' own derivative counts** (136 → 89), rather than to our October
+detector (174 → 131). H0b holds on all four metrics. Written up in
+`docs/inference_log.md`, **marked Exploratory** because the tag did not exist when it ran.
+
+**The calibration, and why it needed sourcing.** `x`/`y` are pixels, so saccade detection
+needs px/deg. Estimating it from the data gave a median of 34.31 but scattered wildly
+across recordings (7.6–117.6, relative IQR 0.69) — not usable. Reading the preprint gave a
+27″ monitor at ~60 cm; with an *inferred* 1920×1080 that yields **33.64 px/deg**, 2% from
+the data estimate. The agreement from two unrelated routes is the evidence; the resolution
+itself is still unsourced (D-26).
+
+**Targets (R-006).** Memory items only (D-27) — domain questions probe prior knowledge,
+which the preregistration treats as a covariate, not the outcome. Per-video means came out
+**0.640 / 0.557 / 0.600 / 0.597 / 0.785**, reproducing the 14 Oct figures exactly, with
+video 5's ceiling at 38.7% of learners ≥ 90%. 31 learners have quiz data, 27 have gaze →
+**135 modellable rows**. We also verified that `is_correct` equals
+`answer == correct_answer` on **all 3,286 items**, so the target is reproducible from raw
+responses rather than dependent on the authors' scoring column.
+
+**Folds (R-007).** `results/folds.json`: 135 rows, 5-fold grouped by learner × 10 repeat
+seeds, plus leave-one-video-out — 11 schemes. Verified independently of the notebook that
+no group spans two folds in its own scheme. Fold sizes 30/30/25/25/25, i.e. 6,6,5,5,5
+learners.
+
+**Features.** `50_features_individual` is written but **not yet run**. It deliberately
+writes **no target column** — the join to quiz score happens in `60_classical_models`,
+after the tag.
+
+### 2.2 Decision rows added since the migration
+
+All `Proposed`, all needing your initials.
+
+| Row | Subject |
+| --- | --- |
+| D-22 | Python 3.12 and the resolved package versions |
+| D-23 | The repo is public, not private as D-19 says |
+| D-24 | Estimating px/deg from the data (superseded by D-26, kept as a cross-check) |
+| D-25 | Blinks from pupil dropout — Exp 1 does ship `pupil_size` |
+| D-26 | px/deg from screen geometry; resolution inferred |
+| D-27 | The target is memory items only |
+| D-28 | Leave-one-video-out holds out a video, not a learner — its numbers are not comparable to the grouped ones |
+| D-29 | `ses-01` is the attend session (inferred, not sourced) |
 
 ---
 
