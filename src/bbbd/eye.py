@@ -100,6 +100,84 @@ def fixations_from_events(n: int, saccades, invalid: np.ndarray, sfreq: float,
     return [(s, e) for s, e in runs(~busy) if e - s >= min_n]
 
 
+def px_per_deg_from_screen(width_px: float, width_cm: float, distance_cm: float) -> float:
+    """Pixels per degree of visual angle at the screen centre.
+
+    Small-angle conversion: one degree subtends distance_cm * tan(1 deg) at the screen.
+    It is exact only at the centre -- further out, a degree covers more pixels -- so it
+    slightly under-counts the velocity of eccentric gaze. The BBBD authors convert with
+    the EyeLink's per-sample resolution columns instead, but those are not in the
+    released files.
+    """
+    cm_per_deg = distance_cm * np.tan(np.radians(1.0))
+    return float(width_px / width_cm * cm_per_deg)
+
+
+def estimate_px_per_deg(gx: np.ndarray, gy: np.ndarray, vdx: np.ndarray, vdy: np.ndarray,
+                        sfreq: float, min_deg_s: float = 1.0) -> float:
+    """Pixels per degree, from gaze in pixels and the sidecar's deg/s velocity columns.
+
+    BBBD Exp 1 ships gaze as screen pixels (`x`, `y`) alongside a smoothed velocity in
+    deg/s (`vdx`, `vdy`), and `config.yaml -> eye.screen` is still unverified, so the
+    scale is recovered from the two signals instead of from screen geometry.
+
+    Ratio of the two speeds, per sample, taken at the median so that saccades and
+    track-loss spikes (where the smoothed velocity lags the raw one) do not drag it.
+    Samples below `min_deg_s` are dropped: there the ratio is 0/0.
+
+    Prefer measured screen geometry with `px_to_deg` once it is known; this is a
+    stand-in, and the value it returns belongs in the decision log.
+    """
+    speed_px = np.hypot(np.gradient(np.asarray(gx, float)),
+                        np.gradient(np.asarray(gy, float))) * sfreq
+    speed_deg = np.hypot(np.asarray(vdx, float), np.asarray(vdy, float))
+    ok = np.isfinite(speed_px) & np.isfinite(speed_deg) & (speed_deg > min_deg_s)
+    if ok.sum() < 100:
+        return float("nan")
+    return float(np.median(speed_px[ok] / speed_deg[ok]))
+
+
+def events_from_speed(speed: np.ndarray, valid: np.ndarray, sfreq: float,
+                      threshold_deg_s: float = 30.0, blink_pad_ms: float = 100,
+                      max_gap_ms: float = 250, pupil: np.ndarray | None = None,
+                      min_fixation_ms: float = 60) -> dict:
+    """Blink, saccade and fixation rates for one recording, from an angular speed series.
+
+    For files that ship velocity components (BBBD Exp 1 gaze sidecars give `vdx`/`vdy`)
+    this avoids `px_to_deg`, which needs screen geometry we have not verified yet.
+
+    `pupil` is used for blinks when the recording has it; otherwise gaze track-loss
+    (`~valid`) stands in, which undercounts blinks - state that as a limitation.
+
+    Returns counts, per-minute rates, median fixation duration and the invalid fraction.
+    """
+    speed = np.asarray(speed, float)
+    valid = np.asarray(valid, bool)
+    n = len(speed)
+    dur_min = n / sfreq / 60
+
+    blink_signal = np.asarray(pupil, float) if pupil is not None else np.where(valid, 1.0, np.nan)
+    blinks, padded = detect_blinks(blink_signal, sfreq, pad_ms=blink_pad_ms)
+
+    speed = interpolate_short_gaps(speed, ~np.isfinite(speed), sfreq, max_gap_ms)
+    above = (speed > threshold_deg_s) & (speed < 1000) & np.isfinite(speed) & ~padded
+    saccades = [(s, e) for s, e in runs(above) if e - s >= 2]
+
+    fixations = fixations_from_events(n, saccades, padded | ~valid, sfreq, min_ms=min_fixation_ms)
+    fix_ms = [(e - s) / sfreq * 1000 for s, e in fixations]
+
+    return {
+        "n_samples": n, "sfreq": sfreq, "duration_min": dur_min,
+        "invalid_frac": float(1 - valid.mean()),
+        "n_saccades": len(saccades), "n_blinks": len(blinks), "n_fixations": len(fixations),
+        "saccade_rate_per_min": len(saccades) / dur_min,
+        "blink_rate_per_min": len(blinks) / dur_min,
+        "fixation_rate_per_min": len(fixations) / dur_min,
+        "median_fix_ms": float(np.median(fix_ms)) if fix_ms else np.nan,
+        "median_speed_deg_s": float(np.nanmedian(speed)),
+    }
+
+
 def zscore_pupil(p: np.ndarray) -> np.ndarray:
     """Per-recording z-score (Kret & Sjak-Shie 2019 recommend within-subject normalisation)."""
     p = np.asarray(p, float)

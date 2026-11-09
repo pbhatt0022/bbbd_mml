@@ -117,6 +117,55 @@ def test_saccade_and_blink_detection():
     assert len(blinks) == 1 and mask[2960] and mask[3140]
 
 
+def test_px_per_deg_from_screen_matches_bbbd_geometry():
+    # BBBD: 27" 16:9 (59.77 cm wide) at 60 cm. 1920 px -> ~33.6 px/deg.
+    assert eye.px_per_deg_from_screen(1920, 59.77, 60) == pytest.approx(33.64, abs=0.05)
+    assert eye.px_per_deg_from_screen(2560, 59.77, 60) == pytest.approx(44.85, abs=0.05)
+    # Twice as far away -> a degree covers twice the pixels.
+    near = eye.px_per_deg_from_screen(1920, 59.77, 60)
+    assert eye.px_per_deg_from_screen(1920, 59.77, 120) == pytest.approx(2 * near, rel=1e-9)
+
+
+def test_estimate_px_per_deg_recovers_known_scale():
+    sf, n, true_scale = 128.0, 4000, 24.9
+    rng = np.random.default_rng(1)
+    # Gaze in degrees: drift plus a few saccades; pixels are degrees * true_scale.
+    x_deg = np.cumsum(rng.normal(0, 0.05, n))
+    y_deg = np.cumsum(rng.normal(0, 0.05, n))
+    for s in (800, 1900, 3100):
+        x_deg[s:] += 8.0
+    gx, gy = x_deg * true_scale, y_deg * true_scale
+    vdx = np.gradient(x_deg) * sf
+    vdy = np.gradient(y_deg) * sf
+
+    est = eye.estimate_px_per_deg(gx, gy, vdx, vdy, sf)
+    assert est == pytest.approx(true_scale, rel=0.02)
+
+    # Too little usable signal -> NaN rather than a confident wrong number.
+    assert np.isnan(eye.estimate_px_per_deg(gx[:50], gy[:50], vdx[:50], vdy[:50], sf))
+
+
+def test_events_from_speed_counts_and_blink_suppression():
+    sf, n = 128.0, int(60 * 128)
+    rng = np.random.default_rng(0)
+    speed = np.abs(rng.normal(5.0, 1.0, n))          # fixation drift, well under 30 deg/s
+    for s in np.linspace(200, n - 200, 20).astype(int):
+        speed[s:s + 4] = 120.0                       # 20 saccades, 31 ms each
+    valid = np.ones(n, bool)
+    blink_at = np.linspace(500, n - 500, 5).astype(int)
+    for s in blink_at:
+        valid[s:s + int(0.15 * sf)] = False          # 5 blinks, 150 ms each
+
+    r = eye.events_from_speed(speed, valid, sf, threshold_deg_s=30)
+    assert r["n_saccades"] == 20 and r["n_blinks"] == 5
+    assert r["saccade_rate_per_min"] == pytest.approx(20.0)
+    assert r["invalid_frac"] == pytest.approx(5 * 0.15 / 60, abs=1e-3)
+
+    # A velocity spike inside a padded blink is track-loss, not a saccade.
+    speed[blink_at[0]] = 200.0
+    assert eye.events_from_speed(speed, valid, sf, threshold_deg_s=30)["n_saccades"] == 20
+
+
 def test_px_to_deg_centre_is_zero():
     dx, dy = eye.px_to_deg(np.array([960]), np.array([540]), 1920, 1080, 53.0, 60.0)
     assert abs(dx[0]) < 1e-9 and abs(dy[0]) < 1e-9

@@ -1,0 +1,55 @@
+{
+  "run_id": "R-001",
+  "git_hash": "e831839",
+  "experiment": 1,
+  "n_recordings": 526,
+  "n_excluded": 263,
+  "sfreq_hz": 128.0,
+  "has_pupil": false,
+  "saccade_threshold_deg_s": 30,
+  "condition_key": "ses",
+  "video_key": "task",
+  "condition_labels_unmapped": [
+    "01",
+    "02"
+  ],
+  "n_learners": 27,
+  "n_videos": 5,
+  "n_derivative_files": 526,
+  "median_invalid_frac": 0.0,
+  "h0b_attend_vs_distract": {
+    "saccade_rate_per_min": {
+      "n": 27,
+      "mean_01": 2.4259431462420133,
+      "mean_02": 2.900685974225812,
+      "t": -0.9862727508212181,
+      "p": 0.3330892249602373,
+      "d_z": -0.18980827939367437
+    },
+    "blink_rate_per_min": {
+      "n": 27,
+      "mean_01": 0.0,
+      "mean_02": 0.0,
+      "t": NaN,
+      "p": NaN,
+      "d_z": NaN
+    },
+    "fixation_rate_per_min": {
+      "n": 27,
+      "mean_01": 2.5512125157414367,
+      "mean_02": 2.9341210135531246,
+      "t": -0.8776805390988794,
+      "p": 0.3881556439870747,
+      "d_z": -0.16890969850374465
+    },
+    "median_fix_ms": {
+      "n": 27,
+      "mean_01": 92990.48032407407,
+      "mean_02": 71242.0524691358,
+      "t": 2.013334698029993,
+      "p": 0.054539700598536175,
+      "d_z": 0.3874664432921435
+    }
+  },
+  "quiz_scores_used": false
+}

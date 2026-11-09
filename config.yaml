@@ -46,11 +46,24 @@ eye:                                     # V1 default
   saccade_velocity_deg_s: 30             # used in progress-review result (Exp 1)
   blink_pad_ms: 100
   max_interp_gap_ms: 250
-  screen:                                # UNVERIFIED: fill from sidecar / paper methods
-    width_px: null
-    height_px: null
-    width_cm: null
-    distance_cm: null
+  screen:                                # D-26
+    # VERIFIED, BBBD preprint (bioRxiv 10.1101/2025.04.29.651259), Procedure:
+    # "a 27" monitor approximately 60 cm from the subject". EyeLink 1000 at 500 Hz,
+    # released data down-sampled to 128 Hz.
+    diagonal_in: 27
+    distance_cm: 60
+    width_cm: 59.77                      # 27" at 16:9 -> 59.77 cm wide
+    # UNVERIFIED: the resolution is stated in no source we could read. 1920x1080
+    # is inferred: it gives 33.64 px/deg, and estimating px/deg from the data
+    # independently gave a median of 34.31 (implying a 1958 px width, 2% off).
+    # 2560x1440 would give 44.85 and is ruled out by that estimate.
+    width_px: 1920
+    height_px: 1080
+    # null = derive from the geometry above (eye.px_per_deg_from_screen).
+    # Set a number to override. The authors' own code converts with the EyeLink's
+    # per-sample resolution columns, which vary with gaze eccentricity and are not
+    # in the released files, so any single constant here is an approximation.
+    px_per_deg: null
 
 ecg:
   method: neurokit                       # nk.ecg_peaks default

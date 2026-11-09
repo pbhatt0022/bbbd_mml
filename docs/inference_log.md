@@ -14,3 +14,34 @@ What we **concluded** from each result, kept separate from the Decision Log (wha
 - Observation = numbers only (estimate, CI, p, n). Conclusion = one sentence a reviewer could disagree with.
 - Name at least one alternative explanation (e.g. video difficulty, artefact, small N).
 - If a later run changes a conclusion, add a new row that names the old one; do not edit the old row.
+
+## Pending: row for the RQ0 eye rerun (`10_eye_preproc.ipynb`)
+
+**Not a result.** This is a fill-in template, deliberately kept out of the table above so a
+placeholder can never be read as a number. Move it into the table only once the notebook has
+actually run and every `<…>` is replaced. If the run does not happen, delete this section.
+
+Every `<…>` below is printed by the notebook or written to
+`results/<run_id>_eye_rq0_exp1/rq0_eye_exp1.json`.
+
+```
+| <date> | <R-0xx> | RQ0 / H0b | Confirmatory | Exp 1, N = <n_subjects> learners,
+<n_recordings> recordings (<n_excluded> excluded at > 50% invalid). Own I-VT detector
+(> 30°/s) on <sfreq> Hz gaze, saccades from sidecar vdx/vdy: saccades <mean_A> → <mean_B>
+per min attend → distract, t(<df>) = <t>, d_z = <d_z>, p = <p>. Blinks <mean_A> → <mean_B>
+per min, t = <t>, p = <p>. Agreement with authors' saccade counts: <ρ or "not computed,
+derivative layout unknown"> | <conclusion: one sentence a reviewer could disagree with —
+does our from-raw pipeline reproduce the direction of the distraction effects?> |
+<High / Medium / Low> | Blinks detected from gaze track-loss, not pupil (Exp 1 has no pupil
+column), so blink counts undercount; 128 Hz is coarse for saccade timing; attend/distract is
+a condition contrast, not learning. <Add any alternative explanation the numbers suggest> | A |
+```
+
+Then, in the same commit:
+
+1. Append to the **14 Oct 2026** row's caveat cell: `Replaced by <R-0xx>.` Do not edit its
+   numbers or delete it — the log's own rule is that old rows are never overwritten.
+2. Set **Type** above to `Confirmatory` only if `prereg-v1` was tagged before the run.
+   If the run happened first, it is `Exploratory`, and say so rather than backdating.
+3. If the H0b direction does **not** match the authors, that is a finding, not a bug to hide:
+   log it, then check the condition-entity mapping from cell 1b before concluding anything.

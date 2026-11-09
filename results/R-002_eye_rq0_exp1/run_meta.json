@@ -1,0 +1,199 @@
+{
+  "run_id": "R-002",
+  "name": "eye_rq0_exp1",
+  "notebook": "10_eye_preproc",
+  "member": "A",
+  "seed": 2026,
+  "git_hash": "bedf2a0",
+  "git_dirty": false,
+  "config_hash": "47c0d2645a",
+  "started_utc": "2026-11-08T11:29:25+00:00",
+  "config": {
+    "project": {
+      "name": "bbbd_mml",
+      "config_version": "0.1.0"
+    },
+    "paths": {
+      "data_root": "/content/drive/MyDrive/MML_BBBD",
+      "raw": "/content/drive/MyDrive/MML_BBBD/01_data_raw",
+      "interim": "/content/drive/MyDrive/MML_BBBD/02_data_interim",
+      "features": "/content/drive/MyDrive/MML_BBBD/03_features",
+      "results_drive": "/content/drive/MyDrive/MML_BBBD/04_results",
+      "results_repo": "results",
+      "run_registry": "docs/run_registry.csv"
+    },
+    "seeds": {
+      "global": 2026,
+      "cv_repeats": [
+        11,
+        22,
+        33,
+        44,
+        55,
+        66,
+        77,
+        88,
+        99,
+        110
+      ],
+      "dl_training": [
+        1,
+        2,
+        3
+      ]
+    },
+    "scope": {
+      "eye_experiments": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "eeg_ecg_experiments": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "resp_experiments": [
+        4,
+        5
+      ],
+      "exp5_session2": "separate"
+    },
+    "signals": {
+      "expected_sfreq_hz": 128
+    },
+    "target": {
+      "primary": "quiz_prop_correct",
+      "normalise": "zscore_within_video_and_experiment",
+      "auxiliary": "attend_vs_distract"
+    },
+    "exclusions": {
+      "eye_max_invalid_frac": 0.5,
+      "eeg_max_bad_channel_frac": 0.2,
+      "eeg_max_bad_time_frac": 0.1,
+      "ecg_min_detected_beat_frac": 0.8
+    },
+    "eye": {
+      "saccade_velocity_deg_s": 30,
+      "blink_pad_ms": 100,
+      "max_interp_gap_ms": 250,
+      "screen": {
+        "width_px": null,
+        "height_px": null,
+        "width_cm": null,
+        "distance_cm": null,
+        "px_per_deg": null
+      }
+    },
+    "ecg": {
+      "method": "neurokit",
+      "rr_min_ms": 300,
+      "rr_max_ms": 2000,
+      "match_tolerance_ms": 50,
+      "match_f1_threshold": 0.95
+    },
+    "eeg": {
+      "variant": "V1",
+      "highpass_hz": 0.5,
+      "lowpass_hz": null,
+      "line_freq_hz": 60,
+      "notch_16hz_if_detected": true,
+      "bad_channel_z": 3.0,
+      "artifact_iqr_mult": 4.0,
+      "eye_artifact": "eog_regression",
+      "reference": "average",
+      "bands_hz": {
+        "delta": [
+          1,
+          4
+        ],
+        "theta": [
+          4,
+          8
+        ],
+        "alpha": [
+          8,
+          13
+        ],
+        "beta": [
+          13,
+          30
+        ]
+      },
+      "regions": {
+        "frontal": [
+          "Fp1",
+          "Fpz",
+          "Fp2",
+          "AF3",
+          "AFz",
+          "AF4",
+          "F1",
+          "Fz",
+          "F2",
+          "F3",
+          "F4"
+        ],
+        "central": [
+          "FC1",
+          "FCz",
+          "FC2",
+          "C1",
+          "Cz",
+          "C2",
+          "C3",
+          "C4"
+        ],
+        "parietal": [
+          "CP1",
+          "CPz",
+          "CP2",
+          "P1",
+          "Pz",
+          "P2",
+          "P3",
+          "P4"
+        ],
+        "occipital": [
+          "PO3",
+          "POz",
+          "PO4",
+          "O1",
+          "Oz",
+          "O2"
+        ]
+      },
+      "corrca_n_components": 3
+    },
+    "cv": {
+      "n_splits": 5,
+      "group_by": "subject",
+      "inner_splits": 3,
+      "second_scheme": "leave_one_video_out",
+      "primary_metric": "spearman"
+    },
+    "stats": {
+      "n_permutations": 1000,
+      "n_bootstrap": 2000,
+      "equivalence_margin_rho": 0.1,
+      "alpha": 0.05,
+      "correction": "holm"
+    },
+    "dl": {
+      "window_s": 4.0,
+      "window_overlap": 0.5,
+      "embed_dim": 128,
+      "batch_size": 256,
+      "lr": 0.001,
+      "weight_decay": 0.01,
+      "max_epochs": 50,
+      "early_stopping_patience": 5,
+      "modality_dropout_p": 0.3,
+      "contrastive_temperature": 0.07,
+      "retrain_per_outer_fold": true
+    }
+  }
+}
