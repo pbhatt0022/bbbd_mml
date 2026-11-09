@@ -13,10 +13,7 @@ Changes from draft v0 (Project Hub, 12 Oct): freeze date moved (DV-01); H4 added
   performance, in this repository or in any earlier scratch work. Everything run up to
   this point has been preprocessing, event detection, the attend-vs-distract contrast
   (R-004, which uses no quiz data), the target table itself (R-006), the shared folds
-  (R-007) and individual features with no target column (R-010).
-  - Known exception to blindness, disclosed above: the published literature reports that
-    ISC relates to quiz scores, so our hypotheses are not blind to the *direction* of
-    those effects. They are blind to our own features, pipelines and held-out performance.
+  (R-011) and individual features with no target column (R-010).
 
 ## 1. Hypotheses
 
@@ -59,7 +56,9 @@ is the pooled sensitivity analysis in the methods plan, not a change to the prim
 
 - **Unit:** one row per learner × quizzed video, attend session only for quiz prediction. Exp 5 session 2 excluded from pooled analyses and reported separately.
 - **Exclude a video for a modality if**:
-    - eye: > 50% of samples invalid or interpolated;
+    - eye: > 50% of samples invalid, measured on the **pupil** channel (D-30). The
+      released Exp 1 gaze is already interpolated and reads 0.00 invalid in every
+      recording, so a gaze-based rule would exclude nothing;
     - EEG: > 20% of channels marked bad, or bad segments > 10% of the duration;
     - ECG: < 80% of beats detectable.
 - **Exclude a learner** if quiz data is missing. Missing modalities are allowed; models are compared on the subset that has every modality in the comparison.
