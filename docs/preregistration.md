@@ -8,7 +8,15 @@ Changes from draft v0 (Project Hub, 12 Oct): freeze date moved (DV-01); H4 added
 
 - The dataset authors have published that EEG, eye and heart-rate ISC relate to attention and quiz scores. Our hypotheses are therefore not blind to the direction of ISC effects. They are blind to *our* features, our pipelines and multimodal held-out performance, which have not been reported.
 - On 15 Oct we ran an attend vs distract saccade-rate analysis on Exp 1 (inference log, first row). It did not involve quiz scores.
-- **Team to confirm before tagging:** no feature has yet been correlated with quiz scores.
+- **Confirmed by both members, 9 Nov 2026: no feature has been correlated with a quiz
+  score.** Neither member has computed any relationship between a predictor and quiz
+  performance, in this repository or in any earlier scratch work. Everything run up to
+  this point has been preprocessing, event detection, the attend-vs-distract contrast
+  (R-004, which uses no quiz data), the target table itself (R-006), the shared folds
+  (R-007) and individual features with no target column (R-010).
+  - Known exception to blindness, disclosed above: the published literature reports that
+    ISC relates to quiz scores, so our hypotheses are not blind to the *direction* of
+    those effects. They are blind to our own features, pipelines and held-out performance.
 
 ## 1. Hypotheses
 

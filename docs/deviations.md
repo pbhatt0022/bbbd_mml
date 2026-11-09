@@ -4,4 +4,4 @@ After the git tag `prereg-v1`, any change to hypotheses, exclusions, variables, 
 
 | # | Date | Section changed | What changed | Why | Expected effect on results | Decision Log row |
 | --- | --- | --- | --- | --- | --- | --- |
-| DV-01 | 6 Nov 2026 | Freeze date | Planned freeze moved from 18 Oct to 6 Nov 2026 | Repo set up late; no feature has been correlated with quiz score yet (team to confirm) | None, if the confirmation holds | D-07 |
+| DV-01 | 6 Nov 2026 | Freeze date | Planned freeze moved from 18 Oct to 6 Nov 2026 | Repo set up late; no feature had been correlated with quiz score (confirmed by both members, 9 Nov 2026) | None; the confirmation held | D-07 |
