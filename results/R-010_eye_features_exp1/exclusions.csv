@@ -1,0 +1,16 @@
+run_id,experiment,subject,video,session,variant,eye_invalid_frac,reason
+R-010,1,11,1,01,V1,0.8227537824359733,eye_invalid_frac > 0.5
+R-010,1,11,2,01,V1,0.8298527148823918,eye_invalid_frac > 0.5
+R-010,1,11,3,01,V1,0.6538476994173197,eye_invalid_frac > 0.5
+R-010,1,11,4,01,V1,0.895948998332313,eye_invalid_frac > 0.5
+R-010,1,22,1,01,V1,0.7033217817597837,eye_invalid_frac > 0.5
+R-010,1,22,2,01,V1,0.6237634644976918,eye_invalid_frac > 0.5
+R-010,1,22,3,01,V1,0.5951175406871609,eye_invalid_frac > 0.5
+R-010,1,22,4,01,V1,0.7795064490933271,eye_invalid_frac > 0.5
+R-010,1,22,5,01,V1,0.8716722129783694,eye_invalid_frac > 0.5
+R-010,1,30,2,01,V1,0.7297208177621455,eye_invalid_frac > 0.5
+R-010,1,31,1,01,V1,0.816583551686248,eye_invalid_frac > 0.5
+R-010,1,31,2,01,V1,0.6783358979995603,eye_invalid_frac > 0.5
+R-010,1,31,3,01,V1,0.9093027928470967,eye_invalid_frac > 0.5
+R-010,1,31,4,01,V1,0.8532013257056005,eye_invalid_frac > 0.5
+R-010,1,31,5,01,V1,0.9994280366056573,eye_invalid_frac > 0.5
