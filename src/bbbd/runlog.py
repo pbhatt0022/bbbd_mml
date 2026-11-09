@@ -140,14 +140,25 @@ def save_figure(run: Run, fig, filename: str, dpi: int = 200) -> Path:
 
 
 def finish_run(run: Run, note: str = "") -> None:
-    """Append the run to docs/run_registry.csv."""
+    """Write the run to docs/run_registry.csv, replacing any earlier row for this run ID.
+
+    Re-running the save cell in a notebook calls this again with the same Run, so a
+    plain append would leave several rows claiming the same run ID. One row per run ID
+    keeps the registry usable as the index the report cites (README rule 3).
+    """
     registry = path(run.cfg, "run_registry")
     registry.parent.mkdir(parents=True, exist_ok=True)
-    new = not registry.exists() or registry.stat().st_size == 0
-    with open(registry, "a", newline="", encoding="utf-8") as f:
+
+    existing = []
+    if registry.exists() and registry.stat().st_size:
+        with open(registry, newline="", encoding="utf-8") as f:
+            existing = [r for r in csv.DictReader(f) if r.get("run_id") != run.run_id]
+
+    with open(registry, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=REGISTRY_FIELDS)
-        if new:
-            w.writeheader()
+        w.writeheader()
+        for r in existing:
+            w.writerow({k: r.get(k, "") for k in REGISTRY_FIELDS})
         w.writerow({
             "run_id": run.run_id, "started_utc": run.started_utc,
             "finished_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),

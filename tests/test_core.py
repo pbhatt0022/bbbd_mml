@@ -188,3 +188,28 @@ def test_rpeaks_on_simulated_ecg():
     rr, _ = ecg.clean_rr(peaks, sf)
     hr = ecg.hr_features(rr)["hr_mean"]
     assert 60 < hr < 80
+
+
+# ---------------------------------------------------------------- runlog
+def test_finish_run_is_idempotent_per_run_id(tmp_path, monkeypatch):
+    """Re-running the save cell must not leave two rows claiming one run ID."""
+    import csv as _csv
+    from bbbd import runlog
+
+    reg = tmp_path / "run_registry.csv"
+    cfg = {"paths": {"data_root": str(tmp_path), "run_registry": str(reg),
+                     "results_repo": str(tmp_path / "results")},
+           "seeds": {"global": 2026}}
+
+    a = runlog.start_run(cfg, name="first", notebook="t", member="A")
+    runlog.finish_run(a, note="one")
+    b = runlog.start_run(cfg, name="second", notebook="t", member="A")
+    runlog.finish_run(b, note="two")
+    runlog.finish_run(b, note="two, rerun")      # the duplicate-causing call
+    runlog.finish_run(b, note="two, again")
+
+    rows = list(_csv.DictReader(reg.open(newline="", encoding="utf-8")))
+    ids = [r["run_id"] for r in rows]
+    assert ids == [a.run_id, b.run_id], f"expected one row each, got {ids}"
+    assert rows[0]["note"] == "one"              # the earlier run is untouched
+    assert rows[1]["note"] == "two, again"       # the latest write wins
