@@ -1,0 +1,37 @@
+{
+  "run_id": "R-006",
+  "git_hash": "e69d2ab",
+  "experiment": 1,
+  "question_type_used": "memory",
+  "n_rows": 155,
+  "n_learners": 31,
+  "n_videos": 5,
+  "learners_with_quiz_and_gaze": 27,
+  "learners_quiz_only": [
+    "24",
+    "28",
+    "29",
+    "99"
+  ],
+  "learners_gaze_only": [],
+  "suspicious_participant_ids": [
+    "99"
+  ],
+  "n_rows_modellable": 135,
+  "per_video_mean": {
+    "1": 0.6398,
+    "2": 0.5572,
+    "3": 0.5995,
+    "4": 0.5968,
+    "5": 0.7849
+  },
+  "per_video_frac_ge_90": {
+    "1": 0.1935,
+    "2": 0.0323,
+    "3": 0.0968,
+    "4": 0.0968,
+    "5": 0.3871
+  },
+  "normalise": "zscore_within_video_and_experiment",
+  "features_correlated_with_score": false
+}

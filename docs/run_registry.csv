@@ -4,3 +4,4 @@ R-002,2026-11-08T11:29:25+00:00,2026-11-08T11:35:29+00:00,eye_rq0_exp1,10_eye_pr
 R-003,2026-11-09T07:29:42+00:00,2026-11-09T07:36:57+00:00,eye_rq0_exp1,10_eye_preproc,A,0ad7b99,False,1f606e1458,2026,results/R-003_eye_rq0_exp1,"RQ0 eye Exp 1: attend vs distract event rates, V1. No quiz scores."
 R-004,2026-11-09T07:37:38+00:00,2026-11-09T07:38:13+00:00,eye_rq0_exp1,10_eye_preproc,A,01405b7,False,1f606e1458,2026,results/R-004_eye_rq0_exp1,"RQ0 eye Exp 1: attend vs distract event rates, V1. No quiz scores."
 R-005,2026-11-09T08:09:43+00:00,2026-11-09T08:09:43+00:00,targets_exp1,05_targets,A,0f42319,False,1f606e1458,2026,results/R-005_targets_exp1,"Targets Exp 1: memory-item proportion correct, z within video. No features involved."
+R-006,2026-11-09T08:17:11+00:00,2026-11-09T08:17:11+00:00,targets_exp1,05_targets,A,e69d2ab,False,1f606e1458,2026,results/R-006_targets_exp1,"Targets Exp 1: memory-item proportion correct, z within video. No features involved."
