@@ -1,0 +1,24 @@
+{
+  "run_id": "R-009",
+  "git_hash": "1df1815",
+  "experiment": 1,
+  "variant": "V1",
+  "session_used": "01",
+  "n_rows": 135,
+  "n_learners": 27,
+  "n_videos": 5,
+  "features": [
+    "eye_invalid_frac",
+    "saccade_rate_min",
+    "blink_rate_min",
+    "fixation_rate_min",
+    "fixation_dur_ms_mean",
+    "pupil_mean_raw",
+    "pupil_diff_sd_z",
+    "gaze_dispersion_deg"
+  ],
+  "px_per_deg": 33.64268830066364,
+  "matched_folds_rows": 135,
+  "contains_target": false,
+  "features_correlated_with_score": false
+}
