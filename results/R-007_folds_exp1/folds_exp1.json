@@ -1,0 +1,46 @@
+{
+  "run_id": "R-007",
+  "git_hash": "dc6f816",
+  "experiment": 1,
+  "n_rows": 135,
+  "n_learners": 27,
+  "n_videos": 5,
+  "n_splits": 5,
+  "repeat_seeds": [
+    11,
+    22,
+    33,
+    44,
+    55,
+    66,
+    77,
+    88,
+    99,
+    110
+  ],
+  "schemes": [
+    "group5_seed11",
+    "group5_seed110",
+    "group5_seed22",
+    "group5_seed33",
+    "group5_seed44",
+    "group5_seed55",
+    "group5_seed66",
+    "group5_seed77",
+    "group5_seed88",
+    "group5_seed99",
+    "lovo"
+  ],
+  "group_by": "subject",
+  "second_scheme": "leave_one_video_out",
+  "learners_per_fold_first_repeat": {
+    "0": 6,
+    "1": 6,
+    "2": 5,
+    "3": 5,
+    "4": 5
+  },
+  "targets_from": "R-006_targets_exp1",
+  "eye_from": "R-004_eye_rq0_exp1",
+  "features_correlated_with_score": false
+}
