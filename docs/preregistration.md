@@ -1,6 +1,6 @@
 # Preregistration (v1, draft until tagged)
 
-**Status: DRAFT.** It becomes binding when both members agree and the commit is tagged `prereg-v1` and pushed (D-07). Planned freeze: 6 Nov 2026, before any relationship between features and quiz scores is computed. After freezing, every change goes in `docs/deviations.md`. Values marked *(proposed)* need both members' sign-off.
+**Status: agreed by both members, 9 Nov 2026.** It becomes binding when the commit is tagged `prereg-v1` and pushed (D-07). Frozen before any relationship between a feature and a quiz score was computed (see §0). After freezing, every change goes in `docs/deviations.md`. The margins below are fixed; changing one afterwards is a deviation, not a correction.
 
 Changes from draft v0 (Project Hub, 12 Oct): freeze date moved (DV-01); H4 added for the deep learning track (D-05, D-17); H3 reduced to V1 vs V3 (D-18); S2 removed.
 
@@ -22,21 +22,43 @@ Changes from draft v0 (Project Hub, 12 Oct): freeze date moved (DV-01); H4 added
 
 | ID | Hypothesis | Test | Supported if |
 | --- | --- | --- | --- |
-| H0a | Our R-peak detection matches the authors' hand-corrected peaks | Beat matching within ±50 ms *(proposed)* | F1 ≥ 0.95 per recording *(proposed)* |
+| H0a | Our R-peak detection matches the authors' hand-corrected peaks | Beat matching within ±50 ms | F1 ≥ 0.95 per recording |
 | H0b | Distraction lowers saccade rate and raises posterior alpha power in our own pipeline | Paired t-test per experiment, attend vs distract | Same direction as the authors, p < .05 |
 | H1a | Each modality (eye, cardiac, EEG) predicts within-video quiz score above chance on unseen learners | Permutation test (1,000 shuffles within video, full CV refit) on Spearman ρ | p < .05, Holm-corrected across modalities |
-| H1b | Eye-only performance is equivalent to EEG-only | Bootstrap 90% CI of Δρ (EEG − eye), resampling learners (TOST) | CI inside ±0.10 *(proposed margin)* |
+| H1b | Eye-only performance is equivalent to EEG-only | Bootstrap 90% CI of Δρ (EEG − eye), resampling learners (TOST) | CI inside ±0.10 |
 | H1c | Fusing all modalities beats the best single modality | Bootstrap 95% CI of Δρ (fused − best unimodal) | CI excludes 0 |
 | H2 | Individual-only features predict above chance but below ISC features, per modality | H1a test + bootstrap Δρ (ISC − individual) | Individual p < .05 and Δρ CI > 0 |
 | H3 | The modality ranking in H1 is unchanged with ICA (V3) instead of EOG regression (V1) | Rank of modalities across variants | Same top modality in V1 and V3 |
 | H4a | Contrastive EEG↔eye alignment exceeds chance on held-out learners | Recall@10 vs chance (k/N), permutation of window pairing | R@10 above the 95th percentile of the null |
 | H4b | Fused deep models decode attend vs distract better than the best single-modality deep model | Bootstrap CI of Δ balanced accuracy, resampling learners | CI excludes 0 |
-| H4c | Pooled deep embeddings predict quiz score at least as well as hand-crafted features of the same modalities | Bootstrap 90% CI of Δρ (deep − hand-crafted) | Lower bound > −0.10 (non-inferiority, *proposed margin*) |
+| H4c | Pooled deep embeddings predict quiz score at least as well as hand-crafted features of the same modalities | Bootstrap 90% CI of Δρ (deep − hand-crafted) | Lower bound > −0.10 (non-inferiority) |
+
+### 1a. Expected power, stated before seeing any result
+
+With Exp 1 at **25 learners and 120 rows after exclusions**, a learner-resampled bootstrap
+CI on a Spearman ρ is wide — plausibly ±0.15 to ±0.25. The equivalence margins above are
+therefore **narrower than the precision the data can deliver**, and we expect **H1b and
+H4c to come out inconclusive**: the CI will straddle the margin rather than fall inside or
+outside it.
+
+We are recording this *before* freezing rather than discovering it afterwards, and we
+commit to two things:
+
+1. **An inconclusive TOST is reported as inconclusive** — "we could not establish
+   equivalence" — never re-read as "no difference", and never rescued by widening the
+   margin after the fact. Widening it later is a deviation and goes in `deviations.md`
+   with this paragraph cited.
+2. **The margins stay at ±0.10** because they were chosen on substantive grounds — a Δρ of
+   0.10 is the smallest eye-versus-EEG gap we would consider practically meaningful for
+   the claim "cheap sensors rival EEG" — not on what this sample can resolve.
+
+Pooling Exps 2–5 would raise the learner count and may make these tests informative; that
+is the pooled sensitivity analysis in the methods plan, not a change to the primary test.
 
 ## 2. Data and exclusions
 
 - **Unit:** one row per learner × quizzed video, attend session only for quiz prediction. Exp 5 session 2 excluded from pooled analyses and reported separately.
-- **Exclude a video for a modality if** *(proposed thresholds)*:
+- **Exclude a video for a modality if**:
     - eye: > 50% of samples invalid or interpolated;
     - EEG: > 20% of channels marked bad, or bad segments > 10% of the duration;
     - ECG: < 80% of beats detectable.
