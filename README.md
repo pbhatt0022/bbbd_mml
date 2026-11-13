@@ -56,6 +56,13 @@ Read the [run registry](docs/run_registry.csv) for provenance and the [inference
 8. Commit messages name the decision or run: `D-17: EEG high-pass 0.5 Hz`, `R-031: ridge eye-only`.
 9. ISC references and CorrCA weights use training-fold learners only. Deep encoders are retrained per outer fold.
 
-## Citation
+## Dataset credit and licensing
 
-If you use this code, cite the dataset paper above. Code licence: to be decided after grading.
+Cite both the data release and the paper when reporting work based on BBBD:
+
+- **Dataset:** Madsen, J., Kuppa, N., & Parra, L. (2025). *The Brain, Body, and Behavior Dataset (BBBD): Multimodal Recordings during Educational Videos* [Data set]. Zenodo. [10.5281/zenodo.19241964](https://doi.org/10.5281/zenodo.19241964).
+- **Paper:** Madsen, J., Kuppa, N., & Parra, L. C. (2026). The Brain, Body, and Behavior Dataset (BBBD): Multimodal Recordings during Educational Videos. *Scientific Data, 13*, 920. [10.1038/s41597-026-07215-1](https://doi.org/10.1038/s41597-026-07215-1).
+
+The [Zenodo release](https://zenodo.org/records/19241964) is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). This repository contains derived outputs from our own signal preprocessing, feature extraction, quiz scoring and modelling. When redistributing dataset material or adaptations, credit the creators, link to the release and license, retain applicable notices, and indicate changes.
+
+The dataset license applies to the source data. The team has deferred choosing a license for its own project code until after grading.
