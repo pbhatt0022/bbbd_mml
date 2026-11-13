@@ -213,3 +213,30 @@ def test_finish_run_is_idempotent_per_run_id(tmp_path, monkeypatch):
     assert ids == [a.run_id, b.run_id], f"expected one row each, got {ids}"
     assert rows[0]["note"] == "one"              # the earlier run is untouched
     assert rows[1]["note"] == "two, again"       # the latest write wins
+
+
+def test_batch_runlog_registers_tables_and_summary(tmp_path):
+    """A batch script's output must land under a run ID (README rule 3)."""
+    import csv as _csv
+    import pandas as pd
+    from bbbd import batch_runlog
+
+    reg = tmp_path / "run_registry.csv"
+    cfg = {"paths": {"data_root": str(tmp_path), "run_registry": str(reg),
+                     "results_repo": str(tmp_path / "results")},
+           "seeds": {"global": 2026}}
+
+    rid = batch_runlog.register(
+        cfg, name="ecg_exp2", notebook="ecg_batch", member="B",
+        tables={"qc.csv": pd.DataFrame({"recording": ["a"], "status": ["processed"]}),
+                "empty.csv": pd.DataFrame()},          # empty tables are skipped
+        summary={"n_processed": 1, "median_f1": 0.97})
+
+    out = tmp_path / "results" / f"{rid}_ecg_exp2"
+    assert (out / "qc.csv").exists()
+    assert not (out / "empty.csv").exists()
+    assert (out / "ecg_exp2.json").exists()
+
+    rows = list(_csv.DictReader(reg.open(newline="", encoding="utf-8")))
+    assert [r["run_id"] for r in rows] == [rid]
+    assert rows[0]["notebook"] == "ecg_batch" and rows[0]["member"] == "B"
