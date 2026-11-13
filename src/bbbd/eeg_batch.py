@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 
 from bbbd import eeg, features
+from bbbd import batch_runlog
 from bbbd.config import load_config
 
 
@@ -224,6 +225,18 @@ def main():
         default="/home/mml_07/MML_BBBD/04_results/eeg_diagnostic",
     )
 
+    parser.add_argument(
+        "--member",
+        default="B",
+        help="Who ran this, for the run registry",
+    )
+
+    parser.add_argument(
+        "--no-runlog",
+        action="store_true",
+        help="Skip run registration; diagnostics only, results cannot be cited",
+    )
+
     args = parser.parse_args()
 
     cfg = load_config(data_root="/home/mml_07/MML_BBBD")
@@ -330,6 +343,32 @@ def main():
         )
 
     print("Results:", out)
+
+    # README rule 3: register through runlog so these numbers carry a run ID.
+    if not args.no_runlog:
+        qc_df = pd.DataFrame(qc_rows)
+        summary = {
+            "experiment": 2, "modality": "eeg", "variant": cfg["eeg"]["variant"],
+            "attempted": int(len(selected)),
+            "processed": int(len(qc_rows)),
+            "feature_rows": int(len(feature_rows)),
+            "errors": int(len(error_rows)),
+            "eye_artifact": cfg["eeg"]["eye_artifact"],
+            "highpass_hz": cfg["eeg"]["highpass_hz"],
+            "max_bad_channel_frac": cfg["exclusions"]["eeg_max_bad_channel_frac"],
+            "max_bad_time_frac": cfg["exclusions"]["eeg_max_bad_time_frac"],
+        }
+        if qc_rows:
+            summary["qc_exclusions"] = int(sum(row["exclude"] for row in qc_rows))
+        run_id = batch_runlog.register(
+            cfg, name="eeg_exp2", notebook="eeg_batch", member=args.member,
+            tables={"eeg_qc.csv": qc_df,
+                    "eeg_features.csv": pd.DataFrame(feature_rows),
+                    "eeg_errors.csv": pd.DataFrame(
+                        error_rows, columns=["recording", "error_type", "error"])},
+            summary=summary,
+            note=f"EEG Exp 2, {cfg['eeg']['variant']}, {cfg['eeg']['eye_artifact']}.")
+        print(f"registered as {run_id}; cite that id for any number above")
 
 
 if __name__ == "__main__":

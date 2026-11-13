@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 
 from bbbd import ecg
+from bbbd import batch_runlog
 from bbbd.config import load_config
 
 
@@ -199,6 +200,18 @@ def main():
     )
 
     parser.add_argument(
+        "--member",
+        default="B",
+        help="Who ran this, for the run registry",
+    )
+
+    parser.add_argument(
+        "--no-runlog",
+        action="store_true",
+        help="Skip run registration; diagnostics only, results cannot be cited",
+    )
+
+    parser.add_argument(
         "--output",
         default=None,
         help="Directory for diagnostic output CSV files",
@@ -279,6 +292,31 @@ def main():
                 .sum()
             ),
         )
+
+    # README rule 3: register through runlog so these numbers carry a run ID and can
+    # be cited. --no-runlog keeps the old diagnostic-only behaviour.
+    if not args.no_runlog:
+        summary = {
+            "experiment": 2, "modality": "ecg", "variant": "V1",
+            "total_recordings": int(total), "attempted": int(len(paths)),
+            "processed": int((qc_df["status"] == "processed").sum()),
+            "errors": int((qc_df["status"] == "error").sum()),
+            "reference_available": int(qc_df["reference_available"].sum()),
+            "match_tolerance_ms": cfg["ecg"]["match_tolerance_ms"],
+            "f1_threshold": cfg["ecg"]["match_f1_threshold"],
+        }
+        if "f1" in validation_df:
+            summary["median_f1"] = float(validation_df["f1"].median())
+            summary["n_f1_threshold_met"] = int(
+                validation_df["f1_threshold_met"].fillna(False).astype(bool).sum())
+        run_id = batch_runlog.register(
+            cfg, name="ecg_exp2", notebook="ecg_batch", member=args.member,
+            tables={"ecg_qc.csv": qc_df,
+                    "ecg_validation.csv": validation_df,
+                    "ecg_features.csv": feature_df},
+            summary=summary,
+            note="ECG Exp 2, V1 detector and frozen thresholds. H0a beat matching.")
+        print(f"\nregistered as {run_id}; cite that id for any number above")
 
     if args.output:
         output = Path(args.output)
