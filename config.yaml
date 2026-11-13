@@ -108,6 +108,20 @@ stats:
   alpha: 0.05
   correction: holm
 
+# D-31 / DV-02: post-result correction; original R-012 is preserved.
+reconciliation:
+  targets: results/R-006_targets_exp1/targets_exp1.csv
+  features: results/R-010_eye_features_exp1/eye_features_exp1.csv
+  original_summary: results/R-012_classical_eye_exp1/classical_eye_exp1.json
+  folds: results/folds.json
+  archived_folds: results/R-011_folds_exp1/folds.json
+  ridge_alpha_log10_min: -3
+  ridge_alpha_log10_max: 4
+  ridge_alpha_count: 30
+  inner_scoring: neg_mean_squared_error
+  permutation_workers: 2
+  checkpoint_every: 5
+
 dl:                                      # RQ4, D-17
   window_s: 4.0
   window_overlap: 0.5
