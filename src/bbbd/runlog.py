@@ -125,6 +125,7 @@ def save_json(run: Run, obj: dict, filename: str) -> Path:
 def save_table(run: Run, df, filename: str) -> Path:
     """Save a pandas DataFrame (CSV, or Parquet if the name ends .parquet) with a run_id column."""
     df = df.copy()
+    # Keep provenance attached even when a table is copied out of its run folder.
     df.insert(0, "run_id", run.run_id)
     p = run.output_dir / filename
     df.to_parquet(p, index=False) if filename.endswith(".parquet") else df.to_csv(p, index=False)

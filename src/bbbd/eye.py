@@ -159,6 +159,7 @@ def events_from_speed(speed: np.ndarray, valid: np.ndarray, sfreq: float,
     blink_signal = np.asarray(pupil, float) if pupil is not None else np.where(valid, 1.0, np.nan)
     blinks, padded = detect_blinks(blink_signal, sfreq, pad_ms=blink_pad_ms)
 
+    # Keep pupil-derived blink padding out of the velocity threshold test below.
     speed = interpolate_short_gaps(speed, ~np.isfinite(speed), sfreq, max_gap_ms)
     above = (speed > threshold_deg_s) & (speed < 1000) & np.isfinite(speed) & ~padded
     saccades = [(s, e) for s, e in runs(above) if e - s >= 2]

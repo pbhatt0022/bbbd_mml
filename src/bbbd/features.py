@@ -17,8 +17,10 @@ def eye_features(x_deg, y_deg, pupil, sfreq: float, cfg_eye: dict) -> dict:
     """Saccade/blink/fixation rates, fixation duration, pupil level/variability, gaze dispersion."""
     pupil = np.asarray(pupil, float)
     n = len(pupil)
+    # Use recording duration so rates can be compared across videos of different lengths.
     minutes = n / sfreq / 60
     blinks, invalid = eye_mod.detect_blinks(pupil, sfreq, cfg_eye["blink_pad_ms"])
+    # Apply pupil dropout to both gaze coordinates. Long gaps stay missing.
     xd = eye_mod.interpolate_short_gaps(x_deg, invalid, sfreq, cfg_eye["max_interp_gap_ms"])
     yd = eye_mod.interpolate_short_gaps(y_deg, invalid, sfreq, cfg_eye["max_interp_gap_ms"])
     pz = eye_mod.zscore_pupil(eye_mod.interpolate_short_gaps(pupil, invalid, sfreq, cfg_eye["max_interp_gap_ms"]))

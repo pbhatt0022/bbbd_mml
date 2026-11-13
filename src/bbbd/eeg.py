@@ -56,6 +56,7 @@ def has_peak(raw, freq: float, ratio: float = 3.0, half_width: float = 0.5) -> b
 
 def filter_raw(raw, highpass: float = 0.5, line_freq: float = 60, notch_16: bool = True) -> dict:
     """High-pass + notch filters in place. Returns a report of what was applied."""
+    # Line-noise harmonics must lie below Nyquist to be valid notch frequencies.
     nyq = raw.info["sfreq"] / 2
     raw.filter(l_freq=highpass, h_freq=None, picks=["eeg", "eog"], verbose="error")
     notches = [f for f in np.arange(line_freq, nyq, line_freq)]
