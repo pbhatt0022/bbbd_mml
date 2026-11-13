@@ -8,6 +8,12 @@ DATA404 Multimodal Machine Learning, final project. We preprocess the Brain, Bod
 - Team: Member A (eye tracking, targets, models), Member B (EEG, ECG, respiration).
 - Submission: 16 Nov 2026. Presentation: 18 Nov 2026.
 
+## Status
+
+**Current state, for humans and assistants alike: [`docs/PROJECT_STATE.md`](docs/PROJECT_STATE.md).**
+It is the one file to read first — what is done, what the numbers are, what the traps are.
+Preregistration frozen at tag `prereg-v1`.
+
 ## Research questions
 
 | ID | Question |

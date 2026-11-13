@@ -1,11 +1,13 @@
 # Handoff to Member B — EEG, ECG, respiration, Experiments 2–5
 
-Updated **11 Nov 2026** by Member A. Read this before writing code, and give it to your LLM
-assistant as context. Most of it is things we learned the hard way, which reading the
+Updated **13 Nov 2026** by Member A. Canonical project status is
+[`PROJECT_STATE.md`](PROJECT_STATE.md); this file is your track specifically. Read it
+before writing code, and give it to your LLM assistant as context. Most of it is things we learned the hard way, which reading the
 source will not tell you.
 
-**Submission Mon 16 Nov, presentation Wed 18 Nov — five days.** The eye track is built and
-frozen; your track has not started.
+**Submission Mon 16 Nov, presentation Wed 18 Nov — three days.** The eye track is built,
+frozen and has produced its headline result (R-012). Your code is on PR #1 but has produced
+no registered results yet.
 
 ---
 
@@ -44,17 +46,32 @@ been reviewed by anyone but their author.
 | | |
 | --- | --- |
 | Notebooks | `00_inventory`, `05_targets`, `06_folds`, `10_eye_preproc`, `50_features_individual`, `60_classical_models` |
-| Runs | R-001 … R-011 in `docs/run_registry.csv` |
+| Runs | R-001 … R-012 in `docs/run_registry.csv` |
 | Decision rows | 31 (D-00 … D-30), **25 still Proposed** |
-| Inference rows | 2 |
+| Inference rows | 3 |
 | Tag | **`prereg-v1`, on origin** |
 | CI | GitHub Actions: `pytest` + a notebook-parse check on every push to `main` and every PR |
 
 **Done:** Exp 1 eye pipeline, RQ0/H0b, quiz targets, exclusions, folds, individual eye
-features. `60_classical_models` is written and gated on the tag but **has not been run**,
-so there are no RQ1/RQ2 numbers yet.
+features, and **R-012**, the first confirmatory result (below).
 
-**Not started:** EEG, ECG, respiration, and Exps 2–5 — not downloaded.
+**Not started:** EEG, ECG and respiration *results* — your code exists (PR #1) but no run
+is registered. Exps 3–5 not downloaded.
+
+### 2.0 The headline result — R-012, 13 Nov (confirmatory)
+
+Eye, individual-only features, 25 learners, 120 rows. Ridge: **ρ = +0.149, 95% CI
+[−0.104, +0.411], permutation p = .026, R² = −0.073.**
+
+**H1a is supported on the preregistered criterion**, but the effect is weak and imprecise:
+the CI spans zero and R² is negative, so the model orders learners slightly better than
+chance while predicting score magnitude worse than the mean does. The permutation and the
+bootstrap disagree because they ask different questions — never quote the p-value without
+the CI. Per-repeat ρ ran +0.006 to +0.305.
+
+**What this means for your work:** eye alone is weak. If cardiac or EEG features carry real
+signal, the fusion hypothesis H1c becomes the interesting part of the report rather than a
+formality. ECG is the cheapest way to find out.
 
 ### 2.1 What was done, 6–11 Nov
 
