@@ -113,6 +113,16 @@ def test_registration_completion_and_resume(tmp_path, monkeypatch):
     assert result["p_permutation_raw"] == (1 + np.sum(
         np.asarray(progress["null"]) >= result["metrics"]["spearman"])) / 4
     assert r.execute(str(out)) == out
+    # Simulate interruption after the second permutation, then replay the remainder.
+    progress["status"] = "in_progress"
+    progress["null"] = progress["null"][:2]
+    progress["completed_permutations"] = 2
+    (out / "progress.json").write_text(r.json.dumps(progress))
+    (out / "eye_reconciliation.json").unlink()
+    assert r.execute(str(out)) == out
+    resumed = r.json.loads((out / "eye_reconciliation.json").read_text())
+    assert resumed["p_permutation_raw"] == result["p_permutation_raw"]
+    assert len(pd.read_csv(tmp_path / "registry.csv")) == 1
     cfg["stats"]["n_permutations"] = 4
     with pytest.raises(ValueError, match="changed"):
         r.execute(str(out))
