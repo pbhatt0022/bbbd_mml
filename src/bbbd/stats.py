@@ -22,6 +22,7 @@ def shuffle_within(y, strata, rng) -> np.ndarray:
     """Permute y separately inside each stratum (e.g. video), keeping video difficulty intact."""
     y = np.asarray(y).copy()
     strata = np.asarray(strata)
+    # Keep each video’s target distribution intact while breaking its feature–score pairing.
     for s in np.unique(strata):
         idx = np.where(strata == s)[0]
         y[idx] = y[rng.permutation(idx)]
@@ -54,6 +55,7 @@ def bootstrap_learners(metric: Callable[..., float], subjects, *arrays,
     subjects = np.asarray(subjects)
     arrays = [np.asarray(a) for a in arrays]
     uniq = np.unique(subjects)
+    # A resampled learner brings every video row into the bootstrap together.
     rows_of = {s: np.where(subjects == s)[0] for s in uniq}
     rng = np.random.default_rng(seed)
     est = metric(*arrays)

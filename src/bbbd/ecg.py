@@ -74,6 +74,7 @@ def match_beats(ours: np.ndarray, ref: np.ndarray, sfreq: float, tol_ms: float =
                 best, best_d = j, abs(ref[j] - p)
             j += 1
         if best >= 0:
+            # Consume the matched reference so duplicate detections cannot earn extra credit.
             used[best] = True
             errors.append((p - ref[best]) / sfreq * 1000)
     tp = int(used.sum())

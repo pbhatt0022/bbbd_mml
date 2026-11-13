@@ -1,79 +1,48 @@
-# bbbd_mml
+# BBBD learning prediction
 
-**Can eye-tracking and heart signals predict learning from educational videos as well as EEG?**
+**Can eye tracking and ECG predict quiz performance as well as EEG, and does combining sensors improve prediction?**
 
-DATA404 Multimodal Machine Learning, final project. We preprocess the Brain, Body and Behavior Dataset (BBBD) from raw, build hand-crafted and deep multimodal models, and evaluate them on learners the models have never seen.
+DATA404 Multimodal Machine Learning final project at Vidyashilp University. The project uses the public Brain, Body, and Behavior Dataset (BBBD). Its target is performance on memory questions after an educational video. The primary evaluation holds out entire learners.
 
-- Dataset: Madsen, Kuppa & Parra (2026), *Scientific Data* 13:920, [doi:10.1038/s41597-026-07215-1](https://www.nature.com/articles/s41597-026-07215-1). Data on [Zenodo](https://zenodo.org/records/19241964) (CC BY 4.0). The data is **not** in this repo.
-- Team: Member A (eye tracking, targets, models), Member B (EEG, ECG, respiration).
-- Submission: 16 Nov 2026. Presentation: 18 Nov 2026.
+- **Team:** Priyanka Bhatt and Tanmayee K M
+- **Dataset:** [BBBD paper](https://doi.org/10.1038/s41597-026-07215-1) and [Zenodo release](https://zenodo.org/records/19241964)
+- **Preregistration:** [frozen protocol](https://github.com/pbhatt0022/bbbd_mml/blob/prereg-v1/docs/preregistration.md)
 
-## Status
+## Evidence and current scope
 
-**Current state, for humans and assistants alike: [`docs/PROJECT_STATE.md`](docs/PROJECT_STATE.md).**
-It is the one file to read first — what is done, what the numbers are, what the traps are.
-Preregistration frozen at tag `prereg-v1`.
+| Work | Where to look | Status |
+| --- | --- | --- |
+| Experiment 1 eye pipeline and condition contrast | [R-004](results/R-004_eye_rq0_exp1) | Registered exploratory validation |
+| Eye-only quiz prediction | [R-012](results/R-012_classical_eye_exp1) | Original output. Read the implementation review in PR #2 before interpreting inference. |
+| Repeated nested ridge analysis | [PR #2](https://github.com/pbhatt0022/bbbd_mml/pull/2) | Separate post-result correction. Check the run registry for completed outputs. |
+| Experiment 2 ECG and EEG | [PR #1](https://github.com/pbhatt0022/bbbd_mml/pull/1) | Batch processing code. Registered results are pending. |
+| Sensor equivalence, fusion and deep learning | [Methods plan](docs/methods_plan.md) | Planned evaluations. The library includes deep-learning components and synthetic tests. |
 
-## Research questions
+Read the [run registry](docs/run_registry.csv) for provenance and the [inference log](docs/inference_log.md) for interpretations. The planned sensor comparison requires matching modalities on the same learners and videos. The Experiment 1 eye analysis establishes a baseline for the broader project.
 
-| ID | Question |
+## Reproduce or inspect
+
+- **Inspect saved outputs:** Open the registered CSV and JSON files in the table above. This route requires no raw data or Python installation.
+- **Run in Colab:** Download the notebook from its raw GitHub URL and use **File → Upload notebook**. Use the relevant branch or commit in the URL. For the correction, follow the launcher linked from PR #2. It uses tracked tables and saves checkpoints to Drive.
+- **Reprocess Experiment 1:** Point `config.yaml` at your BBBD copy. Inspect files with notebook 00, then use notebook 10 for eye validation, 05 for targets, and 50 for individual features. Notebook 60 documents the original prediction workflow. Use the existing frozen folds. Notebook 06 records their construction.
+- **Check code:** GitHub Actions is the project test gate and runs pytest and notebook syntax checks. The project Windows setup has blocked scientific dependencies. Use Colab or a supported Linux environment for execution.
+- **Package for submission:** Include the supporting files and executed notebooks with their outputs. The versioned result files provide a separate record of the registered runs.
+
+## Code map for the viva
+
+| Question | Where to open the code |
 | --- | --- |
-| RQ0 | Do our pipelines from raw reproduce the paper's effects and the authors' derivatives? |
-| RQ1 | How well does each modality and each fusion strategy predict quiz score for unseen learners? |
-| RQ2 | How much survives with features from one learner alone (no peer group)? |
-| RQ3 | Is the modality ranking stable if EEG is cleaned with ICA instead of EOG regression? |
-| RQ4 | Do deep encoders (contrastive EEG-eye alignment, attention decoding) give better features than hand-crafted ones? |
+| How do we check file metadata and find the recordings? | [io.py](src/bbbd/io.py), [dataset inventory](docs/dataset_inventory.md) |
+| How does one recording become a feature row? | [eye.py](src/bbbd/eye.py), [features.py](src/bbbd/features.py) |
+| How do we detect beats and clean EEG? | [ecg.py](src/bbbd/ecg.py), [eeg.py](src/bbbd/eeg.py) |
+| How do we keep learners out of their own test predictions? | [cv.py](src/bbbd/cv.py), [frozen fold assignments](results/folds.json) |
+| Why do we shuffle within videos and resample learners? | [stats.py](src/bbbd/stats.py) |
+| How would a peer reference or learned fusion work? | [isc.py](src/bbbd/isc.py), [models_dl.py](src/bbbd/models_dl.py) |
+| How do we trace a number to an execution? | [runlog.py](src/bbbd/runlog.py), [run registry](docs/run_registry.csv) |
 
-Full plan: [`docs/methods_plan.md`](docs/methods_plan.md). Hypotheses and tests: [`docs/preregistration.md`](docs/preregistration.md).
+## Branches and pull requests
 
-## Repository layout
-
-```
-config.yaml        every path, seed and tunable setting (notebooks read this, nothing hard-coded)
-src/bbbd/          shared library code
-  config.py        load config.yaml, resolve paths
-  runlog.py        stamp every result with git hash + config hash + seed; append to run registry
-  io.py            find BBBD files (BIDS) and read sidecars
-  eye.py           gaze/pupil cleaning, blink + saccade detection
-  ecg.py           R-peaks (NeuroKit2), HR/HRV, beat matching vs authors' peaks
-  eeg.py           MNE pipeline: filters, bad channels, EOG regression, ICA variant, band power
-  resp.py          respiration rate
-  isc.py           inter-subject correlation and CorrCA, fold-safe (training learners only)
-  features.py      individual-only feature tables
-  cv.py            grouped folds, saved once, shared by every model
-  stats.py         permutation tests, learner bootstrap, equivalence (TOST), Holm
-  models_dl.py     EEGNet, 1D-CNN encoders, InfoNCE contrastive loss, fusion heads
-notebooks/         numbered notebooks; run top to bottom with outputs saved
-scripts/           command-line wrappers for long Colab runs
-tests/             unit tests on synthetic data (run: pytest)
-docs/              decision log, inference log, deviations, preregistration, references
-results/           small result files (JSON, CSV, figures) that are versioned
-```
-
-Data lives on the shared Google Drive under `MML_BBBD/` (`01_data_raw` read-only, `02_data_interim`, `03_features`, `04_results`). Paths are set in `config.yaml`.
-
-## Running it
-
-**Colab (main route).** Open any notebook; its first cell does this:
-
-```python
-from google.colab import drive; drive.mount('/content/drive')
-!git clone https://github.com/pbhatt0022/bbbd_mml.git /content/bbbd_mml || git -C /content/bbbd_mml pull
-%cd /content/bbbd_mml
-!pip install -q -e .
-```
-
-Then set `data_root` in `config.yaml` to your Drive path (default `/content/drive/MyDrive/MML_BBBD`).
-
-**Local.**
-
-```bash
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"
-pytest                                             # all tests should pass
-```
-
-**Order.** Run notebooks in number order. `00`-`09` inventory and targets, `10`-`49` preprocessing per modality, `50`-`59` features, `60`-`69` classical models, `70`-`79` deep learning, `80`-`89` robustness and statistics, `90`-`99` figures.
+`main` is the shared baseline. A topic branch holds a proposed change. Its pull request shows the diff and CI checks so the other member can review it before merging. Keep the physiology and reconciliation branches available while their pull requests and run handoffs are active.
 
 ## Working rules
 

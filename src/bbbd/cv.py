@@ -106,6 +106,7 @@ def cross_val_predict_grouped(
         else:
             Xtr, Xte = feature_fn(tr, te)
         keep = ~np.isnan(y[tr])
+        # Clone the scaler and estimator together so fitted state cannot carry across folds.
         m = clone(model).fit(Xtr[keep], y[tr][keep])
         pred[te] = m.predict(Xte)
     return pred
@@ -118,6 +119,7 @@ def score(y, pred) -> dict:
     y, pred = y[ok], pred[ok]
     rho = spearmanr(y, pred).statistic
     ss_res = np.sum((y - pred) ** 2)
+    # This denominator uses the evaluated-target mean (conventional R²).
     ss_tot = np.sum((y - y.mean()) ** 2)
     return {"spearman": float(rho), "r2": float(1 - ss_res / ss_tot),
             "mae": float(np.mean(np.abs(y - pred))), "n": int(ok.sum())}
