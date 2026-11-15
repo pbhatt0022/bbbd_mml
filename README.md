@@ -5,14 +5,14 @@
 DATA404 Multimodal Machine Learning, final project. We preprocess the Brain, Body and Behavior Dataset (BBBD) from raw, build hand-crafted and deep multimodal models, and evaluate them on learners the models have never seen.
 
 - Dataset: Madsen, Kuppa & Parra (2026), *Scientific Data* 13:920, [doi:10.1038/s41597-026-07215-1](https://www.nature.com/articles/s41597-026-07215-1). Data on [Zenodo](https://zenodo.org/records/19241964) (CC BY 4.0). The data is **not** in this repo.
-- Team: Member A (eye tracking, targets, models), Member B (EEG, ECG, respiration).
-- Submission: 16 Nov 2026. Presentation: 18 Nov 2026.
+- Team: Priyanka Bhatt and Tanmayee K M.
+- Submission: 17 Nov 2026 (latest date supplied by the team). Presentation: 18 Nov 2026 per existing course notes.
 
 ## Status
 
 **Current state, for humans and assistants alike: [`docs/PROJECT_STATE.md`](docs/PROJECT_STATE.md).**
 It is the one file to read first — what is done, what the numbers are, what the traps are.
-Preregistration frozen at tag `prereg-v1`.
+Preregistration frozen at tag `prereg-v1`. Locally registered runs extend through R-017. R-013 is the corrected eye baseline, and R-017 is the exploratory Experiment 2 sensor and fusion comparison.
 
 ## Research questions
 
@@ -73,7 +73,7 @@ pip install -e ".[dev]"
 pytest                                             # all tests should pass
 ```
 
-**Order.** Run notebooks in number order. `00`-`09` inventory and targets, `10`-`49` preprocessing per modality, `50`-`59` features, `60`-`69` classical models, `70`-`79` deep learning, `80`-`89` robustness and statistics, `90`-`99` figures.
+**Order.** See project state and the notebook-specific instructions. Notebook 06 documents construction of the frozen Experiment 1 splits. Use the saved folds for further analysis. `00`-`09` inventory and targets, `10`-`49` preprocessing per modality, `50`-`59` features, `60`-`69` classical models, `70`-`79` deep learning, `80`-`89` robustness and statistics, `90`-`99` figures.
 
 ## Working rules
 

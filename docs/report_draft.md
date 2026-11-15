@@ -1,0 +1,325 @@
+# MULTIMODAL MACHINE LEARNING (MML)
+
+## FINAL PROJECT REPORT
+
+**Project Title:** Predicting Learning from Educational Videos Using the Brain Body and Behavior Dataset
+
+**Course:** DATA404 — Multimodal Machine Learning (MML)
+
+**Team Members:**
+
+1. Priyanka Bhatt — 2023UG000127
+2. Tanmayee K M — 2023UG000134
+
+**Faculty:** Dr. Minati Rath
+
+**Institution:** Vidyashilp University
+
+**Academic Year:** 2026–2027
+
+**Submission Date:** 17 November 2026
+
+**Draft dated 15 November 2026.** This draft incorporates the completed R-013 eye analysis. This draft also includes the exploratory Experiment 2 sensor comparison (R-017).
+
+## 1. Abstract
+
+We investigate whether measurements collected during educational videos predict quiz performance for unseen learners. Using the Brain, Body, and Behavior Dataset (BBBD), we reconstructed eye events, applied quality exclusions, and predicted within-video standardized memory quiz scores with learner-grouped ridge regression. The exploratory condition contrast showed lower saccade rates and higher blink rates during inferred distracted viewing (R-004). The post-result correction used eight eye features, 120 observations and 25 learners (R-013). It yielded Spearman ρ = +0.108, 95% learner-bootstrap CI [−0.126, +0.354], and raw permutation p = 0.032 (R-013). The estimate suggests a weak ranking association with substantial uncertainty. Across-modality Holm correction remains pending. In Experiment 2, the matched ridge comparison did not establish eye–EEG equivalence or a ranking gain from early fusion (R-017). Deep-learning benefits remain an open question.
+
+## 2. Introduction
+
+### 2.1 Background and motivation
+
+Educational videos provide a common stimulus while learners differ in attention, prior knowledge and subsequent performance. Previous studies associate neural or eye-movement synchrony with recall [2], [3]. These findings motivate physiological measurement, but they do not imply that every feature representation yields useful predictions for a new learner. In particular, similarity to a group watching the same video differs from a feature obtained from one learner's recording alone.
+
+Our motivating question is whether eye and cardiac measurements could offer useful alternatives or complements to EEG. The project was designed as a multimodal comparison, with replication checks before predictive modelling. The completed empirical analysis currently concerns eye tracking. The distinction matters because availability of software for several modalities is not evidence that a multimodal model has been evaluated.
+
+### 2.2 Problem statement and objectives
+
+Given a learner's physiological recording during an educational video, predict the learner's standardized quiz score while excluding that learner from model training. We use quiz performance as an operational measure of information retained; without a matched pre-test and post-test, it is not a direct measure of learning gain.
+
+The objectives are to reconstruct signals and events from released raw files, validate the processing against attention-related effects or reference annotations, evaluate individual features on unseen learners, and ultimately compare modalities and fusion on matched observations. Additional planned objectives examine peer-based synchrony, EEG cleaning variants and deep representations. The present report distinguishes these objectives from achieved results.
+
+### 2.3 Scope and completion
+
+| Component | Current evidence | Scope of the claim |
+| --- | --- | --- |
+| Eye event validation | Registered R-004 | Exploratory attention-condition contrast |
+| Eye quiz prediction | R-013 complete under DV-02 | Post-result correction. Across-modality inference pending. |
+| ECG and EEG processing | Batch code on physiology branch | Recovered physiology audited in R-015 and R-016 and used in exploratory R-017 |
+| ISC and multimodal fusion | Shared components or planned integration | Early fusion evaluated in R-017. Individual-versus-ISC comparison pending. |
+| Deep-learning track | Encoders, heads and synthetic tests | No trained BBBD experiment or deep-learning result |
+
+The project's broad objectives are only partly achieved. A final scope decision, including the deep-learning requirement, remains for the team and faculty; this report does not treat an uncompleted objective as silently removed.
+
+## 3. Literature Review
+
+### 3.1 Physiological synchrony and educational outcomes
+
+Cohen et al. [2] examined EEG responses to educational videos in intentional and incidental learning settings. They quantified neural engagement through inter-subject correlation (ISC) and related it to retained information and attentional condition. This provides a physiological motivation for the project. Our evaluation asks a complementary question: whether a fitted predictor using individual features generalizes to held-out learners.
+
+Madsen et al. [3] studied eye-movement synchrony during instructional videos and its relationship to test performance across viewing contexts. Their work motivates eye tracking as a source of attention-related information. ISC compares a learner with other viewers of the same content, whereas our completed feature set uses only that learner's gaze and pupil recording. We do not directly compare published effect sizes with our cross-validated correlation because the representation, scoring and evaluation procedures differ.
+
+Madsen and Parra [4] investigated synchrony across EEG, eye and cardiac measurements during attentive and distracted viewing. Their findings connect cognitive processing with shared fluctuations in several signals, while not all measured modalities show the same pattern. This motivates testing complementary information rather than assuming that adding sensors necessarily improves prediction.
+
+### 3.2 Dataset, representations and evaluation
+
+BBBD provides the shared data resource for investigating these questions, with synchronized neural, physiological and behavioural recordings and quiz information [1], [9]. The released files enable independent preprocessing, but their layout and metadata must be verified before analysis. We distinguish the authors' experimental findings from our own registered reanalysis.
+
+Lawhern et al. [5] introduced EEGNet, using depthwise and separable convolutions for compact EEG classification. This architecture informs the project's EEG encoder design. Its published BCI evaluations do not establish effectiveness for educational quiz prediction, and our implementation has not yet produced a BBBD deep-learning result.
+
+Varoquaux [6] demonstrates that prediction estimates can have substantial uncertainty in small samples and that variation across cross-validation folds is not a reliable substitute for uncertainty estimation. This motivates reporting learner-level resampling and repeated splits. Repeating folds stabilizes evaluation over assignments; it does not create additional independent learners.
+
+### 3.3 Comparison of relevant work
+
+| Study | Signals and representation | Main contribution | Relationship to this project |
+| --- | --- | --- | --- |
+| Cohen et al. [2] | EEG ISC during educational videos | Links neural engagement with recall and attention | Motivates EEG validation and prediction |
+| Madsen et al. [3] | Gaze and pupil synchrony | Relates synchronized eye behaviour to test scores | Motivates individual-versus-peer feature comparison |
+| Madsen and Parra [4] | Neural, eye and cardiac synchrony | Examines common modulation across signals | Motivates multimodal comparison without presuming fusion gains |
+| Lawhern et al. [5] | Compact convolutional EEG representations | EEG-specific feature learning across BCI tasks | Architectural reference for the unexecuted DL track |
+| Varoquaux [6] | Cross-validation uncertainty | Shows the importance of sample size and uncertainty | Motivates cautious interpretation and learner bootstrap |
+
+This comparison identifies differences in questions and representations, not a numerical ranking of studies. The current project cannot establish improvement over these papers without a matched evaluation.
+
+## 4. Research Gaps and Problem Identification
+
+The project focuses on three practical questions left unresolved by our existing evidence. First, a learner-specific representation removes the need for a peer reference at inference time, but its predictive information may be weaker than synchrony. Our completed eye analysis tests the individual-feature side; the relative advantage of ISC remains unmeasured.
+
+Second, comparing sensors requires the same participants, targets and splits. An eye model from Experiment 1 and an ECG model from Experiment 2 are not a paired test of modality quality. Such a comparison would confound modality with cohort and experimental context. Multimodal claims therefore require a cohort with aligned modalities and a documented common inclusion set.
+
+Third, a pipeline may reproduce a condition effect without predicting individual quiz performance accurately. Event detection, attention-condition validation and prediction must be evaluated separately. We address this through staged registered runs, explicit quality checks and preservation of unsuccessful or superseded analyses. These are methodological contributions to this course project, rather than a claim that prior research lacks such practices.
+
+## 5. Proposed Methodology
+
+### 5.1 Data and outcomes
+
+We analyse the public BBBD release identified by Zenodo record 19241964 [9]. It contains recordings organized by experiment, participant, session and task, with gaze/pupil and physiological modalities available across the collection [1]. We conducted a secondary analysis and collected no new participant data.
+
+The completed validation uses Experiment 1: 27 learners and 263 gaze recordings, each paired with a pupil file (R-004). The target-building run identifies 31 learners with quiz records, of whom 27 overlap with gaze (R-006). We use memory questions, excluding domain questions from the outcome under D-27. The target is the proportion of scored memory items answered correctly for each learner and video. It is standardized within video before joining to the modelling sample (R-006).
+
+The actual fields are `participant_id`, `stimulus_id`, `question_type`, `question_no`, `answer`, `correct_answer` and `is_correct`, as documented with R-006. Filename task identifiers such as `stim01` are normalized to the integer video keys used by the quiz table. Key overlap and uniqueness are checked rather than inferred from matching filenames.
+
+### 5.2 Eye preprocessing and exclusions
+
+The released gaze coordinates are treated as pixels despite the filename containing `visualangle`. We use a constant conversion of 33.64 pixels per degree (R-004; D-26), based on the documented apparatus and an inferred screen resolution. This approximation and the inferred condition mapping are limitations, not verified metadata facts. Angular velocity is computed from position rather than thresholding the supplied smoothed velocity channels.
+
+The configured I-VT detector uses a 30°/s threshold. Blink candidates come from pupil dropout; the implementation distinguishes short blink intervals from longer loss of tracking and pads invalid intervals by 100 ms. Short gaps of at most 250 ms may be interpolated. These are processing settings, not estimated performance values. The validation and feature pipelines have related but distinct implementations; R-004 should not be interpreted as a validation of every downstream feature.
+
+For prediction, the invalid fraction returned by the pupil-processing routine includes padding around invalid intervals. The preregistered exclusion is applied at greater than 50% invalid pupil samples. R-010 excludes 15 of 135 attend-session learner–video rows, leaving 120 observations and 25 learners; two learners lose all their videos. The frozen R-011 folds cover this retained sample. R-004 preceded this prediction exclusion implementation and includes its own broader validation sample.
+
+### 5.3 Individual representations
+
+| Feature in R-010/R-012 | Interpretation |
+| --- | --- |
+| `eye_invalid_frac` | Fraction of padded invalid pupil samples; a quality-related predictor |
+| `saccade_rate_min` | Detected saccades per recording minute |
+| `blink_rate_min` | Detected blinks per recording minute |
+| `fixation_rate_min` | Detected fixations per recording minute |
+| `fixation_dur_ms_mean` | Mean duration of detected fixations |
+| `pupil_mean_raw` | Mean pupil signal after invalid samples are masked |
+| `pupil_diff_sd_z` | Variability of successive differences in standardized pupil signal |
+| `gaze_dispersion_deg` | Spatial dispersion of the gaze coordinates in degrees |
+
+All eight predictors are derived from one learner's recording; none requires peer recordings. This does not guarantee that they measure cognition alone. For example, pupil level and invalid fraction can reflect measurement conditions as well as behaviour.
+
+### 5.4 Physiology and fusion extensions
+
+The implemented ECG components use NeuroKit2 [7] for signal cleaning and R-peak detection, RR plausibility filtering, and heart-rate/variability features. H0a specifies one-to-one matching to the authors' reference peaks within ±50 ms and F1 ≥ 0.95 per recording. R-015 registers a retrospective audit of saved ECG metrics. A prospective detector validation remains pending. The batch code also leaves the final ECG exclusion decision undetermined rather than substituting reference recall for the preregistered detectable-beat rule.
+
+The EEG implementation uses MNE [8] for filtering, bad-channel interpolation, average referencing and EOG regression. The physiology branch aligns separately stored EEG and EOG using event boundaries, checks units and channel counts, and extracts regional spectral features after QC. These implementation details describe available code, not evidence of completed EEG experiments.
+
+Planned classical fusion uses feature concatenation or combination of modality-specific predictions. Planned deep fusion combines modality embeddings through early, late or cross-attention heads. ISC references and CorrCA weights must use training learners only. R-017 evaluates feature concatenation. Late fusion and deep fusion remain planned.
+
+### 5.5 Training and evaluation
+
+The primary model family is standardized ridge regression, with random forest and a small MLP as exploratory secondary models. R-011 provides five learner-grouped outer folds repeated with ten saved seeds. A learner never crosses training and test partitions within a grouped scheme. A separate leave-one-video-out scheme deliberately allows the same learners in training and test and answers a different generalization question.
+
+The intended analysis uses Spearman correlation for ranking, MAE for error magnitude, a baseline comparison, within-video target permutations and learner-resampled confidence intervals. The original R-012 implementation and the completed DV-02 correction (R-013) differ as shown below. The original output is preserved rather than silently replaced.
+
+| Element | Original R-012 | Correction under D-31 / DV-02 |
+| --- | --- | --- |
+| Outer observations and folds | R-006/R-010 inputs; R-011 folds | Unchanged |
+| Ridge tuning | Default RidgeCV inside outer training set | Three-fold GroupKFold; scaler fitted inside each inner training fold |
+| Reported prediction | Average across ten repeats | Average across ten repeats |
+| Permutation statistic | First repeat only | Same ten-repeat average as observed statistic |
+| Baseline reporting | Conventional R² labelled as training-mean performance | Conventional R² and separately named training-mean skill |
+| Multiplicity | Eye-only Holm family | Raw eye p; across-modality inference explicitly pending |
+
+The correction uses the existing 30 logarithmically spaced ridge penalties from 10⁻³ to 10⁴, selects by mean inner-fold squared error, retains 1,000 permutations and 2,000 learner bootstrap resamples, and does not alter significance thresholds. It was designed after seeing R-012 and is therefore labelled a post-result correction. R-013 completed this analysis. D-31 remains Proposed.
+
+## 6. System Architecture and Project Pipeline
+
+![System architecture showing the completed Experiment 1 eye route, the exploratory Experiment 2 matched comparison, and the components that were never executed](report_assets/pipeline.png)
+
+Figure 1. The completed Experiment 1 eye route, the exploratory Experiment 2 matched comparison, and the components that were never executed. Every solid box carries the run ID that registered it. Dashed boxes were not executed and have no results of any kind. The Experiment 2 band operates on recovered physiology tables rather than fresh detector or MNE runs, which is why every run in it is labelled exploratory; the frozen Experiment 1 folds are not reused there.
+
+The ingestion module locates files and reads sidecars. Signal modules perform event detection or physiological preprocessing. Target and feature tables are joined using normalized participant and video identifiers. Frozen folds then control model fitting and evaluation. Run logging records the code revision, configuration hash, seed and output directory, connecting every reported project estimate to a registered execution.
+
+For future multimodal integration, signals must be aligned to a common recording interval and feature rows matched before comparison. A new experiment cannot be attached to Experiment 1's outer folds by assumption. Any additional fold construction or altered inclusion set requires documentation under the project's preregistration rules.
+
+## 7. Implementation
+
+### 7.1 Software organization and tools
+
+The project uses Python with NumPy, pandas, SciPy and scikit-learn [10] for tabular processing and classical evaluation. MNE supports EEG processing [8], NeuroKit2 supports cardiac and respiration routines [7], and PyTorch supplies the unexecuted deep-learning components. Configuration is centralized in `config.yaml`. Core modules are in `src/bbbd/`; numbered notebooks provide the execution interface.
+
+| Module or artifact | Responsibility |
+| --- | --- |
+| `io.py`, `config.py` | File discovery, metadata access and configuration |
+| `eye.py`, `features.py` | Eye events and individual feature definitions |
+| `ecg.py`, `eeg.py`, `resp.py` | Physiological processing components |
+| `cv.py`, `stats.py`, `isc.py` | Splits, evaluation, resampling and fold-dependent references |
+| `models_dl.py` | Encoders, contrastive objective and fusion heads |
+| `runlog.py`, `docs/run_registry.csv` | Run identity and provenance |
+| `reconcile_eye.py`, `85_statistics.ipynb` | Separately registered DV-02 correction and resumable Colab execution |
+
+Some older notebooks still contain data-assembly and analysis logic. The corrected evaluation is centralized in a tested module; the existence of the library does not mean every historical notebook already follows that organization completely.
+
+### 7.2 Execution and reproducibility
+
+Colab is the working execution route for Member A. Local Windows scientific dependencies are blocked by the machine's security policy; the policy was not disabled. GitHub Actions provides the project test gate, including synthetic-data tests and notebook syntax checks. Raw physiological files remain outside Git, while small registered result tables and metadata are versioned.
+
+The correction can run on a CPU using the existing registered tables, without downloading the raw dataset. Its Colab launcher backs up permutation checkpoints to Drive and refuses incompatible resumes. Package versions are recorded for the corrected run. Earlier dependency declarations use lower bounds, so the original run's exact environment must not be reconstructed from an old package list by assumption.
+
+The repository's committed historical notebooks currently lack saved cell outputs. Registered CSV and JSON results provide evidence, but the final code submission also needs executed notebooks or equivalent saved execution output, as required by the course.
+
+### 7.3 Division of work
+
+Priyanka Bhatt carried out the experiments reported here. The original division assigned eye processing, targets and modelling to Priyanka and physiology to Tanmayee K M. Both members are responsible for understanding the pipeline and presenting the project.
+
+## 8. Experimental Results and Evaluation
+
+### 8.1 Registered evidence and experimental populations
+
+Results below come from the project run registry and saved artifacts. R-004 is exploratory because it preceded the preregistration tag. R-012 was originally labelled confirmatory, but DV-02 now records implementation discrepancies; R-013 provides the separately registered corrected evaluation.
+
+| Stage | Registered output | Population or artifact |
+| --- | --- | --- |
+| Eye condition validation | R-004 | 27 learners; 263 recordings |
+| Target construction | R-006 | 31 quiz learners; 27 overlap with gaze |
+| Prediction exclusions | R-010 | 135 candidate rows; 15 excluded; 120 retained |
+| Shared prediction folds | R-011 | 25 learners; 120 rows; ten grouped repeats plus LOVO |
+| Original prediction | R-012 | Eight individual eye features; target `quiz_z` |
+
+The validation and prediction samples are not interchangeable. In particular, the exploratory condition contrast must not be described as using the final prediction exclusion set.
+
+### 8.2 Exploratory eye validation
+
+The condition table reports the paired condition contrast from R-004. Values are means of learner-level summaries; the sign of the t statistic follows session 01 minus session 02. Session 01 is inferred to be attend and session 02 distract under D-29; that mapping is not directly stated in the released labels.
+
+| Measure | Inferred attend | Inferred distract | Paired t | p | Run |
+| --- | --- | --- | --- | --- | --- |
+| Saccades per minute | 138.0 | 93.2 | 6.18 | 1.6 × 10⁻⁶ | R-004 |
+| Blinks per minute | 1.25 | 2.90 | −3.04 | .0054 | R-004 |
+| Fixations per minute | 131.8 | 84.1 | 7.02 | 1.9 × 10⁻⁷ | R-004 |
+| Mean of recording median fixation durations, ms | 245 | 332 | −4.82 | 5.4 × 10⁻⁵ | R-004 |
+
+![Recorded saccade and blink rates in the two inferred conditions](report_assets/r004_rates.png)
+
+Figure 2. R-004 recorded condition means, redrawn without recomputing statistics. Saccades and blinks use separate axes. No error bars are shown because this figure reproduces the saved means rather than introducing an unregistered uncertainty estimate. See the paired tests in the condition table.
+
+The opposite directions of the saccade and blink changes are consistent with the intended condition contrast. Pupil-derived blink detection provides a check independent of the pixel-to-degree conversion. However, aggregate condition effects do not establish per-recording event agreement with the authors. That comparison was not completed in R-004.
+
+### 8.3 Original eye prediction and implementation review
+
+| Model | Spearman ρ | 95% learner-bootstrap CI | Conventional R² | MAE | Status |
+| --- | --- | --- | --- | --- | --- |
+| Ridge | +0.149 | [−0.104, +0.411] | −0.073 | 0.764 | R-012 original ridge estimate |
+| Random forest | +0.231 | [+0.023, +0.415] | +0.005 | 0.733 | R-012 exploratory; unpermuted |
+| MLP | +0.037 | [−0.252, +0.361] | −0.590 | 0.901 | R-012 exploratory; unpermuted |
+
+All entries in the prediction table are from R-012, using predictions averaged across ten learner-grouped repeats. MAE is in within-video standardized quiz-score units. These estimates do not establish a statistically supported model ranking.
+
+![Original ridge correlation and recorded learner-bootstrap interval](report_assets/r012_interval.png)
+
+Figure 3. R-012 ridge estimate and saved 95% learner-bootstrap interval. The interval spans zero. The figure shows the historical estimate. Section 8.4 reports the corrected result.
+
+R-012 records a permutation p-value of .026 alongside the ten-repeat estimate ρ = +0.149 and CI [−0.104, +0.411]. The code review shows that this p-value evaluates only the first repeat, whose saved correlation is +0.118, rather than the averaged statistic. Although permutation tests and bootstrap intervals generally answer different questions, that distinction alone cannot explain this particular comparison. The p-value must not be presented as a matched test of the headline averaged estimate.
+
+The saved R² = −0.073 compares squared prediction error with deviations around the evaluated-target mean. It does not directly compare predictions with foldwise training-mean predictions. The one-member Holm calculation also leaves p unchanged; it does not complete correction across all planned modalities. For these reasons, this draft does not repeat the original unqualified H1a support claim.
+
+Across the ten grouped repeats, ridge correlations range from +0.006 to +0.305 (R-012), showing sensitivity to the split assignment. Leave-one-video-out ridge gives ρ = +0.374 (R-012), but permits the same learners on both sides of the split. It therefore cannot be used as evidence of stronger unseen-learner prediction.
+
+### 8.4 Corrected analysis and physiology results
+
+R-013 refitted the same nested ridge pipeline for the observed targets and every within-video shuffle. It yielded Spearman ρ = +0.108, 95% learner-bootstrap CI [−0.126, +0.354], and raw permutation p = 0.032. Conventional R² = -0.031 uses the evaluated-target mean as its baseline. Skill against averaged outer-training-mean predictions was +0.027, a small reduction in squared error against that baseline. MAE was 0.759 standardized quiz-score units (R-013). Across-modality Holm correction remains pending, leaving the preregistered H1a claim unresolved.
+
+Experiment 2 matched sensor evaluation (R-017). The shared attentive cohort used 125 learner–video rows from 26 learners across five videos (R-016). We fit ridge for each modality, eye plus ECG, and all three sensors on the same ten repeats. Scaling and penalty selection used three learner-grouped inner folds. The single-modality baseline selected the lowest inner mean squared error within each outer training set.
+
+R-017 Spearman correlations were −0.216 (eye), −0.292 (ECG), +0.053 (EEG), −0.327 (eye plus ECG), −0.111 (all sensors), and −0.066 (selected single-modality procedure). EEG minus eye was +0.269 (90% paired learner-bootstrap CI [0.088, 0.462]). EEG minus eye plus ECG was +0.380 (90% CI [0.212, 0.550]). Neither interval fit inside ±0.10. All sensors minus the selected single-modality procedure was −0.044 (95% CI [−0.177, +0.073]), leaving the direction of a fusion effect uncertain.
+
+The R-017 comparisons are exploratory because the physiology features came from recovered diagnostic executions. Bootstrap intervals resample learners with fixed held-out predictions. H2, H3 and H4 remain open.
+
+## 9. Discussion
+
+### 9.1 Interpretation and contributions
+
+The strongest completed evidence is the exploratory eye condition contrast. It demonstrates that the implemented event pipeline can recover systematic behavioural differences in the released recordings. Predictive performance is more modest: the corrected ridge estimate is small and its learner-bootstrap interval includes zero (R-013). A condition effect should therefore not be equated with reliable individual score prediction.
+
+The project contributes an inspectable chain from file-level assumptions to exclusions, feature tables, frozen folds and registered predictions. The implementation review adds a concrete lesson: a preregistered plan and a passing software test suite do not by themselves establish that an analysis implements the plan. The observed statistic, null procedure and baseline definition must also agree.
+
+### 9.2 Limitations and alternative explanations
+
+The prediction sample comprises only 25 learners (R-011/R-012), so its 120 rows are not independent participants. Resampling learners respects that clustering, but the bootstrap operates on existing out-of-fold predictions rather than retraining the entire model for each resample. Its interval should not be described as capturing every source of model-training uncertainty.
+
+Quality and calibration remain important. Screen resolution and condition assignment are inferred; a constant pixel-to-degree conversion approximates the viewing geometry. The released gaze appears already interpolated, while pupil supplies the dropout information used for prediction exclusions. Missingness can influence both selection and the `eye_invalid_frac` predictor, providing a non-cognitive explanation for part of any association.
+
+Quiz outcomes also constrain interpretation. Video 5 has 38.7% of quiz learners scoring at least 90% (R-006), limiting variability near the top of the scale. Scores are standardized within video on the target table before prediction-sample filtering. This is a cohort-relative task, not a demonstrated deployment procedure for a new video whose score distribution is unknown. Memory-item scores measure recall performance and cannot isolate learning gain from prior knowledge or other learner differences.
+
+The original models use a limited hand-crafted representation. The random forest's larger point estimate is exploratory and unpermuted; choosing it as the winner after inspection would require a separate justified analysis. Neither the initial prediction output nor the planned correction establishes causality, suitability for student assessment, or generalization beyond this dataset.
+
+### 9.3 Development challenges
+
+Misleading filenames, smoothed derivative channels, inconsistent join-key formats and the distinction between gaze validity and pupil dropout required explicit inspection. These issues could produce plausible but incorrect outputs without raising a software exception. Environmental constraints also separated local editing, Colab execution and CI testing. Preserving failed runs and logging decisions made those problems visible rather than hiding them in a final notebook.
+
+## 10. Conclusion and Future Work
+
+We implemented and evaluated the eye-tracking portion of a broader multimodal learning-prediction project. Registered exploratory validation shows a clear condition contrast in eye events. The corrected unseen-learner ridge analysis yields a small, uncertain association (R-013). The matched Experiment 2 comparison did not establish equivalence or a fusion benefit (R-017). The work supports a reproducible processing and evaluation contribution, not a claim that eye tracking replaces EEG or that multimodal fusion improves learning prediction.
+
+A fresh registered ECG detector validation remains a follow-up. R-015 documents the recovered-table audit. Subsequent work should obtain matched eye and physiological features within the same experiment, compare individual and training-fold ISC representations, and evaluate fusion on identical observations. EEG cleaning sensitivity and the deep-learning track require actual experiments with encoders retrained inside outer folds. Larger and independent learner cohorts would be needed to assess stability and practical usefulness. Objectives without results remain incomplete rather than being interpreted as negative findings.
+
+## 11. References
+
+[1] J. Madsen, N. Kuppa, and L. C. Parra, “The Brain, Body, and Behavior Dataset (BBBD): Multimodal Recordings during Educational Videos,” Scientific Data, vol. 13, article 920, 2026. https://doi.org/10.1038/s41597-026-07215-1
+
+[2] S. S. Cohen et al., “Neural engagement with online educational videos predicts learning performance for individual students,” Neurobiology of Learning and Memory, vol. 155, pp. 60–64, 2018. https://doi.org/10.1016/j.nlm.2018.06.011
+
+[3] J. Madsen, S. U. Júlio, P. J. Gucik, R. Steinberg, and L. C. Parra, “Synchronized eye movements predict test scores in online video education,” Proceedings of the National Academy of Sciences, vol. 118, no. 5, e2016980118, 2021. https://doi.org/10.1073/pnas.2016980118
+
+[4] J. Madsen and L. C. Parra, “Cognitive processing of a common stimulus synchronizes brains, hearts, and eyes,” PNAS Nexus, vol. 1, no. 1, pgac020, 2022. https://doi.org/10.1093/pnasnexus/pgac020
+
+[5] V. J. Lawhern et al., “EEGNet: A compact convolutional neural network for EEG-based brain–computer interfaces,” Journal of Neural Engineering, vol. 15, no. 5, 056013, 2018. https://doi.org/10.1088/1741-2552/aace8c
+
+[6] G. Varoquaux, “Cross-validation failure: Small sample sizes lead to large error bars,” NeuroImage, vol. 180, pp. 68–77, 2018. https://doi.org/10.1016/j.neuroimage.2017.06.061
+
+[7] D. Makowski et al., “NeuroKit2: A Python toolbox for neurophysiological signal processing,” Behavior Research Methods, vol. 53, pp. 1689–1696, 2021. https://doi.org/10.3758/s13428-020-01516-y
+
+[8] A. Gramfort et al., “MEG and EEG data analysis with MNE-Python,” Frontiers in Neuroscience, vol. 7, article 267, 2013. https://doi.org/10.3389/fnins.2013.00267
+
+[9] J. Madsen, N. Kuppa, and L. Parra, “The Brain, Body, and Behavior Dataset (BBBD): Multimodal Recordings during Educational Videos,” Zenodo, dataset record 19241964. Accessed 13 November 2026. https://doi.org/10.5281/zenodo.19241964
+
+[10] F. Pedregosa et al., “Scikit-learn: Machine Learning in Python,” Journal of Machine Learning Research, vol. 12, pp. 2825–2830, 2011. https://www.jmlr.org/papers/v12/pedregosa11a.html
+
+## 12. Appendix
+
+### 12.1 Evidence map
+
+| Evidence | Repository artifact |
+| --- | --- |
+| R-004 validation and event table | `results/R-004_eye_rq0_exp1/` |
+| R-006 quiz target table | `results/R-006_targets_exp1/` |
+| R-010 features and exclusions | `results/R-010_eye_features_exp1/` |
+| R-011 archived splits | `results/R-011_folds_exp1/folds.json` |
+| Canonical frozen splits | `results/folds.json` |
+| R-012 metrics and predictions | `results/R-012_classical_eye_exp1/` |
+| Post-result correction disclosure | `docs/deviations.md`, DV-02; `docs/decision_log.md`, D-31 |
+
+### 12.2 Example recorded output
+
+The R-012 saved ridge summary contains `spearman = 0.14925857830698283`, `ci_low = -0.10400707744998657`, `ci_high = 0.4107350892141163`, `r2 = -0.07341205029723996`, and `mae = 0.764331342309887`. These are saved outputs, not a newly executed analysis. The permutation mismatch and incomplete multiplicity assessment are described in Section 8.3.
+
+### 12.3 Execution and presentation evidence
+
+For the correction, download the current `85_statistics.ipynb` as a raw GitHub file and upload it into Colab rather than relying on a cached GitHub notebook view. Run its setup tests, authorize the new Drive backup folder, and retain the completed output bundle and executed notebook. Do not change frozen folds or thresholds in response to a result. A checkpoint marked in progress is not a final result.
+
+The presentation can demonstrate the saved result table, the source feature definitions and the frozen-fold checks without rerunning the entire permutation procedure live. Any demonstration should clearly distinguish a displayed saved result from a fresh execution. Before submission, the team must package the registered R-013 artifacts and incorporate any newly registered physiology evidence, and save the code outputs required by the course.

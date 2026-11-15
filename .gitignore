@@ -46,3 +46,14 @@ Thumbs.db
 !results/**/*.csv
 !results/**/*.png
 !results/**/*.svg
+
+# LaTeX build artefacts (slides/slides.pdf is kept: it is a deliverable)
+*.aux
+*.fdb_latexmk
+*.fls
+*.nav
+*.snm
+*.synctex.gz
+*.toc
+slides/*.log
+slides/*.out

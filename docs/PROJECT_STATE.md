@@ -1,200 +1,37 @@
-# Project state — read this first
+# Project state — 15 November 2026
 
-**Canonical status of `bbbd_mml`. Updated 13 Nov 2026.** If you are an assistant picking
-this project up cold, read this file, then `README.md`, then `docs/decision_log.md`.
-Everything here is checkable against the repo; nothing is from memory.
+**Submission: Tuesday, 17 November 2026 (latest date supplied by Priyanka). Presentation: Wednesday, 18 November per the existing course notes.** The original faculty brief and D-08 record Monday, 16 November EOD. Keep that historical record and confirm the current portal deadline if there is any doubt.
 
-**Submission Mon 16 Nov 2026. Presentation Wed 18 Nov.**
+DATA404 Multimodal Machine Learning, Vidyashilp University, Dr. Minati Rath. Priyanka Bhatt and Tanmayee K M. Priyanka reported running the experiments so far. The project asks whether eye tracking and ECG can match EEG for held-out learners' quiz performance, and whether fusion improves prediction.
 
----
+## Evidence available locally
 
-## 1. One-paragraph summary
+The registry contains R-001 through R-017. Read the run summaries and inference log before quoting results.
 
-A DATA404 course project predicting learning from educational videos using the public BBBD
-multimodal dataset (EEG, ECG, eye tracking, respiration + quizzes). The eye-tracking track
-for Experiment 1 is complete, validated and frozen under a tagged preregistration, and has
-produced its headline result (R-012, below). The EEG/ECG/respiration track for Experiments
-2–5 has working code but **no registered results yet**. The deep-learning track (RQ4) has
-not been started. Report, slides and figures have not been started.
-
----
-
-## 2. Hard facts, verifiable from the repo
-
-| | |
+| Run | Evidence and interpretation |
 | --- | --- |
-| Preregistration | **Tagged `prereg-v1`**, on origin, commit `1293a1e`, 9 Nov 2026 |
-| Registered runs | **R-001 … R-012** in `docs/run_registry.csv` |
-| Decision rows | **31** (D-00 … D-30), **25 still `Proposed`** with no initials |
-| Inference rows | **3** (pre-repo 14 Oct, R-004, R-012) |
-| Deviations | 1 (DV-01, resolved) |
-| Notebooks | **6 of 18 planned**: `00`, `05`, `06`, `10`, `50`, `60` |
-| Open PRs | **#1**, `b/exp2-physiology` → `main` |
-| CI | GitHub Actions: `pytest` + a notebook-parse check, on push to `main` and every PR |
+| R-004 | Exploratory Experiment 1 eye validation. Inferred attend → distract saccade rates 138.0 → 93.2/min and blinks 1.25 → 2.90/min. The run predates the freeze. |
+| R-012 | Historical eye-only result. DV-02 records mismatched permutation repeats, inner tuning and R² baseline description. Use R-013 for the corrected analysis. |
+| R-013 | Eye-only, corrected nested ridge. ρ +0.108, 95% learner-bootstrap CI [−0.126, +0.354], raw permutation p = .032, conventional R² −.031, training-mean skill +.027. Exploratory post-result correction. Across-modality Holm pending. |
+| R-014 | Experiment 2 attentive eye extraction. 155 rows, 5 pupil-quality exclusions. Uses the D-26 screen scale as an assumption. |
+| R-015 | Retrospective ECG recovery audit. 140 eligible, 15 unevaluable processing errors, zero below 80% recall. All evaluable meet the F1 criterion. The detector was not rerun. |
+| R-016 | Recovered EEG audit and common Experiment 2 cohort. 139 attentive EEG rows pass QC. The common cohort has 125 learner–video rows, 26 learners, five videos. Ten repeats of five learner-grouped outer folds saved in its run directory. |
+| R-017 | Exploratory matched nested ridge on R-016. Eye −.216, ECG −.292, EEG +.053, eye+ECG −.327, all sensors −.111 and training-selected single modality −.066 in Spearman ρ. |
 
-Verify any of this with:
+R-017 paired differences: EEG minus eye +.269 (90% CI [.088, .462]); EEG minus eye+ECG +.380 (90% CI [.212, .550]); all sensors minus training-selected single modality −.044 (95% CI [−.177, +.073]). Neither equivalence interval fits wholly inside ±.10. The eye interval overlaps the margin, so this does not establish a difference larger than the margin. EEG's absolute correlation is weak. Fusion benefit remains uncertain. Intervals resample learners with fixed predictions, and there was no permutation test in R-017.
 
-```bash
-git tag -l; tail -3 docs/run_registry.csv
-grep -c '^| D-' docs/decision_log.md
-grep -c '^| D-[0-9]* | Proposed' docs/decision_log.md
-ls notebooks/
-```
+## Data, provenance and guardrails
 
----
+- Experiment 2 raw ZIP and both recovery tarballs are listed in `dataset_inventory.md`. Copies were supplied in Priyanka's Downloads and shown in Drive under `MyDrive/MML_BBBD/`. Verify availability in a new environment. Keep raw files outside Git.
+- Experiment 2 sidecars identify session 01 as attentive and 02 as distracted. Phenotype matches the ZIP byte for byte, and memory item totals reproduce its scores. Use the paper for quiz timing because the release README conflicts with itself.
+- The recovered physiology tables lack original registered execution records. R-015/R-016 audit the saved tables. The EEG source matches de3b603 apart from line endings. This is not a raw rerun or proof of exact execution provenance. R-014–R-017 include local source snapshots where applicable because the base Git hash is not sufficient to reproduce dirty runs.
+- Preserve the `prereg-v1` tag and `results/folds.json` (Experiment 1). Load Experiment 2 folds from `results/R-016_exp2_common_cohort/folds_exp2.json` with `cv.load_folds`. Keep identical rows and splits for paired comparisons.
+- Log choices before use as Proposed and disclose deviations before dependent reporting. Keep numerical thresholds fixed. Register all scientific outputs via runlog. Preserve historical rows and use a new run ID for a new result. Keep learner groups intact in every evaluation and train-time reference.
+- GitHub Actions is the project runtime test gate. Colab is available. Some local packages were sufficient for R-015–R-017, but this does not restore the full Windows test environment.
 
-## 3. Results so far
+## Deliverables and next decision
 
-### R-004 — RQ0 / H0b, Exp 1 eye (Exploratory)
-
-Attend vs distract, 27 learners, 263 recordings. Saccades 138.0 → 93.2 /min, t(26) = 6.18,
-p = 1.6e-06; blinks 1.25 → 2.90, t = −3.04, p = .0054; median fixation 245 → 332 ms.
-
-**Why it is trustworthy:** the blink figures reproduce a 14 Oct pre-repo check *exactly*,
-and blinks come from pupil, so they are independent of the px/deg calibration — the one
-free parameter. Saccade rates also sit close to the authors' own derivative counts
-(136 → 89).
-
-**Marked Exploratory** because it ran two days before the tag existed. That status cannot
-be recovered.
-
-### R-012 — RQ1 / H1a and RQ2 / H2 (individual half), Exp 1 eye (**Confirmatory**)
-
-25 learners, 120 rows, 8 individual-only features, target `quiz_z`.
-
-| Model | ρ | 95% CI | R² | p (perm) | Status |
-| --- | --- | --- | --- | --- | --- |
-| **ridge** (primary) | **+0.149** | **[−0.104, +0.411]** | **−0.073** | **.026** | confirmatory |
-| rf | +0.231 | [+0.023, +0.415] | +0.005 | — | exploratory |
-| mlp | +0.037 | [−0.252, +0.361] | −0.590 | — | exploratory |
-
-**H1a is supported on the preregistered criterion** (permutation p < .05, Holm-corrected).
-**But read it carefully:**
-
-- **The permutation test and the bootstrap CI disagree, and both are right.** The
-  permutation asks whether ρ beats a shuffled-target null — it does. The bootstrap asks how
-  precisely ρ is known from 25 learners — barely. **Never report the p-value without the
-  CI.**
-- **R² is negative**: the model predicts score magnitude *worse* than the training mean.
-  The signal is ordinal only.
-- **Per-repeat ρ ranged +0.006 to +0.305.** A single 5-fold split could have shown nothing.
-  This is why 10 repeats were preregistered.
-- **RF scored higher than ridge but is exploratory and unpermuted.** Per preregistration
-  §4.5 this is *not* a model comparison and must not be presented as one.
-- Leave-one-video-out ridge gave ρ = +0.374, but it holds out a *video* and keeps the same
-  learners in train and test (D-28). **Not comparable. Always name the scheme.**
-
-Full detail and caveats: `docs/inference_log.md`.
-
----
-
-## 4. What is done, and what is not
-
-**Done and frozen**
-- Exp 1 eye: preprocessing, RQ0 validation, targets, exclusions, folds, features
-- Preregistration tagged; margins fixed; §0 disclosure recorded
-- Infrastructure: `runlog` provenance, CI, 12 registered runs
-
-**Code written, never run**
-- `src/bbbd/ecg_batch.py`, `src/bbbd/eeg_batch.py` (+ `batch_runlog.py`) on PR #1. Tests
-  pass. **No Exp 2 results exist** — the data lives on Member B's machine, not in the repo.
-
-**Not started**
-- RQ3 (ICA variant) — optional per D-18
-- RQ4 (deep learning) — notebooks `70`–`73`. **The professor explicitly required a deep
-  learning component (D-05).**
-- `45_rq0_validation`, `80`, `85_statistics`, `88`, `90_figures`
-- Report, slides, figures
-- Experiments 3, 4, 5 (not downloaded; 8.0 / 5.5 / 7.0 GB)
-
-Rough completion: **foundations ~90%, results ~25%, write-up 0%.**
-
----
-
-## 5. Rules that bind any future work
-
-From `README.md`. An assistant working here must follow these.
-
-1. Raw data is never edited.
-2. **Any choice that could change a result goes in `docs/decision_log.md` _before_ use**, as
-   a new `D-xx` row with status `Proposed`. **Never mark a row `Decided`** — the humans
-   agree. Never overwrite a row; add a new one and mark the old `Revisited`.
-3. **Every result goes through `bbbd.runlog`**, which stamps a run ID, git hash, config hash
-   and seed. **A number may appear in the report only if it has a run ID.**
-4. Conclusions go in `docs/inference_log.md` with the run ID. Observation = numbers only;
-   conclusion = one sentence a reviewer could disagree with; name at least one alternative
-   explanation.
-5. **The preregistration is tagged.** Any change to hypotheses, exclusions, metrics, splits
-   or models now requires a row in `docs/deviations.md` *before* reporting results that
-   depend on it. **Do not adjust a threshold because a test failed.**
-6. Citations go in `docs/references.bib` on first use. **Never invent a reference or a
-   dataset fact.** Verified facts go in `docs/dataset_inventory.md`; anything else is marked
-   UNVERIFIED.
-7. Branches `a/<topic>` (Member A) and `b/<topic>` (Member B); pull request to `main`; CI
-   green before merge.
-8. Commit messages name the row or run: `D-31: ...`, `R-013: ...`.
-9. **ISC references and CorrCA weights use training-fold learners only** (D-11). Deep
-   encoders retrained per outer fold.
-
-Also: settings live in `config.yaml`, never hard-coded in notebooks. Data never enters git.
-Logic lives in `src/bbbd/` with a test; notebooks call functions and show results.
-
-**`results/folds.json` is frozen** — 120 rows, 25 learners, 11 schemes. Every model loads it
-with `cv.load_folds`. Rebuilding it is a deviation row.
-
----
-
-## 6. Dataset traps — each cost a wasted run
-
-Full list in `docs/dataset_inventory.md`. The ones that matter most:
-
-- **Gaze `x`/`y` are screen pixels, not degrees**, despite filenames saying
-  `gaze_visualangle`. Convert with px/deg before detecting saccades.
-- **`vdx`/`vdy` are smoothed** — 99.9th percentile 26 deg/s, *below* the 30 deg/s threshold.
-  Thresholding them produced 2.7 saccades/min and 82-second fixations (R-001, wrong).
-  **Suspect any pre-derived channel the same way.**
-- **Two raw files per recording** (`_gaze_visualangle_`, `_pupil_`); a naive glob gets both
-  and the second has no `x` column.
-- **`derivatives/` is inside the experiment folder and has no JSON sidecars.** Filter
-  `"derivatives" not in f.parts`.
-- **`ses` is the condition; `task` is the video.** Guessing the other way round runs the
-  attention contrast across videos and yields plausible nonsense.
-- **Join keys differ**: eye files say `task-stim01`, the quiz table says integer `1`.
-  Convert, then *assert* the key sets intersect.
-- **Exp 1 gaze reads 0.00 invalid** (already interpolated); pupil carries the real dropout.
-  The exclusion rule is measured on **pupil** (D-30).
-- Screen: 27″ at ~60 cm (sourced); **resolution 1920×1080 is inferred** (D-26) giving
-  33.64 px/deg.
-- `ses-01 = attend` is **inferred** from blink rates (D-29), not stated in any source.
-
----
-
-## 7. Environment
-
-- **Member B's Ubuntu workstation** (i9-14900K, 32 GB, RTX 4000 Ada, Python 3.12.3) is the
-  best environment and holds the Exp 2 data.
-- **Colab** works. Two traps: it **serves stale notebooks from GitHub** (use
-  `https://raw.githubusercontent.com/pbhatt0022/bbbd_mml/main/notebooks/<name>.ipynb` and
-  File → Upload notebook), and a PEP 660 editable install is invisible to a running kernel,
-  so setup cells add `src/` to `sys.path` directly.
-- **Windows is unusable**: Smart App Control blocks newly-downloaded unsigned binaries, so
-  pandas, pyarrow and neurokit2 fail to import in any fresh environment. Local `pytest`
-  does not run; **CI is the only working test gate.** Do not disable Smart App Control —
-  it cannot be re-enabled without reinstalling Windows.
-- Pushing from Colab needs a fine-grained token in Colab Secrets named `GH_TOKEN`.
-
----
-
-## 8. Highest-value next actions
-
-1. **Write the report and figures.** Three days left and nothing is written. `85_statistics`
-   and `90_figures` do not exist. You cannot write results you have not generated, but you
-   now have R-004 and R-012 to write about.
-2. **Run `ecg_batch.py`** on Member B's machine — `ecg.match_beats` yields H0a, a
-   preregistered confirmatory result, from one run.
-3. **Decide and record the scope cut.** RQ3 and RQ4 are almost certainly unreachable. Record
-   it as a decision row *now* rather than discovering it on Sunday, and tell the professor,
-   since D-05 asked for deep learning.
-4. **Initial the 25 Proposed decision rows.** D-24 … D-30 have been reviewed by nobody but
-   their author.
-5. Merge PR #1 once reviewed.
+- Draft report: `docs/report_draft.md` is the source; `docs/report_draft.docx` is built from it by `python docs/build_report_docx.py` (styles come from `docs/report_template.docx`, `--check` diffs without writing). Edit the Markdown and rebuild — never hand-edit the `.docx`, it will be overwritten. R-013 and R-017 are included. Verify the final Word layout and result tables before submission.
+- Slides: draft deck at `slides/slides.tex`, LaTeX Beamer on the MU theme with a local `workplace=vsu` patch that drops the Masaryk University artwork. 18 slides built from R-004 validation, R-013 baseline and R-017 matched results; every figure and number carries its run ID. Build with `latexmk -pdf slides.tex` from `slides/`. Not yet reviewed by either member and not rehearsed. Still outstanding: demonstrate saved outputs and include executed notebooks with submission code.
+- Deep learning: no registered BBBD result. Proposed next scope is a small eye-only attention CNN on Experiment 2, with whole learners held out, recording-level balanced accuracy and a simple baseline on the same recordings. This is a possible partial response to the faculty requirement, not the original RQ4 fusion or quiz task. No scope decision, runner, or launch cell exists yet. Specify split, window/QC choices and reporting in a new Proposed decision and deviation before fitting. Prioritize the submission package if runtime or validation is uncertain.
+- GitHub: PR #3 was verified merged into main (README, credits, comments). PRs #1 and #2 were still active at last check. R-013–R-017, the report and newer code are present locally; do not assume they have been published. Check current refs before any Git operation. Avoid indiscriminate staging, especially the auxiliary .submission-work folder and data.

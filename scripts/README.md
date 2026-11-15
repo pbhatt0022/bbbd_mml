@@ -22,3 +22,13 @@ Keep the completed ZIP and notebook outputs. Do not automatically push a Colab r
 over another member's new runs: check for run-ID collisions during integration. The
 output reports raw eye p with its CI; across-modality Holm and human agreement on
 D-31 remain outstanding. No confirmatory support claim is generated automatically.
+
+## Experiment 2 run entry points
+
+R-014 used notebook 51. R-015–R-017 use the following modules from an installed checkout. These commands generate new registered runs. Use a separate scratch output area if validating existing artifacts.
+
+- `python -m bbbd.exp2_ecg_recovery_audit <recovery.tar.gz>` for the saved ECG audit.
+- `python -m bbbd.exp2_cohort <recovery.tar.gz> <experiment2.zip>` for EEG QC and cohort construction.
+- `python -m bbbd.exp2_matched_ridge` for the matched comparison, reading the existing R-016 cohort and split file.
+
+See docs/PROJECT_STATE.md and run provenance snapshots for interpretation and input details.

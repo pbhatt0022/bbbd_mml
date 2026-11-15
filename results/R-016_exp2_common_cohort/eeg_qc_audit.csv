@@ -1,0 +1,140 @@
+run_id,recording,subject,session,status,original_eeg_samples,aligned_samples,trimmed_samples,sfreq,n_eeg,n_eog,bad_channels,bad_channel_frac,bad_time_frac,bad_segments_1s,eye_artifact,exclude_bad_channels,exclude_bad_time,exclude,audited_exclude
+R-016,sub-01_ses-01_task-stim01,sub-01,ses-01,processed,23680,23651,29,128.0,64,6,"[""P4"", ""P6""]",0.03125,0.0,[],eog_regression,False,False,False,False
+R-016,sub-01_ses-01_task-stim02,sub-01,ses-01,processed,18304,18295,9,128.0,64,6,"[""P4""]",0.015625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-01_ses-01_task-stim03,sub-01,ses-01,processed,49792,49761,31,128.0,64,6,"[""P4""]",0.015625,0.0051546391752577,"[82, 315]",eog_regression,False,False,False,False
+R-016,sub-01_ses-01_task-stim04,sub-01,ses-01,processed,47360,47236,124,128.0,64,6,"[""P4""]",0.015625,0.010840108401084,"[217, 244, 245, 246]",eog_regression,False,False,False,False
+R-016,sub-01_ses-01_task-stim05,sub-01,ses-01,processed,19328,19221,107,128.0,64,6,"[""P4""]",0.015625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-02_ses-01_task-stim01,sub-02,ses-01,processed,23680,23651,29,128.0,64,6,"[""Fp2""]",0.015625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-02_ses-01_task-stim02,sub-02,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-02_ses-01_task-stim03,sub-02,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0025773195876288,[292],eog_regression,False,False,False,False
+R-016,sub-02_ses-01_task-stim04,sub-02,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-02_ses-01_task-stim05,sub-02,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-03_ses-01_task-stim01,sub-03,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-03_ses-01_task-stim02,sub-03,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-03_ses-01_task-stim03,sub-03,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-03_ses-01_task-stim04,sub-03,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-03_ses-01_task-stim05,sub-03,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-05_ses-01_task-stim01,sub-05,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-05_ses-01_task-stim02,sub-05,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0070422535211267,[83],eog_regression,False,False,False,False
+R-016,sub-05_ses-01_task-stim03,sub-05,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0025773195876288,[288],eog_regression,False,False,False,False
+R-016,sub-05_ses-01_task-stim04,sub-05,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-05_ses-01_task-stim05,sub-05,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-06_ses-01_task-stim01,sub-06,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-06_ses-01_task-stim02,sub-06,ses-01,processed,18304,18295,9,128.0,64,6,"[""Fpz""]",0.015625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-06_ses-01_task-stim03,sub-06,ses-01,processed,49792,49761,31,128.0,64,6,"[""Fp1"", ""Fpz"", ""Fp2""]",0.046875,0.0025773195876288,[331],eog_regression,False,False,False,False
+R-016,sub-06_ses-01_task-stim04,sub-06,ses-01,processed,47360,47236,124,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2"", ""AF8""]",0.078125,0.002710027100271,[42],eog_regression,False,False,False,False
+R-016,sub-06_ses-01_task-stim05,sub-06,ses-01,processed,19328,19221,107,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2""]",0.0625,0.0933333333333333,"[29, 49, 50, 60, 61, 72, 87, 96, 97, 104, 112, 127, 141, 142]",eog_regression,False,False,False,False
+R-016,sub-07_ses-01_task-stim01,sub-07,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0054347826086956,[97],eog_regression,False,False,False,False
+R-016,sub-07_ses-01_task-stim02,sub-07,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-07_ses-01_task-stim03,sub-07,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0051546391752577,"[3, 279]",eog_regression,False,False,False,False
+R-016,sub-07_ses-01_task-stim04,sub-07,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.008130081300813,"[96, 311, 334]",eog_regression,False,False,False,False
+R-016,sub-07_ses-01_task-stim05,sub-07,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-08_ses-01_task-stim01,sub-08,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-08_ses-01_task-stim02,sub-08,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0140845070422535,"[13, 30]",eog_regression,False,False,False,False
+R-016,sub-08_ses-01_task-stim03,sub-08,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0077319587628865,"[16, 214, 215]",eog_regression,False,False,False,False
+R-016,sub-08_ses-01_task-stim04,sub-08,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.008130081300813,"[15, 22, 23]",eog_regression,False,False,False,False
+R-016,sub-08_ses-01_task-stim05,sub-08,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0133333333333333,"[100, 101]",eog_regression,False,False,False,False
+R-016,sub-09_ses-01_task-stim01,sub-09,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-09_ses-01_task-stim02,sub-09,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-09_ses-01_task-stim03,sub-09,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-09_ses-01_task-stim04,sub-09,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.002710027100271,[160],eog_regression,False,False,False,False
+R-016,sub-09_ses-01_task-stim05,sub-09,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-12_ses-01_task-stim01,sub-12,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-12_ses-01_task-stim02,sub-12,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-12_ses-01_task-stim03,sub-12,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-12_ses-01_task-stim04,sub-12,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-12_ses-01_task-stim05,sub-12,ses-01,processed,19328,19221,107,128.0,64,6,"[""PO3"", ""O1"", ""Oz""]",0.046875,0.0,[],eog_regression,False,False,False,False
+R-016,sub-13_ses-01_task-stim01,sub-13,ses-01,processed,23680,23651,29,128.0,64,6,"[""Fp2""]",0.015625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-13_ses-01_task-stim02,sub-13,ses-01,processed,18304,18295,9,128.0,64,6,"[""Fp2""]",0.015625,0.0070422535211267,[52],eog_regression,False,False,False,False
+R-016,sub-13_ses-01_task-stim03,sub-13,ses-01,processed,49792,49761,31,128.0,64,6,"[""Fp1"", ""Fpz"", ""Fp2""]",0.046875,0.0,[],eog_regression,False,False,False,False
+R-016,sub-13_ses-01_task-stim04,sub-13,ses-01,processed,47360,47236,124,128.0,64,6,"[""Fp2""]",0.015625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-13_ses-01_task-stim05,sub-13,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-14_ses-01_task-stim01,sub-14,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-14_ses-01_task-stim02,sub-14,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-14_ses-01_task-stim03,sub-14,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-14_ses-01_task-stim04,sub-14,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-14_ses-01_task-stim05,sub-14,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-15_ses-01_task-stim01,sub-15,ses-01,processed,23680,23651,29,128.0,64,6,"[""Fp1"", ""Fp2""]",0.03125,0.0,[],eog_regression,False,False,False,False
+R-016,sub-15_ses-01_task-stim02,sub-15,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-15_ses-01_task-stim03,sub-15,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0025773195876288,[265],eog_regression,False,False,False,False
+R-016,sub-15_ses-01_task-stim04,sub-15,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.008130081300813,"[131, 133, 182]",eog_regression,False,False,False,False
+R-016,sub-15_ses-01_task-stim05,sub-15,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0066666666666666,[47],eog_regression,False,False,False,False
+R-016,sub-16_ses-01_task-stim01,sub-16,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-16_ses-01_task-stim02,sub-16,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-16_ses-01_task-stim03,sub-16,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-16_ses-01_task-stim04,sub-16,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-16_ses-01_task-stim05,sub-16,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-18_ses-01_task-stim01,sub-18,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-18_ses-01_task-stim02,sub-18,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0140845070422535,"[18, 24]",eog_regression,False,False,False,False
+R-016,sub-18_ses-01_task-stim03,sub-18,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0025773195876288,[317],eog_regression,False,False,False,False
+R-016,sub-18_ses-01_task-stim04,sub-18,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.005420054200542,"[143, 144]",eog_regression,False,False,False,False
+R-016,sub-18_ses-01_task-stim05,sub-18,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-19_ses-01_task-stim01,sub-19,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0108695652173913,"[94, 96]",eog_regression,False,False,False,False
+R-016,sub-19_ses-01_task-stim02,sub-19,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-19_ses-01_task-stim03,sub-19,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-19_ses-01_task-stim04,sub-19,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-19_ses-01_task-stim05,sub-19,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0133333333333333,"[44, 149]",eog_regression,False,False,False,False
+R-016,sub-20_ses-01_task-stim01,sub-20,ses-01,processed,23680,23651,29,128.0,64,6,"[""Fp1"", ""Fp2""]",0.03125,0.0978260869565217,"[4, 11, 33, 37, 55, 67, 81, 88, 89, 98, 105, 113, 124, 146, 150, 152, 162, 172]",eog_regression,False,False,False,False
+R-016,sub-20_ses-01_task-stim02,sub-20,ses-01,processed,18304,18295,9,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2"", ""AF8""]",0.078125,0.0,[],eog_regression,False,False,False,False
+R-016,sub-20_ses-01_task-stim03,sub-20,ses-01,processed,49792,49761,31,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2"", ""AF8"", ""FC4""]",0.09375,0.0,[],eog_regression,False,False,False,False
+R-016,sub-20_ses-01_task-stim04,sub-20,ses-01,processed,47360,47236,124,128.0,64,6,"[""Fp1"", ""AF7"", ""Fp2""]",0.046875,0.002710027100271,[92],eog_regression,False,False,False,False
+R-016,sub-20_ses-01_task-stim05,sub-20,ses-01,processed,19328,19221,107,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2"", ""AF8""]",0.078125,0.0,[],eog_regression,False,False,False,False
+R-016,sub-21_ses-01_task-stim01,sub-21,ses-01,processed,23680,23651,29,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2"", ""AF8""]",0.078125,0.0,[],eog_regression,False,False,False,False
+R-016,sub-21_ses-01_task-stim02,sub-21,ses-01,processed,18304,18295,9,128.0,64,6,"[""Fp1"", ""AF7"", ""AF3"", ""Fpz"", ""Fp2"", ""AF8"", ""AF4"", ""AFz""]",0.125,0.0,[],eog_regression,False,False,False,False
+R-016,sub-21_ses-01_task-stim03,sub-21,ses-01,processed,49792,49761,31,128.0,64,6,"[""Fp1"", ""AF7"", ""P7"", ""Fpz"", ""Fp2"", ""AF8""]",0.09375,0.0,[],eog_regression,False,False,False,False
+R-016,sub-21_ses-01_task-stim04,sub-21,ses-01,processed,47360,47236,124,128.0,64,6,"[""Fp1"", ""AF7"", ""AF3"", ""Fpz"", ""Fp2"", ""AF8"", ""AF4""]",0.109375,0.0,[],eog_regression,False,False,False,False
+R-016,sub-21_ses-01_task-stim05,sub-21,ses-01,processed,19328,19221,107,128.0,64,6,"[""Fp1"", ""AF7"", ""F7"", ""Fpz"", ""Fp2"", ""AF8""]",0.09375,0.0,[],eog_regression,False,False,False,False
+R-016,sub-22_ses-01_task-stim01,sub-22,ses-01,processed,23680,23651,29,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2"", ""AF8""]",0.078125,0.0,[],eog_regression,False,False,False,False
+R-016,sub-22_ses-01_task-stim02,sub-22,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0070422535211267,[127],eog_regression,False,False,False,False
+R-016,sub-22_ses-01_task-stim03,sub-22,ses-01,processed,49792,49761,31,128.0,64,6,"[""Fp1"", ""AF7"", ""F1"", ""Fpz"", ""Fp2"", ""AF8"", ""AF4""]",0.109375,0.0,[],eog_regression,False,False,False,False
+R-016,sub-22_ses-01_task-stim04,sub-22,ses-01,processed,47360,47236,124,128.0,64,6,"[""Fp1"", ""AF7"", ""F1"", ""PO3"", ""Fpz"", ""Fp2"", ""AF8""]",0.109375,0.002710027100271,[179],eog_regression,False,False,False,False
+R-016,sub-22_ses-01_task-stim05,sub-22,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0066666666666666,[36],eog_regression,False,False,False,False
+R-016,sub-23_ses-01_task-stim01,sub-23,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-23_ses-01_task-stim02,sub-23,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-23_ses-01_task-stim03,sub-23,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-23_ses-01_task-stim05,sub-23,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-24_ses-01_task-stim01,sub-24,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-24_ses-01_task-stim02,sub-24,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-24_ses-01_task-stim03,sub-24,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-24_ses-01_task-stim04,sub-24,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-24_ses-01_task-stim05,sub-24,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-25_ses-01_task-stim01,sub-25,ses-01,processed,23680,23651,29,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2"", ""AF8"", ""AF4""]",0.09375,0.0,[],eog_regression,False,False,False,False
+R-016,sub-25_ses-01_task-stim02,sub-25,ses-01,processed,18304,18295,9,128.0,64,6,"[""Fp1"", ""AF7"", ""AF3"", ""F7"", ""Fpz"", ""Fp2"", ""AF8"", ""AF4"", ""AFz""]",0.140625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-25_ses-01_task-stim03,sub-25,ses-01,processed,49792,49761,31,128.0,64,6,"[""Fp1"", ""AF7"", ""AF3"", ""F7"", ""Fpz"", ""Fp2"", ""AF8"", ""AF4"", ""AFz""]",0.140625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-25_ses-01_task-stim04,sub-25,ses-01,processed,47360,47236,124,128.0,64,6,"[""Fp1"", ""AF7"", ""AF3"", ""F7"", ""Fpz"", ""Fp2"", ""AF8"", ""AF4"", ""AFz""]",0.140625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-25_ses-01_task-stim05,sub-25,ses-01,processed,19328,19221,107,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2"", ""AF8""]",0.078125,0.0,[],eog_regression,False,False,False,False
+R-016,sub-27_ses-01_task-stim01,sub-27,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-27_ses-01_task-stim02,sub-27,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-27_ses-01_task-stim03,sub-27,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0025773195876288,[48],eog_regression,False,False,False,False
+R-016,sub-27_ses-01_task-stim04,sub-27,ses-01,processed,47360,47236,124,128.0,64,6,"[""FC5"", ""Fpz""]",0.03125,0.010840108401084,"[51, 52, 53, 54]",eog_regression,False,False,False,False
+R-016,sub-27_ses-01_task-stim05,sub-27,ses-01,processed,19328,19221,107,128.0,64,6,"[""FC5""]",0.015625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-29_ses-01_task-stim01,sub-29,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0054347826086956,[109],eog_regression,False,False,False,False
+R-016,sub-29_ses-01_task-stim02,sub-29,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-29_ses-01_task-stim03,sub-29,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-29_ses-01_task-stim04,sub-29,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.005420054200542,"[36, 225]",eog_regression,False,False,False,False
+R-016,sub-29_ses-01_task-stim05,sub-29,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-30_ses-01_task-stim01,sub-30,ses-01,processed,23680,23651,29,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2"", ""AF8"", ""AF4"", ""F6"", ""P6"", ""O2""]",0.140625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-30_ses-01_task-stim02,sub-30,ses-01,processed,18304,18295,9,128.0,64,6,"[""Fp1"", ""AF7"", ""P3"", ""Fpz"", ""Fp2"", ""AF8"", ""P6"", ""O2""]",0.125,0.0,[],eog_regression,False,False,False,False
+R-016,sub-30_ses-01_task-stim03,sub-30,ses-01,processed,49792,49761,31,128.0,64,6,"[""Fp1"", ""AF7"", ""CP1"", ""P3"", ""Fpz"", ""Fp2"", ""AF8"", ""PO4"", ""O2""]",0.140625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-30_ses-01_task-stim04,sub-30,ses-01,processed,47360,47236,124,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2"", ""AF8"", ""P6"", ""O2""]",0.109375,0.0,[],eog_regression,False,False,False,False
+R-016,sub-30_ses-01_task-stim05,sub-30,ses-01,processed,19328,19221,107,128.0,64,6,"[""Fp1"", ""AF7"", ""P3"", ""Fpz"", ""Fp2"", ""AF8"", ""P6"", ""O2""]",0.125,0.0,[],eog_regression,False,False,False,False
+R-016,sub-31_ses-01_task-stim01,sub-31,ses-01,processed,23680,23651,29,128.0,64,6,"[""Fp1"", ""AF7"", ""O1"", ""Fpz"", ""Fp2"", ""AF8""]",0.09375,0.0,[],eog_regression,False,False,False,False
+R-016,sub-31_ses-01_task-stim02,sub-31,ses-01,processed,18304,18295,9,128.0,64,6,"[""Fp1"", ""AF7""]",0.03125,0.028169014084507,"[20, 48, 98, 134]",eog_regression,False,False,False,False
+R-016,sub-31_ses-01_task-stim03,sub-31,ses-01,processed,49792,49761,31,128.0,64,6,"[""Fp1"", ""AF7"", ""O1"", ""Fpz"", ""Fp2"", ""AF8""]",0.09375,0.0025773195876288,[183],eog_regression,False,False,False,False
+R-016,sub-31_ses-01_task-stim04,sub-31,ses-01,processed,47360,47236,124,128.0,64,6,"[""Fp1"", ""AF7"", ""Fpz"", ""Fp2"", ""AF8""]",0.078125,0.018970189701897,"[148, 191, 192, 200, 201, 221, 313]",eog_regression,False,False,False,False
+R-016,sub-31_ses-01_task-stim05,sub-31,ses-01,processed,19328,19221,107,128.0,64,6,"[""Fp1"", ""AF7"", ""Fp2""]",0.046875,0.0133333333333333,"[9, 10]",eog_regression,False,False,False,False
+R-016,sub-32_ses-01_task-stim01,sub-32,ses-01,processed,23680,23651,29,128.0,64,6,"[""Fp1"", ""Fpz"", ""Fp2""]",0.046875,0.0,[],eog_regression,False,False,False,False
+R-016,sub-32_ses-01_task-stim02,sub-32,ses-01,processed,18304,18295,9,128.0,64,6,"[""Fp1"", ""Fpz"", ""Fp2""]",0.046875,0.0,[],eog_regression,False,False,False,False
+R-016,sub-32_ses-01_task-stim03,sub-32,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-32_ses-01_task-stim04,sub-32,ses-01,processed,47360,47236,124,128.0,64,6,"[""Fp1"", ""Fpz"", ""Fp2""]",0.046875,0.0,[],eog_regression,False,False,False,False
+R-016,sub-32_ses-01_task-stim05,sub-32,ses-01,processed,19328,19221,107,128.0,64,6,"[""Fp1"", ""Fpz"", ""Fp2""]",0.046875,0.0,[],eog_regression,False,False,False,False
+R-016,sub-33_ses-01_task-stim01,sub-33,ses-01,processed,23680,23651,29,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-33_ses-01_task-stim02,sub-33,ses-01,processed,18304,18295,9,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-33_ses-01_task-stim03,sub-33,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0051546391752577,"[141, 256]",eog_regression,False,False,False,False
+R-016,sub-33_ses-01_task-stim04,sub-33,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.002710027100271,[207],eog_regression,False,False,False,False
+R-016,sub-33_ses-01_task-stim05,sub-33,ses-01,processed,19328,19221,107,128.0,64,6,"[""Fpz""]",0.015625,0.02,"[78, 94, 134]",eog_regression,False,False,False,False
+R-016,sub-34_ses-01_task-stim01,sub-34,ses-01,processed,23680,23651,29,128.0,64,6,"[""PO3""]",0.015625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-34_ses-01_task-stim02,sub-34,ses-01,processed,18304,18295,9,128.0,64,6,"[""PO3""]",0.015625,0.0,[],eog_regression,False,False,False,False
+R-016,sub-34_ses-01_task-stim03,sub-34,ses-01,processed,49792,49761,31,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-34_ses-01_task-stim04,sub-34,ses-01,processed,47360,47236,124,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False
+R-016,sub-34_ses-01_task-stim05,sub-34,ses-01,processed,19328,19221,107,128.0,64,6,[],0.0,0.0,[],eog_regression,False,False,False,False

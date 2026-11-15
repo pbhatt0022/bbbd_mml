@@ -34,12 +34,16 @@
 @article{cohen2018engagement,
   author  = {Cohen, Samantha S. and Madsen, Jens and Touchan, Gad and Robles, Denise and Lima, Stella F. A. and Henin, Simon and Parra, Lucas C.},
   title   = {Neural Engagement with Online Educational Videos Predicts Learning Performance for Individual Students},
-  journal = {Neurobiology of Learning and Memory}, volume = {155}, pages = {60--64}, year = {2018}
+  journal = {Neurobiology of Learning and Memory}, volume = {155}, pages = {60--64}, year = {2018},
+  doi = {10.1016/j.nlm.2018.06.011},
+  note = {Verified 13 Nov 2026 against published paper at https://par.nsf.gov/servlets/purl/10096199; abstract supports EEG ISC, attention and recall in intentional/incidental learning}
 }
 @article{madsen2021eyes,
   author  = {Madsen, Jens and J{\'u}lio, Sara U. and Gucik, Pawel J. and Steinberg, Richard and Parra, Lucas C.},
   title   = {Synchronized Eye Movements Predict Test Scores in Online Video Education},
-  journal = {Proceedings of the National Academy of Sciences}, volume = {118}, pages = {e2016980118}, year = {2021}
+  journal = {Proceedings of the National Academy of Sciences}, volume = {118}, pages = {e2016980118}, year = {2021},
+  doi = {10.1073/pnas.2016980118},
+  note = {Verified 13 Nov 2026 at https://pmc.ncbi.nlm.nih.gov/articles/PMC7865179/; gaze ISC and quiz performance; published scoring description must not replace the verified BBBD release mapping}
 }
 @article{perez2021heart,
   author  = {P{\'e}rez, Pauline and Madsen, Jens and Banellis, Leah and T{\"u}rker, Ba{\c{s}}ak and Raimondo, Federico and Perlbarg, Vincent and others},
@@ -49,7 +53,9 @@
 @article{madsen2022brainsheartseyes,
   author  = {Madsen, Jens and Parra, Lucas C.},
   title   = {Cognitive Processing of a Common Stimulus Synchronizes Brains, Hearts, and Eyes},
-  journal = {PNAS Nexus}, volume = {1}, pages = {pgac020}, year = {2022}
+  journal = {PNAS Nexus}, volume = {1}, pages = {pgac020}, year = {2022},
+  doi = {10.1093/pnasnexus/pgac020},
+  note = {Verified 13 Nov 2026 at https://pmc.ncbi.nlm.nih.gov/articles/PMC9802497/; abstract and Discussion support shared-stimulus synchrony and modality-specific findings}
 }
 @misc{madsen2026poster,
   author = {Madsen, Jens and Parra, Lucas C.},
@@ -96,7 +102,7 @@
   author  = {Lawhern, Vernon J. and Solon, Amelia J. and Waytowich, Nicholas R. and Gordon, Stephen M. and Hung, Chou P. and Lance, Brent J.},
   title   = {{EEGNet}: A Compact Convolutional Neural Network for {EEG}-Based Brain--Computer Interfaces},
   journal = {Journal of Neural Engineering}, volume = {15}, pages = {056013}, year = {2018},
-  doi     = {10.1088/1741-2552/aace8c}, note = {VERIFY. Architecture of bbbd.models_dl.EEGEncoder}
+  doi     = {10.1088/1741-2552/aace8c}, note = {Verified 13 Nov 2026 against author manuscript https://arxiv.org/abs/1611.08024v4 and linked journal DOI. EEGNet-inspired architecture in bbbd.models_dl; no claim of reproduced BBBD performance}
 }
 @article{parra2019corrca,
   author  = {Parra, Lucas C. and Haufe, Stefan and Dmochowski, Jacek P.},
@@ -119,15 +125,37 @@
 @article{makowski2021neurokit2,
   author  = {Makowski, Dominique and Pham, Tam and Lau, Zen J. and Brammer, Jan C. and Lespinasse, Fran{\c{c}}ois and Pham, Hung and Sch{\"o}lzel, Christopher and Chen, S. H. Annabel},
   title   = {{NeuroKit2}: A {Python} Toolbox for Neurophysiological Signal Processing},
-  journal = {Behavior Research Methods}, volume = {53}, pages = {1689--1696}, year = {2021}
+  journal = {Behavior Research Methods}, volume = {53}, pages = {1689--1696}, year = {2021},
+  doi = {10.3758/s13428-020-01516-y},
+  note = {Verified 13 Nov 2026 against official citation at https://neuropsychology.github.io/NeuroKit/introduction.html}
 }
 @article{gramfort2013mne,
   author  = {Gramfort, Alexandre and Luessi, Martin and Larson, Eric and others},
   title   = {{MEG} and {EEG} Data Analysis with {MNE-Python}},
-  journal = {Frontiers in Neuroscience}, volume = {7}, pages = {267}, year = {2013}, note = {VERIFY}
+  journal = {Frontiers in Neuroscience}, volume = {7}, pages = {267}, year = {2013},
+  doi = {10.3389/fnins.2013.00267}, note = {Verified 13 Nov 2026 against publisher https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2013.00267/full}
 }
 @article{varoquaux2018cv,
   author  = {Varoquaux, Ga{\"e}l},
   title   = {Cross-Validation Failure: Small Sample Sizes Lead to Large Error Bars},
-  journal = {NeuroImage}, volume = {180}, pages = {68--77}, year = {2018}
+  journal = {NeuroImage}, volume = {180}, pages = {68--77}, year = {2018},
+  doi = {10.1016/j.neuroimage.2017.06.061},
+  note = {Verified 13 Nov 2026 against https://pubmed.ncbi.nlm.nih.gov/28655633/ and author preprint https://arxiv.org/abs/1706.07581; small-sample uncertainty, not a numerical correction factor for this project}
+}
+
+@misc{bbbd_zenodo_release,
+  author = {Madsen, Jens and Kuppa, Nikhil and Parra, Lucas},
+  title = {The Brain, Body, and Behavior Dataset (BBBD): Multimodal Recordings during Educational Videos},
+  howpublished = {Zenodo dataset record 19241964},
+  doi = {10.5281/zenodo.19241964},
+  url = {https://zenodo.org/records/19241964},
+  note = {Accessed 13 Nov 2026. Cite the exact release used; do not silently switch to the newer version advertised by the record. Landing page has inconsistent publication/issued dates, so no inferred release year is supplied here}
+}
+
+@article{pedregosa2011sklearn,
+  author = {Pedregosa, Fabian and others},
+  title = {Scikit-learn: Machine Learning in Python},
+  journal = {Journal of Machine Learning Research}, volume = {12}, pages = {2825--2830}, year = {2011},
+  url = {https://www.jmlr.org/papers/v12/pedregosa11a.html},
+  note = {Verified 13 Nov 2026 against the JMLR article page and paper}
 }

@@ -1,0 +1,22 @@
+{
+  "run_id": "R-015",
+  "git_hash": "8d8e979",
+  "archive_sha256": "767f2d6be2c8933309ab14f5e01e71436a0adfed9754b0e510d379a5c95cf50a",
+  "experiment": 2,
+  "session": "ses-01",
+  "source": "Recovered diagnostic QC and beat-validation tables",
+  "decision": "D-33 Proposed",
+  "deviation": "DV-04",
+  "raw_ecg_reprocessed": false,
+  "n_recordings": 155,
+  "eligibility": {
+    "eligible": 140,
+    "unevaluable": 15
+  },
+  "unevaluable_reasons": {
+    "processing_failed": 15
+  },
+  "n_f1_threshold_met": 140,
+  "minimum_recall": 0.8,
+  "f1_threshold": 0.95
+}

@@ -1,0 +1,50 @@
+%% mubeamer-vsu.sty -- workplace patch for beamerthemeMU, loaded automatically
+%% by the theme when it is used as \usetheme[workplace=vsu]{MU}.
+%%
+%% ponytail: the only reason this file exists is that the theme's title page
+%% and \makeoutro hard-require the Masaryk University logo and label artwork
+%% from mubeamer/logo/ and mubeamer/label/. Those files are not shipped here,
+%% and MU branding would be wrong on a Vidyashilp University deck anyway. This
+%% uses the theme's own documented extension point instead of editing it.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mubeamer/patch/mubeamer-vsu}[2026/11/15 DATA404 BBBD workplace patch]
+\mode<presentation>
+
+%% Title page: same layout as the theme's, with the logo \includegraphics
+%% dropped and the institution set in type instead.
+\setbeamertemplate{title page}{%
+  \vskip\mubeamer@length@margin
+  \vskip0pt plus 6filll
+  {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}%
+  \vskip0pt plus 1filll
+
+  {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}%
+  \vskip0pt plus 4filll
+
+  {\usebeamerfont{author} \insertauthor}%
+  \vskip0pt plus 1filll
+
+  {\usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute}%
+  \vskip0pt plus 1filll
+
+  {\usebeamerfont{date} \insertdate}%
+  \vskip\mubeamer@length@margin}
+
+%% Closing frame: the theme's \makeoutro paints a full-bleed MU label image.
+%% Replaced with a plain coloured frame carrying the project's own closing line.
+\renewcommand\makeoutro[1][\relax]{%
+  \begingroup
+  \setbeamercolor{background canvas}{bg=mubeamer@base}
+  \begin{frame}[plain]
+  \vfill
+  \centering
+  {\usebeamerfont{title}\color{white}\mubeamer@vsu@outro\par}
+  \vfill
+  \end{frame}
+  \endgroup}
+\def\mubeamer@vsu@outro{Thank you}
+\newcommand\setoutrotext[1]{\def\mubeamer@vsu@outro{#1}}
+
+\mode
+  <all>
+\endinput

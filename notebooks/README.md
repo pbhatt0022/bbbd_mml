@@ -1,5 +1,7 @@
 # Notebooks
 
+Local Experiment 2 eye extraction uses `51_exp2_eye_features.ipynb` (R-014). Experiment 1 correction uses `85_statistics.ipynb` (R-013). Keep the executed downloads with cell outputs for submission. R-015 through R-017 use the module commands in the scripts guide.
+
 Numbered so the order is the run order. Every notebook:
 
 1. starts with the setup cell from `00_inventory.ipynb` (mount Drive, pull repo, `pip install -e .`, load `config.yaml`);

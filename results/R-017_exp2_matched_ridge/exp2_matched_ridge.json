@@ -1,0 +1,82 @@
+{
+  "run_id": "R-017",
+  "git_hash": "8d8e979",
+  "cohort_run": "R-016",
+  "decision": "D-35 Proposed",
+  "deviation": "DV-06",
+  "exploratory": true,
+  "n_rows": 125,
+  "n_learners": 26,
+  "metrics": {
+    "eye": {
+      "spearman": -0.2160724814594835,
+      "r2": -0.017276015340103035,
+      "mae": 0.8250313905737192,
+      "n": 125
+    },
+    "ecg": {
+      "spearman": -0.2917582964938527,
+      "r2": -0.0132996723560872,
+      "mae": 0.8261776693642224,
+      "n": 125
+    },
+    "eeg": {
+      "spearman": 0.053177559929244896,
+      "r2": -0.0016229906154860974,
+      "mae": 0.8150606429342147,
+      "n": 125
+    },
+    "eye_ecg": {
+      "spearman": -0.32730331326844775,
+      "r2": -0.01858676912747792,
+      "mae": 0.8270108563551651,
+      "n": 125
+    },
+    "all_sensors": {
+      "spearman": -0.110569457632717,
+      "r2": -0.014018255625641407,
+      "mae": 0.8234816832005217,
+      "n": 125
+    },
+    "selected_single": {
+      "spearman": -0.06637735802355794,
+      "r2": -0.017904144215801443,
+      "mae": 0.8246275614667664,
+      "n": 125
+    }
+  },
+  "comparisons": {
+    "eeg_minus_eye": {
+      "estimate": 0.2692500413887284,
+      "ci_low": 0.08807300003417884,
+      "ci_high": 0.46186790222268204,
+      "ci_level": 0.9,
+      "equivalence_margin": 0.1,
+      "interval_within_margin": false
+    },
+    "eeg_minus_eye_ecg": {
+      "estimate": 0.38048087319769264,
+      "ci_low": 0.21235586324456088,
+      "ci_high": 0.5499498355715717,
+      "ci_level": 0.9,
+      "equivalence_margin": 0.1,
+      "interval_within_margin": false
+    },
+    "all_sensors_minus_selected_single": {
+      "estimate": -0.044192099609159055,
+      "ci_low": -0.17730719623133584,
+      "ci_high": 0.07302694109313855,
+      "ci_level": 0.95
+    }
+  },
+  "n_bootstrap": 2000,
+  "selected_single_counts": {
+    "eye": 16,
+    "eeg": 25,
+    "ecg": 9
+  },
+  "input_sha256": {
+    "exp2_common_cohort.csv": "0c4c1fa3ff7624dafc643ac89fe989b1ce60f04c2592f45f675ebd220e899599",
+    "folds_exp2.json": "d04fdaad4cf752c9fe3cc92132cc1957411c6e2990ff76b38f46ad32bb11af81"
+  }
+}

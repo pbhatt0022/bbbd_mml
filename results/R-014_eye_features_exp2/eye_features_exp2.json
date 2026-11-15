@@ -1,0 +1,10 @@
+{
+  "run_id": "R-014",
+  "git_hash": "8d8e979",
+  "archive": "experiment2.zip",
+  "px_per_deg": 33.64268830066364,
+  "calibration": "D-26 assumption applied under Proposed D-32",
+  "session": "ses-01",
+  "n_rows": 155,
+  "n_excluded": 5
+}

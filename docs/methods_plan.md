@@ -1,5 +1,7 @@
 # Final Methods Plan
 
+> Historical planning and handoff material. For the latest deadline, attribution, results through R-017, and next steps, see [PROJECT_STATE.md](PROJECT_STATE.md).
+
 As of 6 Nov 2026. Master copy; the Project Hub tab "Final Methods Plan" mirrors it. Submission Mon 16 Nov 2026 EOD, presentation Wed 18 Nov 2026. Professor feedback (15 Oct): do all preprocessing ourselves; include some deep learning.
 
 ## 1. Repo and logging

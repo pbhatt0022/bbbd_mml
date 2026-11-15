@@ -1,0 +1,24 @@
+{
+  "run_id": "R-016",
+  "git_hash": "8d8e979",
+  "decision": "D-34 Proposed",
+  "deviation": "DV-05",
+  "eeg_source_match": "de3b603",
+  "eeg_raw_rerun": false,
+  "attentive_eeg_qc_rows": 139,
+  "eeg_excluded": 0,
+  "attentive_eeg_feature_rows": 139,
+  "recovered_eeg_batch_errors": 0,
+  "n_rows": 125,
+  "n_learners": 26,
+  "n_videos": 5,
+  "outer_repeats": 10,
+  "outer_folds": 5,
+  "frozen_exp1_sha256": "8598902b74e1df41cd1ffed4b748dc04a7663e3c3b5bc3a017799dfe60d3db38",
+  "source_hashes": {
+    "recovery_sha256": "767f2d6be2c8933309ab14f5e01e71436a0adfed9754b0e510d379a5c95cf50a",
+    "raw_md5": "e9671316f97e1c3ec1d86a03e0a1ab28",
+    "eye_sha256": "e660037f127ad9733877bdcf2682319ee03a7445a75c427b1624ca51099f0c11",
+    "ecg_audit_sha256": "74b9e1edaf67e40764499ee319f7e0aefcd4072d8413f87e390d077d26ab4974"
+  }
+}

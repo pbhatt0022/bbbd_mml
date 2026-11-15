@@ -1,5 +1,7 @@
 # Handoff to Member B — EEG, ECG, respiration, Experiments 2–5
 
+> Historical planning and handoff material. For the latest deadline, attribution, results through R-017, and next steps, see [PROJECT_STATE.md](PROJECT_STATE.md).
+
 Updated **13 Nov 2026** by Member A. Canonical project status is
 [`PROJECT_STATE.md`](PROJECT_STATE.md); this file is your track specifically. Read it
 before writing code, and give it to your LLM assistant as context. Most of it is things we learned the hard way, which reading the

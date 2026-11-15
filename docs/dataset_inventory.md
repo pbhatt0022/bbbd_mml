@@ -54,3 +54,12 @@ session is attend vs distract; why invalid samples are 0.00 here but 3.03% on 14
 ## Experiments 2–5
 
 Not downloaded yet. Run `notebooks/00_inventory.ipynb` and fill in: participants, sessions, sampling rate of BDF and TSV files, EEG/EOG/ECG channel names, quiz file layout.
+
+## 14 Nov 2026 recovery audit
+
+- Both recovery tarball SHA-256 values match the handoff. The raw ZIP matches the stated length and MD5.
+- All nine phenotype files match the root-level phenotype files in the Experiment 2 ZIP byte for byte. The memory item counts and summed binary is_correct values reproduce all 170 unique score keys. The key columns are participant_id and stim_no. The score and denominator columns are memory_score and total_memory_questions.
+- All 302 raw gaze sidecars and all 302 raw pupil sidecars agree on 128 Hz, zero start and the session labels. The 155 session-01 pairs are labelled Attentive Condition and the 147 session-02 pairs Distracted Condition. The release README gives inconsistent descriptions of quiz timing. The final paper describes Experiment 2 as incidental learning with quizzes after the attentive viewing block and before distracted viewing.
+- Recovered diagnostic feature tables contain 273 finite ECG and 263 finite EEG recording keys. Matching with quiz keys reproduces 129 attentive and 114 distracted candidate recordings. All candidates have a pupil file. These are recovery checks, not reportable prediction results.
+- The recovered registry ends at R-011 and has no registered physiology run. All recovered ECG QC exclusion statuses are undetermined. Finite ECG features and reference recall alone do not establish the preregistered detectable-beat denominator.
+- D-32 and DV-03 specify attentive eye preprocessing. Exact shared prediction eligibility and new Experiment 2 folds remain pending. Preserve the original recovery archives and frozen Experiment 1 folds.

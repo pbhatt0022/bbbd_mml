@@ -1,0 +1,63 @@
+{
+  "run_id": "R-013",
+  "git_hash": "8d8e979",
+  "status": "complete",
+  "analysis_status": "post_result_correction_DV-02",
+  "decision": "D-31 Proposed; joint agreement outstanding",
+  "original_run": "R-012",
+  "confirmatory": false,
+  "input_hashes": {
+    "targets": "bb1048d175d84f13ff0595fc2963c8027b1b719260fcccea1bccf59202c1ef7e",
+    "features": "f35d44c86fbea8b26da75d21f4539431b6b5c2dfb93d2b8d4b4bb7d4a1770a58",
+    "original_summary": "a4db0378f13f4293edb2270baf59c7916b086c5b735b8c3cdd25338b9d3f45d6",
+    "folds": "8598902b74e1df41cd1ffed4b748dc04a7663e3c3b5bc3a017799dfe60d3db38",
+    "archived_folds": "8598902b74e1df41cd1ffed4b748dc04a7663e3c3b5bc3a017799dfe60d3db38"
+  },
+  "versions": {
+    "numpy": "2.4.6",
+    "scipy": "1.16.3",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.6.1",
+    "joblib": "1.6.0"
+  },
+  "features": [
+    "eye_invalid_frac",
+    "saccade_rate_min",
+    "blink_rate_min",
+    "fixation_rate_min",
+    "fixation_dur_ms_mean",
+    "pupil_mean_raw",
+    "pupil_diff_sd_z",
+    "gaze_dispersion_deg"
+  ],
+  "n_learners": 25,
+  "scheme": "frozen learner-grouped 5-fold x10; averaged predictions",
+  "inner_cv": "3-fold GroupKFold; scaling within inner fold; mean MSE tuning",
+  "metrics": {
+    "spearman": 0.10799609836159936,
+    "r2": -0.03080751262368464,
+    "mae": 0.7592084439720589,
+    "n": 120
+  },
+  "r2_definition": "conventional R2 against evaluated-target mean",
+  "training_mean_skill": 0.02711764456248089,
+  "training_mean_skill_definition": "1-SSE(model)/SSE(averaged outer-training-mean predictions)",
+  "ci_low": -0.1264765629169888,
+  "ci_high": 0.35381497705632886,
+  "p_permutation_raw": 0.03196803196803197,
+  "n_permutations": 1000,
+  "n_bootstrap": 2000,
+  "per_repeat_rho": [
+    0.03763516190370441,
+    0.21382067011778744,
+    0.2188690351700476,
+    0.020926567591027664,
+    0.10793703283793218,
+    0.27877189949628167,
+    0.15040514435464,
+    -0.07651417424698843,
+    0.023490706206697336,
+    0.10438615253276361
+  ],
+  "multiplicity": "pending across eye/cardiac/EEG; raw eye p is not a family-corrected claim"
+}
