@@ -12,7 +12,7 @@ DATA404 Multimodal Machine Learning, final project. We preprocess the Brain, Bod
 
 **Current state, for humans and assistants alike: [`docs/PROJECT_STATE.md`](docs/PROJECT_STATE.md).**
 It is the one file to read first — what is done, what the numbers are, what the traps are.
-Preregistration frozen at tag `prereg-v1`. Locally registered runs extend through R-017. R-013 is the corrected eye baseline, and R-017 is the exploratory Experiment 2 sensor and fusion comparison.
+Preregistration frozen at tag `prereg-v1`. Locally registered runs extend through R-018. R-013 is the corrected eye baseline, R-017 is the exploratory Experiment 2 sensor and fusion comparison, and R-018 audits the Experiment 2 EEG condition tables.
 
 ## Research questions
 

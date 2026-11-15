@@ -15,6 +15,7 @@ Draft: `report_draft.md` and editable Word export. This checklist is separate fr
 - [x] Verify common cohort and folds (R-016), then run exploratory paired comparison (R-017).
 - [ ] Save executed notebooks with outputs; historical committed notebooks are currently empty of outputs.
 - [x] Incorporate R-013 and R-017 into the draft.
+- [x] Register the 15 Oct Experiment 2 EEG alpha analysis as R-018 (D-36 / DV-07) and report it in §8.5 as a session difference in absolute power that is **not** shown to be alpha-specific. A fresh raw EEG run remains pending, as does RQ3.
 - [ ] Check final Word layout, figures, and submission copy.
 - [ ] Review report wording and remove pending-work statements only when evidence actually exists.
 - [ ] Complete PPT and rehearse a demonstration of saved outputs and the actual pipeline.

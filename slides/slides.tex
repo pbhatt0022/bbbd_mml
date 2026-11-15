@@ -57,7 +57,7 @@
     \textbf{ID} & \textbf{Question} & \textbf{Status} \\
     \midrule
     RQ0 & Do our from-raw pipelines reproduce the paper's effects?
-        & Reported (\runid{R-004}) \\
+        & Eye \runid{R-004}; EEG \runid{R-018}, partly \\
     RQ1 & How well does each modality and fusion predict quiz score for
           unseen learners?
         & Eye \runid{R-013}; matched \runid{R-017} \\
@@ -190,6 +190,10 @@
     \runid{R-017} & Matched comparison
       & EEG $+.053$ vs eye $-.216$, ECG $-.292$, eye+ECG $-.327$
       & Exploratory \\
+    \runid{R-018} & Exp 2 EEG condition audit
+      & Absolute alpha up when distracted ($d_z = +.80$); normalized alpha flat,
+        delta larger --- not alpha-specific
+      & Retrospective \\
     \bottomrule
   \end{tabular}
 
@@ -215,6 +219,50 @@
   calibration --- the strongest evidence the pipeline is correct. Our saccade
   rates (138 $\rightarrow$ 93) sit close to the authors' own derivative counts
   (136 $\rightarrow$ 89). Exploratory: \texttt{prereg-v1} was not yet tagged.}
+\end{frame}
+
+\begin{frame}{RQ0, the EEG half --- a result we had to argue down}
+  \framesubtitle{\runid{R-018}, Experiment 2, 291 recordings, 30 learners, all paired}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \small
+      \begin{tabular}{@{}lrr@{}}
+        \toprule
+        distracted $-$ attentive & $d_z$ & Holm $p$ \\
+        \midrule
+        log alpha, posterior      & $+0.80$ & $.0009$ \\
+        log alpha, all            & $+0.65$ & $.0061$ \\
+        relative alpha, all       & $+0.11$ & $1.00$ \\
+        relative alpha, posterior & $-0.00$ & $1.00$ \\
+        alpha vs flanks, all      & $+0.00$ & $1.00$ \\
+        alpha vs flanks, posterior& $+0.41$ & $.13$ \\
+        \midrule
+        \textit{log delta, posterior} & $+0.71$ & --- \\
+        \textit{log delta, all}       & $+0.60$ & --- \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.4em}
+      \caveat{Control bands are descriptive, outside the Holm family.}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Why we do not claim the replication}
+        \small
+        Absolute alpha rises when distracted --- the paper's direction. But
+        \textbf{every metric that normalizes for broadband power shows
+        nothing}, and \textbf{delta moves further than alpha}
+        ($+.143$ vs $+.058$).
+
+        \vspace{0.3em}
+        That is what a \textbf{broadband} session difference looks like, not
+        an alpha effect.
+      \end{block}
+      \caveat{Audit of saved tables, not a raw rerun. No EOG regression or ICA,
+      so artefacts are uncontrolled --- the question RQ3 was for. 30 learners,
+      not the 26 behind \runid{R-017}. No quiz scores, so nothing here touches
+      RQ1 or RQ2.}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 % ---------------------------------------------------------------- DV-02

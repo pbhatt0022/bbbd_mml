@@ -23,7 +23,7 @@
 
 ## 1. Abstract
 
-We investigate whether measurements collected during educational videos predict quiz performance for unseen learners. Using the Brain, Body, and Behavior Dataset (BBBD), we reconstructed eye events, applied quality exclusions, and predicted within-video standardized memory quiz scores with learner-grouped ridge regression. The exploratory condition contrast showed lower saccade rates and higher blink rates during inferred distracted viewing (R-004). The post-result correction used eight eye features, 120 observations and 25 learners (R-013). It yielded Spearman ρ = +0.108, 95% learner-bootstrap CI [−0.126, +0.354], and raw permutation p = 0.032 (R-013). The estimate suggests a weak ranking association with substantial uncertainty. Across-modality Holm correction remains pending. In Experiment 2, the matched ridge comparison did not establish eye–EEG equivalence or a ranking gain from early fusion (R-017). Deep-learning benefits remain an open question.
+We investigate whether measurements collected during educational videos predict quiz performance for unseen learners. Using the Brain, Body, and Behavior Dataset (BBBD), we reconstructed eye events, applied quality exclusions, and predicted within-video standardized memory quiz scores with learner-grouped ridge regression. The exploratory condition contrast showed lower saccade rates and higher blink rates during inferred distracted viewing (R-004). The post-result correction used eight eye features, 120 observations and 25 learners (R-013). It yielded Spearman ρ = +0.108, 95% learner-bootstrap CI [−0.126, +0.354], and raw permutation p = 0.032 (R-013). The estimate suggests a weak ranking association with substantial uncertainty. Across-modality Holm correction remains pending. In Experiment 2, the matched ridge comparison did not establish eye–EEG equivalence or a ranking gain from early fusion (R-017). A separate audit of saved Experiment 2 EEG tables found higher absolute alpha power in the session labelled distracted, but no effect once power is normalized and a larger shift in delta, so the difference is not shown to be alpha-specific (R-018). Deep-learning benefits remain an open question.
 
 ## 2. Introduction
 
@@ -44,6 +44,7 @@ The objectives are to reconstruct signals and events from released raw files, va
 | Component | Current evidence | Scope of the claim |
 | --- | --- | --- |
 | Eye event validation | Registered R-004 | Exploratory attention-condition contrast |
+| EEG condition validation | Registered R-018 | Exploratory audit of saved Experiment 2 alpha tables; session difference in absolute power, not shown to be alpha-specific |
 | Eye quiz prediction | R-013 complete under DV-02 | Post-result correction. Across-modality inference pending. |
 | ECG and EEG processing | Batch code on physiology branch | Recovered physiology audited in R-015 and R-016 and used in exploratory R-017 |
 | ISC and multimodal fusion | Shared components or planned integration | Early fusion evaluated in R-017. Individual-versus-ISC comparison pending. |
@@ -200,6 +201,7 @@ Results below come from the project run registry and saved artifacts. R-004 is e
 | Prediction exclusions | R-010 | 135 candidate rows; 15 excluded; 120 retained |
 | Shared prediction folds | R-011 | 25 learners; 120 rows; ten grouped repeats plus LOVO |
 | Original prediction | R-012 | Eight individual eye features; target `quiz_z` |
+| EEG condition validation | R-018 | Exp 2; 291 recordings; 30 learners, all paired |
 
 The validation and prediction samples are not interchangeable. In particular, the exploratory condition contrast must not be described as using the final prediction exclusion set.
 
@@ -249,6 +251,33 @@ Experiment 2 matched sensor evaluation (R-017). The shared attentive cohort used
 R-017 Spearman correlations were −0.216 (eye), −0.292 (ECG), +0.053 (EEG), −0.327 (eye plus ECG), −0.111 (all sensors), and −0.066 (selected single-modality procedure). EEG minus eye was +0.269 (90% paired learner-bootstrap CI [0.088, 0.462]). EEG minus eye plus ECG was +0.380 (90% CI [0.212, 0.550]). Neither interval fit inside ±0.10. All sensors minus the selected single-modality procedure was −0.044 (95% CI [−0.177, +0.073]), leaving the direction of a fusion effect uncertain.
 
 The R-017 comparisons are exploratory because the physiology features came from recovered diagnostic executions. Bootstrap intervals resample learners with fixed held-out predictions. H2, H3 and H4 remain open.
+
+### 8.5 Experiment 2 EEG condition check
+
+Section 8.2 validates the eye pipeline against the published condition effects. The EEG half of that validation is reported here. An exploratory EEG alpha analysis of Experiment 2 was run on 15 October 2026 from the released raw BDF files, before the preregistration tag and outside this repository, so it carried no run ID. R-018 recomputes its paired statistics from the saved per-recording table under D-36 and DV-07. R-018 is an audit of that table: the raw recordings were not reprocessed here, and the audit does not certify how the October run executed. The recomputed values match the October summary to rounding. No quiz scores are involved, so this section bears on RQ0 only and changes nothing in Sections 8.3 and 8.4.
+
+The sample is 291 recordings from 30 learners, all 30 contributing both sessions. Values are averaged within learner and session and compared with paired tests; the six alpha metrics are Holm-corrected together and the other frequency bands are descriptive. The session mapping is the assumed `ses-1 = attentive`, as in D-29 for Experiment 1.
+
+| Metric | Family | Attentive | Distracted | Difference | d_z | t(29) | p | Holm p |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| log alpha, post. | alpha | 0.083 | 0.157 | +0.074 | +0.80 | 4.37 | .0001 | .0009 |
+| log alpha, all | alpha | 0.021 | 0.078 | +0.058 | +0.65 | 3.59 | .0012 | .0061 |
+| rel. alpha, all | alpha | 0.952 | 0.974 | +0.021 | +0.11 | 0.58 | .56 | 1.00 |
+| rel. alpha, post. | alpha | 1.026 | 1.025 | −0.001 | −0.00 | −0.02 | .98 | 1.00 |
+| alpha vs flanks, all | alpha | −0.144 | −0.143 | +0.001 | +0.00 | 0.02 | .98 | 1.00 |
+| alpha vs flanks, post. | alpha | −0.071 | −0.030 | +0.041 | +0.41 | 2.25 | .032 | .13 |
+| log delta, post. | control | 0.944 | 1.073 | +0.129 | +0.71 | 3.91 | .0005 | — |
+| log delta, all | control | 1.043 | 1.186 | +0.143 | +0.60 | 3.31 | .0025 | — |
+| log theta, all | control | 0.343 | 0.413 | +0.070 | +0.43 | 2.36 | .025 | — |
+| log beta, post. | control | −0.461 | −0.435 | +0.026 | +0.49 | 2.71 | .011 | — |
+
+Table 1. R-018 recomputed condition contrasts, distracted minus attentive, paired by learner. "post." is the 17 occipito-parietal channels. Control-band rows are descriptive and are not part of the Holm family.
+
+Absolute log alpha power is higher in the session labelled distracted, which is the direction the reference paper reports. **The result does not, however, reproduce the paper's claim, because the effect is not specific to alpha.** Both alpha metrics that normalize for broadband power show nothing: relative alpha gives d_z = +0.11 across all channels and −0.00 posteriorly, and alpha measured against its flanking bands does not survive correction. Delta moves in the same direction with a larger raw difference than alpha, +0.143 against +0.058. Taken together these are what a broadband power difference between the two sessions would look like, not a change confined to the alpha band.
+
+Three limits bound this further. No EOG regression or ICA was applied, so ocular and muscular artefacts are uncontrolled and are a plausible source of a broadband session difference; this is the robustness question RQ3 was written to answer, and RQ3 was not executed. The 30 learners here are not the 26-learner cohort behind R-016 and R-017, so these recordings and those predictions are not a matched sample. And the analysis predates the preregistration tag, so like R-004 it is exploratory and can never be confirmatory.
+
+The honest summary is that our EEG preprocessing recovers a session difference in absolute power and that we cannot currently attribute it to the alpha band.
 
 ## 9. Discussion
 
@@ -313,6 +342,8 @@ A fresh registered ECG detector validation remains a follow-up. R-015 documents 
 | Canonical frozen splits | `results/folds.json` |
 | R-012 metrics and predictions | `results/R-012_classical_eye_exp1/` |
 | Post-result correction disclosure | `docs/deviations.md`, DV-02; `docs/decision_log.md`, D-31 |
+| R-018 EEG condition tests and audited input | `results/R-018_exp2_eeg_alpha_audit/` |
+| R-013 execution record | `results/R-013_eye_reconciliation/provenance/console.log` |
 
 ### 12.2 Example recorded output
 

@@ -1,0 +1,48 @@
+{
+  "run_id": "R-018",
+  "git_hash": "2f66b1e",
+  "experiment": 2,
+  "source": "Saved 15 Oct 2026 v2 per-recording EEG alpha table",
+  "source_sha256": "6310bea72fed41af93b8f96243105d518b85350ba61090f82ed7b0f9f032aad8",
+  "decision": "D-36 Proposed",
+  "deviation": "DV-07",
+  "raw_eeg_reprocessed": false,
+  "confirmatory": false,
+  "predates_prereg_tag": true,
+  "quiz_scores_used": false,
+  "condition_mapping_assumed": {
+    "ses-1": "attentive",
+    "ses-2": "distracted"
+  },
+  "eog_regression_or_ica_applied": false,
+  "n_recordings": 291,
+  "n_learners": 30,
+  "n_learners_paired": 30,
+  "alpha_family_size": 6,
+  "headline_metric": "log_alpha_posterior",
+  "headline": {
+    "metric": "log_alpha_posterior",
+    "n_learners": 30,
+    "mean_attentive": 0.08324482717031757,
+    "mean_distracted": 0.15725948562479103,
+    "mean_diff": 0.0740146584544735,
+    "pct_higher_when_distracted": 80.0,
+    "cohens_dz": 0.7977209501650017,
+    "t": 4.369297589998258,
+    "p": 0.00014562303803648604,
+    "p_wilcoxon": 0.00016989745199680328,
+    "family": "alpha",
+    "p_holm_alpha_family": 0.0008737382282189162
+  },
+  "alpha_significant_after_holm": [
+    "log_alpha_all",
+    "log_alpha_posterior"
+  ],
+  "control_bands_with_p_below_05": [
+    "log_delta_all",
+    "log_delta_posterior",
+    "log_theta_all",
+    "log_beta_posterior"
+  ],
+  "discrepancies_vs_15_oct_summary": "none beyond rounding"
+}

@@ -17,7 +17,13 @@ r13 = R("results/R-013_eye_reconciliation/eye_reconciliation.json")
 r17 = R("results/R-017_exp2_matched_ridge/exp2_matched_ridge.json")
 r15 = R("results/R-015_exp2_ecg_recovery_audit/ecg_recovery_audit.json")
 r16 = R("results/R-016_exp2_common_cohort/exp2_cohort_audit.json")
+r18 = R("results/R-018_exp2_eeg_alpha_audit/eeg_alpha_audit.json")
 h0 = r4["h0b_attend_vs_distract"]
+
+# R-018 per-metric rows, keyed by metric name.
+with (root / "results/R-018_exp2_eeg_alpha_audit/eeg_alpha_condition_tests.csv").open() as f:
+    import csv
+    eeg = {row["metric"]: row for row in csv.DictReader(f)}
 
 
 def s3(x):
@@ -55,6 +61,19 @@ checks = [
     ("15 unevaluable", f"{r15['eligibility']['unevaluable']} unevaluable"),
     ("139 attentive rows", f"{r16['attentive_eeg_qc_rows']} attentive rows"),
     ("5 videos", f"{r16['n_videos']} videos"),
+    # R-018: the headline, and the two numbers the "not alpha-specific" argument rests on.
+    ("+0.80", f"{float(eeg['log_alpha_posterior']['cohens_dz']):+.2f}"),
+    ("+0.65", f"{float(eeg['log_alpha_all']['cohens_dz']):+.2f}"),
+    ("+0.11", f"{float(eeg['rel_alpha_all']['cohens_dz']):+.2f}"),
+    ("+0.71", f"{float(eeg['log_delta_posterior']['cohens_dz']):+.2f}"),
+    ("+0.60", f"{float(eeg['log_delta_all']['cohens_dz']):+.2f}"),
+    ("+0.41", f"{float(eeg['alpha_flank_posterior']['cohens_dz']):+.2f}"),
+    (".0009", f"{float(eeg['log_alpha_posterior']['p_holm_alpha_family']):.4f}".lstrip("0")),
+    (".0061", f"{float(eeg['log_alpha_all']['p_holm_alpha_family']):.4f}".lstrip("0")),
+    ("+.143", s3(float(eeg["log_delta_all"]["mean_diff"]))),
+    ("+.058", s3(float(eeg["log_alpha_all"]["mean_diff"]))),
+    ("291 recordings", f"{r18['n_recordings']} recordings"),
+    ("30 learners", f"{r18['n_learners']} learners"),
 ]
 
 bad = []
