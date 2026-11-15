@@ -290,21 +290,27 @@
       \vspace{0.6em}
       \caveat{Rates use one constant px/deg for both sessions, so a wrong
       scale moves both equally and the contrast survives it. Mean fixation
-      duration omitted: the distracted distribution reaches 184{,}773\,ms.}
+      duration omitted: the distracted distribution reaches 184{,}773\,ms.
+
+      Saccades are \emph{fewer} when distracted, so saccade artefact would be
+      lower where power is \emph{higher} --- the wrong direction to explain
+      \runid{R-018}. Nothing about blinks. An amplitude-based blink rule
+      chosen now would be post-hoc: left open as \runid{D-38}. This also
+      reproduces RQ0 on Experiment 2, with sidecar labels.}
     \end{column}
     \begin{column}{0.46\textwidth}
       \begin{block}{Blinks were the test --- and there are none}
         \small
-        \runid{R-018}'s low-frequency rise looks like blink contamination, so
-        we processed both Experiment 2 sessions from raw to count blinks.
-        \textbf{Blink rate is identically zero in all 302 recordings.}
-        The pupil-dropout rule is a no-op here, as the gaze rule was in
-        Experiment 1. \textbf{The ocular explanation stays open.}
+        \runid{R-018}'s rise looks like blink contamination, so we processed
+        both sessions from raw to count blinks. \textbf{Blink rate is
+        identically zero in all 302 recordings.}
+
+        \vspace{0.3em}
+        Not a bug: of 9.5\,M pupil samples, only six files hold a gap and
+        five are empty end to end. \textbf{The release ships pupil
+        interpolated}, so a dropout rule finds nothing --- as the gaze rule
+        did in Exp 1 (\runid{D-30}). \textbf{The ocular account stays open.}
       \end{block}
-      \caveat{One indirect argument: saccades are \emph{fewer} when
-      distracted, so saccade artefact would be lower in the session with
-      \emph{more} power --- the wrong direction. Says nothing about blinks.
-      Bonus: this reproduces RQ0 on Exp 2, with sidecar labels, not inferred.}
     \end{column}
   \end{columns}
 \end{frame}
