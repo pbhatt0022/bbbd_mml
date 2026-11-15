@@ -194,6 +194,10 @@
       & Power up when distracted, posterior alpha $d_z = +.80$; delta, theta
         and beta move too, so not confined to alpha
       & Retrospective \\
+    \runid{R-019} & Exp 2 eye, both sessions
+      & Saccades $-1.17$, fixations $-1.77$ in $d_z$; blink rate identically
+        zero, so the ocular check could not run
+      & Exploratory \\
     \bottomrule
   \end{tabular}
 
@@ -264,6 +268,43 @@
       \end{block}
       \caveat{30 learners, not the 26 behind \runid{R-017}. Pre-freeze, so
       exploratory. No quiz scores, so RQ1 and RQ2 are untouched.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The check we could not run}
+  \framesubtitle{\runid{R-019}, Experiment 2 from raw, both sessions, 31 learners, all paired}
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \small
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        per minute & attend & distract & $d_z$ \\
+        \midrule
+        \textbf{blinks}   & \textbf{0.00} & \textbf{0.00} & \alert{---} \\
+        saccades  & 148.1 & 106.4 & $-1.17$ \\
+        fixations & 128.9 &  84.1 & $-1.77$ \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.6em}
+      \caveat{Rates use one constant px/deg for both sessions, so a wrong
+      scale moves both equally and the contrast survives it. Mean fixation
+      duration omitted: the distracted distribution reaches 184{,}773\,ms.}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Blinks were the test --- and there are none}
+        \small
+        \runid{R-018}'s low-frequency rise looks like blink contamination, so
+        we processed both Experiment 2 sessions from raw to count blinks.
+        \textbf{Blink rate is identically zero in all 302 recordings.}
+        The pupil-dropout rule is a no-op here, as the gaze rule was in
+        Experiment 1. \textbf{The ocular explanation stays open.}
+      \end{block}
+      \caveat{One indirect argument: saccades are \emph{fewer} when
+      distracted, so saccade artefact would be lower in the session with
+      \emph{more} power --- the wrong direction. Says nothing about blinks.
+      Bonus: this reproduces RQ0 on Exp 2, with sidecar labels, not inferred.}
     \end{column}
   \end{columns}
 \end{frame}

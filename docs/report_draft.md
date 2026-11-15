@@ -23,7 +23,7 @@
 
 ## 1. Abstract
 
-We investigate whether measurements collected during educational videos predict quiz performance for unseen learners. Using the Brain, Body, and Behavior Dataset (BBBD), we reconstructed eye events, applied quality exclusions, and predicted within-video standardized memory quiz scores with learner-grouped ridge regression. The exploratory condition contrast showed lower saccade rates and higher blink rates during inferred distracted viewing (R-004). The post-result correction used eight eye features, 120 observations and 25 learners (R-013). It yielded Spearman ρ = +0.108, 95% learner-bootstrap CI [−0.126, +0.354], and raw permutation p = 0.032 (R-013). The estimate suggests a weak ranking association with substantial uncertainty. Across-modality Holm correction remains pending. In Experiment 2, the matched ridge comparison did not establish eye–EEG equivalence or a ranking gain from early fusion (R-017). A separate audit of saved Experiment 2 EEG tables found higher absolute power in the session labelled distracted, with posterior alpha the largest standardized effect but delta, theta and beta also shifted, so the difference is not confined to alpha and no alpha-specific component survives correction (R-018). Deep-learning benefits remain an open question.
+We investigate whether measurements collected during educational videos predict quiz performance for unseen learners. Using the Brain, Body, and Behavior Dataset (BBBD), we reconstructed eye events, applied quality exclusions, and predicted within-video standardized memory quiz scores with learner-grouped ridge regression. The exploratory condition contrast showed lower saccade rates and higher blink rates during inferred distracted viewing (R-004). The post-result correction used eight eye features, 120 observations and 25 learners (R-013). It yielded Spearman ρ = +0.108, 95% learner-bootstrap CI [−0.126, +0.354], and raw permutation p = 0.032 (R-013). The estimate suggests a weak ranking association with substantial uncertainty. Across-modality Holm correction remains pending. In Experiment 2, the matched ridge comparison did not establish eye–EEG equivalence or a ranking gain from early fusion (R-017). A separate audit of saved Experiment 2 EEG tables found higher absolute power in the session labelled distracted, with posterior alpha the largest standardized effect but delta, theta and beta also shifted, so the difference is not confined to alpha and no alpha-specific component survives correction (R-018). Processing both Experiment 2 sessions from raw reproduced the distraction effects on saccade and fixation rates, but returned no blinks at all, so the ocular explanation for the EEG result could not be tested (R-019). Deep-learning benefits remain an open question.
 
 ## 2. Introduction
 
@@ -45,6 +45,7 @@ The objectives are to reconstruct signals and events from released raw files, va
 | --- | --- | --- |
 | Eye event validation | Registered R-004 | Exploratory attention-condition contrast |
 | EEG condition validation | Registered R-018 | Exploratory audit of saved Experiment 2 alpha tables; session difference in absolute power, not shown to be alpha-specific |
+| Exp 2 eye condition validation | Registered R-019 | Saccade and fixation effects reproduced from raw with sidecar labels; blink channel empty, so the ocular check on R-018 is unresolved |
 | Eye quiz prediction | R-013 complete under DV-02 | Post-result correction. Across-modality inference pending. |
 | ECG and EEG processing | Batch code on physiology branch | Recovered physiology audited in R-015 and R-016 and used in exploratory R-017 |
 | ISC and multimodal fusion | Shared components or planned integration | Early fusion evaluated in R-017. Individual-versus-ISC comparison pending. |
@@ -202,6 +203,7 @@ Results below come from the project run registry and saved artifacts. R-004 is e
 | Shared prediction folds | R-011 | 25 learners; 120 rows; ten grouped repeats plus LOVO |
 | Original prediction | R-012 | Eight individual eye features; target `quiz_z` |
 | EEG condition validation | R-018 | Exp 2; 291 recordings; 30 learners, all paired |
+| Exp 2 eye condition validation | R-019 | Exp 2; 302 recordings, 5 excluded; 31 learners, all paired |
 
 The validation and prediction samples are not interchangeable. In particular, the exploratory condition contrast must not be described as using the final prediction exclusion set.
 
@@ -277,9 +279,27 @@ Absolute log power is higher in the session labelled distracted, which is the di
 
 Whether an alpha-specific component sits on top of that shift is unresolved. The metric designed for exactly that question, alpha measured against its 4–7 Hz and 13–20 Hz flanking bands, gives posterior d_z = +0.41 with raw p = .032 but Holm p = .13 within the six-metric family. That is suggestive at 30 learners and not established. The relative-alpha null is weaker evidence than it first appears: relative alpha divides alpha power by mean power over 1–40 Hz, a denominator that contains the rising delta, so it is biased toward zero in precisely the situation observed here. We report it for completeness rather than as a decisive negative.
 
-Three limits bound the section further. No EOG regression or ICA was applied, so ocular and muscular artefacts are uncontrolled, and a low-frequency-weighted increase is also the signature of ocular contamination; Experiment 1 blink rates more than double in the distracted session (1.25 to 2.90 per minute, R-004), which makes this a live alternative explanation rather than a formality. We cannot test it on these recordings: the Drive folder labelled as an Experiment 2 eye quick check contains Experiment 1 tables, byte-identical to the Experiment 1 folder, and no paired Experiment 2 blink comparison exists. This is the robustness question RQ3 was written to answer, and RQ3 was not executed. The 30 learners here are also not the 26-learner cohort behind R-016 and R-017, so these recordings and those predictions are not a matched sample, and the analysis predates the preregistration tag, so like R-004 it is exploratory and can never be confirmatory.
+Three limits bound the section further. No EOG regression or ICA was applied, so ocular and muscular artefacts are uncontrolled, and a low-frequency-weighted increase is also the signature of ocular contamination; Experiment 1 blink rates more than double in the distracted session (1.25 to 2.90 per minute, R-004), which makes this a live alternative explanation rather than a formality. Section 8.6 reports our attempt to test it. This is also the robustness question RQ3 was written to answer, and RQ3 was not executed. The 30 learners here are not the 26-learner cohort behind R-016 and R-017, so these recordings and those predictions are not a matched sample, and the analysis predates the preregistration tag, so like R-004 it is exploratory and can never be confirmatory. One assumption is weaker than it first appears: R-018 recorded the attentive-distracted mapping as assumed, following D-29 for Experiment 1, but the Experiment 2 archive sidecars state the condition outright, and R-019 confirms 155 recordings labelled Attentive Condition and 147 labelled Distracted Condition. For Experiment 2 that mapping is read from the data, not inferred.
 
 The honest summary is that our EEG preprocessing recovers a session difference in absolute low-frequency power that includes alpha but is not confined to it, that the evidence for an alpha-specific component does not survive correction, and that an ocular explanation has not been ruled out. We do not claim to have reproduced the paper's alpha-specific effect.
+
+### 8.6 Experiment 2 eye condition check, and the ocular question
+
+R-019 processes both Experiment 2 sessions from the raw archive under D-37 and DV-08, so that attentive and distracted recordings can be paired within learner. R-014 covered the attentive session only, which was right for prediction and left no way to examine the ocular explanation for Section 8.5. The sample is 155 attentive and 147 distracted recordings from 31 learners, all 31 contributing both sessions, with five pupil-quality exclusions and condition taken from the sidecars. R-014 is unchanged.
+
+| Metric | Attentive | Distracted | Difference | d_z | t(30) | p |
+| --- | --- | --- | --- | --- | --- | --- |
+| blink rate, per minute | 0.00 | 0.00 | 0.00 | — | — | — |
+| saccade rate, per minute | 148.08 | 106.37 | −41.70 | −1.17 | −6.52 | 3.3e-07 |
+| fixation rate, per minute | 128.93 | 84.08 | −44.85 | −1.77 | −9.85 | 6.5e-11 |
+
+Table 2. R-019 paired condition contrasts over learner means. Blink rate is derived from pupil dropout and does not depend on the D-26 scale; the rate metrics do, but one constant scale applies to both sessions, so the within-learner contrast survives a wrong scale while the absolute values do not. Mean fixation duration is omitted: its distracted distribution reaches 184,773 ms with ten recordings above 2,000 ms, which is not interpretable.
+
+**The test we wanted to run cannot be run.** Blink rate is identically zero in all 302 recordings, in both conditions. The pupil-dropout rule that defines blinks (D-25) is a no-op on the Experiment 2 release, in the same way the greater-than-50-per-cent gaze validity rule was a no-op in Experiment 1 (D-30). Whether that is a property of the released pupil traces or of our detector cannot be settled from these files, and we do not treat it as evidence that learners did not blink. The ocular explanation for Section 8.5 therefore remains open on its main route.
+
+One indirect argument does bear on it. Saccades are markedly fewer in the distracted session, by more than a standard deviation of the paired difference. Saccade-related artefact would therefore be lower in exactly the session where R-018 found more low-frequency power, which is the wrong direction to explain that result. This weakens a saccade-driven account; it says nothing about blinks, which are the larger low-frequency contributor and the ones we could not measure.
+
+The section also extends RQ0. Our Experiment 2 eye pipeline reproduces the Experiment 1 distraction effects on saccade and fixation rates, in the same direction and at a comparable size (Experiment 1: 138.0 to 93.2 saccades per minute, R-004). It does so with condition labels read from the sidecars rather than inferred, which makes this the better-grounded of the two eye validations.
 
 ## 9. Discussion
 
@@ -345,6 +365,7 @@ A fresh registered ECG detector validation remains a follow-up. R-015 documents 
 | R-012 metrics and predictions | `results/R-012_classical_eye_exp1/` |
 | Post-result correction disclosure | `docs/deviations.md`, DV-02; `docs/decision_log.md`, D-31 |
 | R-018 EEG condition tests and audited input | `results/R-018_exp2_eeg_alpha_audit/` |
+| R-019 paired Exp 2 eye condition rates | `results/R-019_exp2_eye_condition/` |
 | R-013 execution record | `results/R-013_eye_reconciliation/provenance/console.log` |
 
 ### 12.2 Example recorded output

@@ -1,4 +1,5 @@
 """Check that every numeric claim on a slide matches its registered JSON."""
+import csv
 import json
 import pathlib
 import sys
@@ -18,11 +19,11 @@ r17 = R("results/R-017_exp2_matched_ridge/exp2_matched_ridge.json")
 r15 = R("results/R-015_exp2_ecg_recovery_audit/ecg_recovery_audit.json")
 r16 = R("results/R-016_exp2_common_cohort/exp2_cohort_audit.json")
 r18 = R("results/R-018_exp2_eeg_alpha_audit/eeg_alpha_audit.json")
+r19 = R("results/R-019_exp2_eye_condition/exp2_eye_condition.json")
 h0 = r4["h0b_attend_vs_distract"]
 
 # R-018 per-metric rows, keyed by metric name.
 with (root / "results/R-018_exp2_eeg_alpha_audit/eeg_alpha_condition_tests.csv").open() as f:
-    import csv
     eeg = {row["metric"]: row for row in csv.DictReader(f)}
 
 
@@ -74,7 +75,23 @@ checks = [
     ("+.058", s3(float(eeg["log_alpha_all"]["mean_diff"]))),
     ("291 recordings", f"{r18['n_recordings']} recordings"),
     ("30 learners", f"{r18['n_learners']} learners"),
+    # R-019: the empty blink channel and the two rates that did move.
+    ("148.1", f"{r19['contrasts']['saccade_rate_min']['mean_attentive']:.1f}"),
+    ("106.4", f"{r19['contrasts']['saccade_rate_min']['mean_distracted']:.1f}"),
+    ("128.9", f"{r19['contrasts']['fixation_rate_min']['mean_attentive']:.1f}"),
+    ("84.1", f"{r19['contrasts']['fixation_rate_min']['mean_distracted']:.1f}"),
+    ("-1.17", f"{r19['contrasts']['saccade_rate_min']['cohens_dz']:+.2f}".replace("-0", "-")),
+    ("-1.77", f"{r19['contrasts']['fixation_rate_min']['cohens_dz']:+.2f}".replace("-0", "-")),
+    ("31 learners", f"{r19['n_learners']} learners"),
+    ("302 recordings", f"{r19['n_recordings']} recordings"),
 ]
+
+# The deck states blink rate is identically zero; that must stay true of the data.
+with (root / "results/R-019_exp2_eye_condition/"
+             "eye_features_exp2_both_sessions.csv").open() as f:
+    blinks = [float(row["blink_rate_min"]) for row in csv.DictReader(f)]
+if any(blinks):
+    checks.append(("blink rate identically zero", "SOME NON-ZERO BLINKS"))
 
 bad = []
 for shown, expected in checks:
