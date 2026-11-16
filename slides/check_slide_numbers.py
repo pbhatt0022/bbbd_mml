@@ -22,6 +22,7 @@ r18 = R("results/R-018_exp2_eeg_alpha_audit/eeg_alpha_audit.json")
 r19 = R("results/R-019_exp2_eye_condition/exp2_eye_condition.json")
 r20 = R("results/R-020_exp2_eeg_topography/exp2_eeg_topography.json")
 r21 = R("results/R-021_exp2_eeg_ocular_rerun/exp2_eeg_ocular_rerun.json")
+r22 = R("results/R-022_exp2_rq3_cleaning/exp2_rq3_cleaning.json")
 h0 = r4["h0b_attend_vs_distract"]
 
 # R-018 per-metric rows, keyed by metric name.
@@ -105,7 +106,22 @@ checks = [
     ("+0.99", f"{r21['uncorrected']['delta_by_region']['parietal']['cohens_dz']:+.2f}"),
     ("+0.63", f"{r21['uncorrected']['delta_by_region']['central']['cohens_dz']:+.2f}"),
     ("264 of 291", f"{r21['n_recordings']} of {r21['n_recordings_attempted']}"),
+    # R-022: the two cleaning variants.
+    ("+.080", s3(r22["variants"]["eog_regression"]["metrics"]["eeg"]["spearman"])),
+    ("+.123", s3(r22["variants"]["ica"]["metrics"]["eeg"]["spearman"])),
+    ("-.049", s3(r22["variants"]["eog_regression"]["metrics"]["all_sensors"]["spearman"])),
+    ("-.098", s3(r22["variants"]["ica"]["metrics"]["all_sensors"]["spearman"])),
+    ("+.025", s3(r22["variants"]["eog_regression"]["metrics"]["selected_single"]["spearman"])),
+    ("+.051", s3(r22["variants"]["ica"]["metrics"]["selected_single"]["spearman"])),
+    ("-.149", s3(r22["variants"]["ica"]["comparisons"]["all_sensors_minus_selected_single"]["estimate"])),
+    ("125 rows", f"{r22['n_rows']} rows"),
 ]
+
+# The deck says the ranking is stable and that eye/ECG were untouched.
+if not r22["ranking_stable"]:
+    checks.append(("ranking stable", "RANKING IS NO LONGER STABLE"))
+if any(abs(r22["spearman_shift"][m]) > 1e-9 for m in ("eye", "ecg", "eye_ecg")):
+    checks.append(("eye and ECG unchanged", "A NON-EEG MODALITY MOVED"))
 
 # The deck claims the effect survives correction in every region.
 if not all(r21["survives_correction"].values()):

@@ -48,6 +48,7 @@ The objectives are to reconstruct signals and events from released raw files, va
 | Exp 2 eye condition validation | Registered R-019 | Saccade and fixation effects reproduced from raw with sidecar labels; blink channel empty, so the direct ocular check on R-018 could not be run |
 | Exp 2 EEG topography | Registered R-020 | Low-frequency increase is distributed, not frontal-dominant |
 | Exp 2 EEG ocular control | Registered R-021 | First from-raw EEG run; the condition effect survives EOG regression with d_z changing by at most 0.08 |
+| RQ3 cleaning comparison | Registered R-022 | Modality ranking EEG > eye > ECG stable under both ICA and EOG regression; confirmatory version not executed |
 | Eye quiz prediction | R-013 complete under DV-02 | Post-result correction. Across-modality inference pending. |
 | ECG and EEG processing | Batch code on physiology branch | Recovered physiology audited in R-015 and R-016 and used in exploratory R-017 |
 | ISC and multimodal fusion | Shared components or planned integration | Early fusion evaluated in R-017. Individual-versus-ISC comparison pending. |
@@ -208,6 +209,7 @@ Results below come from the project run registry and saved artifacts. R-004 is e
 | Exp 2 eye condition validation | R-019 | Exp 2; 302 recordings, 5 excluded; 31 learners, all paired |
 | Exp 2 EEG topography | R-020 | Exp 2; 263 recovered recordings; 28 learners, all paired |
 | Exp 2 EEG ocular control | R-021 | Exp 2 from raw; 264 of 291 recordings; 28 learners |
+| RQ3 cleaning comparison | R-022 | R-016 cohort fixed; 125 rows; 26 learners; EEG columns swapped |
 
 The validation and prediction samples are not interchangeable. In particular, the exploratory condition contrast must not be described as using the final prediction exclusion set.
 
@@ -283,7 +285,7 @@ Absolute log power is higher in the session labelled distracted, which is the di
 
 Whether an alpha-specific component sits on top of that shift is unresolved. The metric designed for exactly that question, alpha measured against its 4–7 Hz and 13–20 Hz flanking bands, gives posterior d_z = +0.41 with raw p = .032 but Holm p = .13 within the six-metric family. That is suggestive at 30 learners and not established. The relative-alpha null is weaker evidence than it first appears: relative alpha divides alpha power by mean power over 1–40 Hz, a denominator that contains the rising delta, so it is biased toward zero in precisely the situation observed here. We report it for completeness rather than as a decisive negative.
 
-Three limits bound the section further. No EOG regression or ICA was applied, so ocular and muscular artefacts are uncontrolled, and a low-frequency-weighted increase is also the signature of ocular contamination; Experiment 1 blink rates more than double in the distracted session (1.25 to 2.90 per minute, R-004), which makes this a live alternative explanation rather than a formality. Sections 8.6 to 8.8 report how we tested it. This is also the robustness question RQ3 was written to answer, and RQ3 was not executed. The 30 learners here are not the 26-learner cohort behind R-016 and R-017, so these recordings and those predictions are not a matched sample, and the analysis predates the preregistration tag, so like R-004 it is exploratory and can never be confirmatory. One assumption is weaker than it first appears: R-018 recorded the attentive-distracted mapping as assumed, following D-29 for Experiment 1, but the Experiment 2 archive sidecars state the condition outright, and R-019 confirms 155 recordings labelled Attentive Condition and 147 labelled Distracted Condition. For Experiment 2 that mapping is read from the data, not inferred.
+Three limits bound the section further. No EOG regression or ICA was applied, so ocular and muscular artefacts are uncontrolled, and a low-frequency-weighted increase is also the signature of ocular contamination; Experiment 1 blink rates more than double in the distracted session (1.25 to 2.90 per minute, R-004), which makes this a live alternative explanation rather than a formality. Sections 8.6 to 8.8 report how we tested it. The robustness question RQ3 was written to answer is taken up in Section 8.9. The 30 learners here are not the 26-learner cohort behind R-016 and R-017, so these recordings and those predictions are not a matched sample, and the analysis predates the preregistration tag, so like R-004 it is exploratory and can never be confirmatory. One assumption is weaker than it first appears: R-018 recorded the attentive-distracted mapping as assumed, following D-29 for Experiment 1, but the Experiment 2 archive sidecars state the condition outright, and R-019 confirms 155 recordings labelled Attentive Condition and 147 labelled Distracted Condition. For Experiment 2 that mapping is read from the data, not inferred.
 
 The honest summary is that our EEG preprocessing recovers a session difference in absolute low-frequency power that includes alpha but is not confined to it, that the evidence for an alpha-specific component does not survive correction, and and that an ocular explanation can be set aside, because the effect survives EOG regression on reprocessed raw recordings (Section 8.8). We do not claim to have reproduced the paper's alpha-specific effect.
 
@@ -342,7 +344,28 @@ Table 4. R-021 regional delta contrasts with and without EOG regression, Holm-co
 
 This run also corrects something stated earlier in this report. Matching R-021 against the recovered tables, 191 of 263 recordings agree to within 1e-6 in the **corrected** variant and none at all in the uncorrected variant, with median absolute differences of 0.0000 and 0.0034 respectively. The recovered EEG features were therefore produced with EOG regression already applied, so R-016, R-017 and R-020 all rest on ocular-corrected data. Section 8.7's caution that no ocular correction had been applied anywhere was wrong on that point; it was right only of R-018's separate 15 October analysis.
 
-Two limits remain. EOG regression removes what the EOG channels explain and not ocular activity they miss, and ICA was deliberately not used because its component-selection threshold would have been chosen after seeing this result. And this is still not RQ3: the modality ranking has not been re-evaluated under an alternative cleaning method, and RQ3 remains not executed.
+Two limits remain. EOG regression removes what the EOG channels explain and not ocular activity they miss, and ICA was deliberately not used because its component-selection threshold would have been chosen after seeing this result. And this is not itself RQ3, which asks about the modality ranking rather than the condition contrast; Section 8.9 takes that up.
+
+### 8.9 RQ3: is the modality ranking stable under a different EEG cleaning?
+
+RQ3 asks whether the modality ranking survives cleaning EEG with ICA instead of EOG regression. R-022 answers it on the Experiment 2 cohort, which is the only place in this project where a modality ranking exists. The preregistered confirmatory version would compare rankings on the Experiment 1 track, whose physiology was never processed and whose raw recordings are not available to us; that version remains not executed.
+
+The comparison holds the R-016 cohort and its frozen folds fixed — 125 rows, 26 learners, the same eye features, ECG features and targets — and swaps only the 24 EEG columns between two cleanings of the same raw recordings. Each recording is filtered, bad-channel corrected and re-referenced once, then branches into EOG regression or ICA, so the cleaning method is the only difference. The D-35 matched ridge is rerun unchanged for each. All 125 recordings processed without failure.
+
+| Held-out Spearman rho | EOG regression | ICA |
+| --- | --- | --- |
+| EEG | +0.080 | +0.123 |
+| eye | -0.216 | -0.216 |
+| ECG | -0.292 | -0.292 |
+| eye + ECG | -0.327 | -0.327 |
+| all sensors | -0.049 | -0.098 |
+| training-selected single | +0.025 | +0.051 |
+
+Table 5. R-022 modality scores under the two cleanings. The eye, ECG and eye+ECG rows are identical to four decimals, which is the check that the comparison changed nothing but the EEG features.
+
+**The ranking is stable: EEG above eye above ECG under both cleanings.** The EEG minus eye contrast is +0.296, 90% CI [+0.115, +0.495] under EOG regression and +0.339 [+0.145, +0.522] under ICA; EEG minus eye+ECG is +0.407 [+0.238, +0.580] and +0.451 [+0.264, +0.609]. Every interval excludes zero. The fusion conclusion also holds and hardens: early fusion over all sensors never beats the training-selected single modality, at -0.074, 95% CI [-0.226, +0.059] under EOG regression and -0.149 [-0.291, -0.007] under ICA, where the interval excludes zero.
+
+Three qualifications matter. **FastICA failed to converge on 19 of the 125 recordings**, so the ICA column rests partly on unconverged decompositions and should be read as indicative rather than definitive. The from-raw EOG-regression variant agrees with R-017 in ranking and in the direction of every contrast but not in magnitude - R-017 reported EEG +0.053, all sensors -0.111 and selected single -0.066 against +0.080, -0.049 and +0.025 here - because R-017 used the recovered feature tables while this run recomputes from raw; it is a reproduction in direction, not in value. And stability of a ranking among three weak predictors is a modest claim: it says the ordering survives a processing choice, not that any modality predicts well. EEG's own correlation is +0.08 to +0.12.
 
 ## 9. Discussion
 
@@ -411,6 +434,7 @@ A fresh registered ECG detector validation remains a follow-up. R-015 documents 
 | R-019 paired Exp 2 eye condition rates | `results/R-019_exp2_eye_condition/` |
 | R-020 regional EEG condition contrasts | `results/R-020_exp2_eeg_topography/` |
 | R-021 from-raw EEG, corrected and uncorrected | `results/R-021_exp2_eeg_ocular_rerun/` |
+| R-022 EEG features by cleaning variant | `results/R-022_exp2_rq3_cleaning/` |
 | R-013 execution record | `results/R-013_eye_reconciliation/provenance/console.log` |
 
 ### 12.2 Example recorded output

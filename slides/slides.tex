@@ -64,7 +64,7 @@
     RQ2 & How much survives with individual-only features?
         & Individual half only; \runid{R-013} is logged under RQ1 \\
     RQ3 & Is the ranking stable under ICA instead of EOG regression?
-        & \alert{Not executed} \\
+        & Answered on Exp 2 (\runid{R-022}) \\
     RQ4 & Do deep encoders beat hand-crafted features?
         & \alert{Not executed} \\
     \bottomrule
@@ -206,6 +206,10 @@
       & Effect survives EOG regression: $d_z$ moves by at most $0.08$,
         all four regions still significant
       & From raw \\
+    \runid{R-022} & RQ3 cleaning comparison
+      & Ranking EEG $>$ eye $>$ ECG holds under both ICA and EOG regression;
+        fusion still no help
+      & Exploratory \\
     \bottomrule
   \end{tabular}
 
@@ -540,6 +544,45 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{RQ3 --- the ranking holds}
+  \framesubtitle{\runid{R-022}, \runid{R-016} cohort fixed: same 125 rows, same folds, only EEG recleaned}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \small
+      \begin{tabular}{@{}lrr@{}}
+        \toprule
+        held-out $\rho$ & EOG reg. & ICA \\
+        \midrule
+        \textbf{EEG}     & $+.080$ & $+.123$ \\
+        eye              & $-.216$ & $-.216$ \\
+        ECG              & $-.292$ & $-.292$ \\
+        eye+ECG          & $-.327$ & $-.327$ \\
+        all sensors      & $-.049$ & $-.098$ \\
+        selected single  & $+.025$ & $+.051$ \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      \caveat{Eye, ECG and eye+ECG are identical to four decimals --- the
+      check that nothing but the EEG features moved.}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Ranking stable: EEG $>$ eye $>$ ECG}
+        \small
+        Both EEG contrasts exclude zero under either cleaning. Fusion still
+        never beats the best single modality, and under ICA its deficit
+        excludes zero: $-.149$, 95\% CI $[-.291, -.007]$.
+      \end{block}
+      \caveat{Answered on the \emph{exploratory} Exp 2 cohort --- the only
+      place a ranking exists. The confirmatory RQ3 needs Exp 1 physiology
+      that was never processed. FastICA did not converge on 19 of 125
+      recordings, so read the ICA column as indicative. A stable ordering
+      among three weak predictors is a modest claim: EEG itself is only
+      $+.08$ to $+.12$.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 % ---------------------------------------------------------------- limits
 \begin{frame}{Limitations}
   \small
@@ -568,8 +611,10 @@
 \begin{frame}{What we did not do}
   \begin{block}{Stated plainly, because the plan promised it}
     \begin{itemize}
-      \item \textbf{RQ3} --- the ICA-versus-EOG-regression robustness check
-        was not executed.
+      \item \textbf{RQ3} --- answered on the Experiment 2 cohort
+        (\runid{R-022}). The preregistered \emph{confirmatory} version, on the
+        Experiment 1 track, was not executed: that physiology was never
+        processed.
       \item \textbf{RQ4} --- no deep encoder, no contrastive EEG--eye
         alignment, no attention decoding was fitted. \textbf{There is no
         registered deep-learning result in this project.}

@@ -1,0 +1,176 @@
+{
+  "run_id": "R-022",
+  "git_hash": "f90f87d",
+  "research_question": "RQ3",
+  "decision": "D-41 Proposed",
+  "deviation": "DV-11",
+  "venue": "exploratory Experiment 2 cohort (R-016 rows and frozen folds)",
+  "is_preregistered_confirmatory": false,
+  "raw_eeg_reprocessed": true,
+  "cohort_run": "R-016",
+  "comparison_run": "R-017",
+  "n_rows": 125,
+  "n_learners": 26,
+  "n_recordings_processed": 125,
+  "variants": {
+    "eog_regression": {
+      "metrics": {
+        "eye": {
+          "spearman": -0.2160724814594835,
+          "r2": -0.017276015340103035,
+          "mae": 0.8250313905737192,
+          "n": 125
+        },
+        "ecg": {
+          "spearman": -0.2917582964938527,
+          "r2": -0.0132996723560872,
+          "mae": 0.8261776693642224,
+          "n": 125
+        },
+        "eeg": {
+          "spearman": 0.07953716605140024,
+          "r2": 0.0029759216614957396,
+          "mae": 0.8110846294094697,
+          "n": 125
+        },
+        "eye_ecg": {
+          "spearman": -0.32730331326844775,
+          "r2": -0.01858676912747792,
+          "mae": 0.8270108563551651,
+          "n": 125
+        },
+        "all_sensors": {
+          "spearman": -0.04886478506832042,
+          "r2": 0.0011188289067192159,
+          "mae": 0.8173538298993936,
+          "n": 125
+        },
+        "selected_single": {
+          "spearman": 0.025089152471968607,
+          "r2": -0.005354892216234974,
+          "mae": 0.8168086729443078,
+          "n": 125
+        }
+      },
+      "comparisons": {
+        "eeg_minus_eye": {
+          "estimate": 0.2956096475108837,
+          "ci_low": 0.11521855954789866,
+          "ci_high": 0.4954973139219732,
+          "ci_level": 0.9
+        },
+        "eeg_minus_eye_ecg": {
+          "estimate": 0.406840479319848,
+          "ci_low": 0.23764357929316823,
+          "ci_high": 0.5799038743442414,
+          "ci_level": 0.9
+        },
+        "all_sensors_minus_selected_single": {
+          "estimate": -0.07395393754028903,
+          "ci_low": -0.22622863904536247,
+          "ci_high": 0.05948447597896077,
+          "ci_level": 0.95
+        }
+      },
+      "ranking": [
+        "eeg",
+        "eye",
+        "ecg"
+      ],
+      "selected_single_counts": {
+        "eye": 15,
+        "ecg": 7,
+        "eeg": 28
+      }
+    },
+    "ica": {
+      "metrics": {
+        "eye": {
+          "spearman": -0.2160724814594835,
+          "r2": -0.017276015340103035,
+          "mae": 0.8250313905737192,
+          "n": 125
+        },
+        "ecg": {
+          "spearman": -0.2917582964938527,
+          "r2": -0.0132996723560872,
+          "mae": 0.8261776693642224,
+          "n": 125
+        },
+        "eeg": {
+          "spearman": 0.12329245108834011,
+          "r2": 0.01929366857271475,
+          "mae": 0.8034883283191332,
+          "n": 125
+        },
+        "eye_ecg": {
+          "spearman": -0.32730331326844775,
+          "r2": -0.01858676912747792,
+          "mae": 0.8270108563551651,
+          "n": 125
+        },
+        "all_sensors": {
+          "spearman": -0.09832942113370238,
+          "r2": -0.030800368622378782,
+          "mae": 0.8307858822864272,
+          "n": 125
+        },
+        "selected_single": {
+          "spearman": 0.05084275527914384,
+          "r2": 0.0066948298389954974,
+          "mae": 0.8137429611457919,
+          "n": 125
+        }
+      },
+      "comparisons": {
+        "eeg_minus_eye": {
+          "estimate": 0.33936493254782363,
+          "ci_low": 0.14450646828362076,
+          "ci_high": 0.5219694116330935,
+          "ci_level": 0.9
+        },
+        "eeg_minus_eye_ecg": {
+          "estimate": 0.45059576435678783,
+          "ci_low": 0.2643335389811969,
+          "ci_high": 0.6093019099400949,
+          "ci_level": 0.9
+        },
+        "all_sensors_minus_selected_single": {
+          "estimate": -0.14917217641284622,
+          "ci_low": -0.29109844713519073,
+          "ci_high": -0.00705671090527066,
+          "ci_level": 0.95
+        }
+      },
+      "ranking": [
+        "eeg",
+        "eye",
+        "ecg"
+      ],
+      "selected_single_counts": {
+        "eye": 11,
+        "eeg": 29,
+        "ecg": 10
+      }
+    }
+  },
+  "ranking_stable": true,
+  "ranking_eog": [
+    "eeg",
+    "eye",
+    "ecg"
+  ],
+  "ranking_ica": [
+    "eeg",
+    "eye",
+    "ecg"
+  ],
+  "spearman_shift": {
+    "eye": 0.0,
+    "ecg": 0.0,
+    "eeg": 0.0438,
+    "eye_ecg": 0.0,
+    "all_sensors": -0.0495,
+    "selected_single": 0.0258
+  }
+}
