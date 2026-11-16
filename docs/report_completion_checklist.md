@@ -24,7 +24,7 @@ Draft: `report_draft.md` and editable Word export. This checklist is separate fr
 - [ ] Complete PPT and rehearse a demonstration of saved outputs and the actual pipeline.
       Draft deck built in LaTeX Beamer at `slides/slides.tex` (18 slides, compiles to
       `slides/slides.pdf`). Content review and rehearsal still outstanding.
-- [ ] Submit report, PPT and executable source with outputs by 17 Nov 2026 per latest team update.
+- [ ] Submit report, PPT and executable source with outputs by 18 Nov 2026 (moved from 17 Nov; same day as the presentation).
 
 ## Figure provenance
 
