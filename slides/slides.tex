@@ -66,7 +66,8 @@
     RQ3 & Is the ranking stable under ICA instead of EOG regression?
         & Answered on Exp 2 (\runid{R-022}) \\
     RQ4 & Do deep encoders beat hand-crafted features?
-        & \alert{Not attempted}; auxiliary decoder only (\runid{R-023}) \\
+        & Task C only (\runid{R-024}): no. Contrastive and fusion
+          \alert{not attempted} \\
     \bottomrule
   \end{tabular}
 
@@ -227,6 +228,10 @@
     \runid{R-023} & Attention decoding (Aux)
       & CNN $0.797$ vs hand-crafted $0.764$ balanced accuracy --- works, but
         no real gain. Not RQ4
+      & Exploratory \\
+    \runid{R-024} & RQ4 Task C, eye only
+      & Deep embeddings $\rho = -.077$ vs hand-crafted $-.050$;
+        difference $-.026$, CI spans zero
       & Exploratory \\
     \bottomrule
   \end{tabular}
@@ -642,6 +647,46 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{RQ4's actual question --- and the answer}
+  \framesubtitle{\runid{R-024}, Task C eye-only: deep embeddings vs hand-crafted, same 125 rows and folds}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \small
+      \begin{tabular}{@{}lr@{}}
+        \toprule
+        held-out $\rho$ vs \texttt{quiz\_z} & \\
+        \midrule
+        deep embeddings, 64-d  & $\mathbf{-.077}$ \\
+        \quad per seed         & $-.102$ $+.009$ $-.048$ \\
+        hand-crafted, 8 features & $\mathbf{-.050}$ \\
+        \midrule
+        difference             & $-.026$ \\
+        \quad 95\% CI          & $[-.206, +.158]$ \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      \caveat{Encoder pretrained \emph{inside each fold} on training learners
+      only --- otherwise the representation sees the test learners, even
+      without their quiz scores.}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Learned features give no advantage}
+        \small
+        Slightly worse, difference indistinguishable from zero, and
+        \textbf{both negative} --- neither ordering beats chance here. On
+        RQ4's own question, at this sample size, the answer is no.
+      \end{block}
+      \caveat{\textbf{One repeat, not ten}, so the levels are unstable: the
+      same hand-crafted features give $-.050$ here against $-.216$ in
+      \runid{R-017}. Read the contrast, not the levels. 64 dimensions on
+      $\approx$100 training rows is ill-conditioned (flagged on 3 of 15 fits),
+      so the deep arm is handicapped by dimensionality too. \textbf{Tasks A
+      and B not attempted} --- see \runid{D-43}.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 % ---------------------------------------------------------------- limits
 \begin{frame}{Limitations}
   \small
@@ -674,10 +719,11 @@
         (\runid{R-022}). The preregistered \emph{confirmatory} version, on the
         Experiment 1 track, was not executed: that physiology was never
         processed.
-      \item \textbf{RQ4} --- not attempted. No contrastive EEG--eye alignment,
-        no fusion encoder, no deep model of quiz score. We did fit the plan's
-        \emph{auxiliary} attention decoder (\runid{R-023}), which uses no quiz
-        scores and answers a different, easier question.
+      \item \textbf{RQ4} --- only Task C, eye-only (\runid{R-024}): learned
+        features give no advantage for quiz prediction. \textbf{Task A
+        (contrastive EEG--eye alignment) and Task B (fusion encoders) were not
+        attempted} --- 26 learners cannot support them, and \runid{D-43}
+        records that as a judgement, not an oversight.
       \item A fresh ECG detector run on Experiment 2 raw remains pending;
         \runid{R-015} audits saved tables instead.
     \end{itemize}

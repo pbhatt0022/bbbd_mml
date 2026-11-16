@@ -24,6 +24,7 @@ r20 = R("results/R-020_exp2_eeg_topography/exp2_eeg_topography.json")
 r21 = R("results/R-021_exp2_eeg_ocular_rerun/exp2_eeg_ocular_rerun.json")
 r22 = R("results/R-022_exp2_rq3_cleaning/exp2_rq3_cleaning.json")
 r23 = R("results/R-023_exp2_attention_cnn/exp2_attention_cnn.json")
+r24 = R("results/R-024_exp2_rq4_taskc/exp2_rq4_taskc.json")
 h0 = r4["h0b_attend_vs_distract"]
 
 # R-018 per-metric rows, keyed by metric name.
@@ -122,7 +123,20 @@ checks = [
     ("+0.034", f"{r23['cnn_minus_baseline']:+.3f}"),
     ("297 recordings", f"{r23['n_recordings']} recordings"),
     ("31 learners", f"{r23['n_learners']} learners"),
+    # R-024: Task C, both arms and the paired contrast.
+    ("-.077", s3(r24["deep"]["spearman"])),
+    ("-.050", s3(r24["handcrafted"]["spearman"])),
+    ("-.026", s3(r24["deep_minus_handcrafted"]["estimate"])),
+    ("-.206", s3(r24["deep_minus_handcrafted"]["ci_low"])),
+    ("+.158", s3(r24["deep_minus_handcrafted"]["ci_high"])),
 ]
+
+# The deck says the deep arm does not win and that RQ4 is still not executed.
+if r24["deep_beats_handcrafted"] or r24["rq4_executed_as_specified"]:
+    checks.append(("deep does not win; RQ4 not executed",
+                   "R-024 NOW CLAIMS A DEEP WIN OR RQ4"))
+if r24["tasks_a_and_b_attempted"]:
+    checks.append(("tasks A and B not attempted", "R-024 NOW CLAIMS TASKS A/B"))
 
 # The deck leans on the seed spread being comparable to the margin, and on
 # this run using no quiz scores.

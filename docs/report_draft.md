@@ -50,10 +50,11 @@ The objectives are to reconstruct signals and events from released raw files, va
 | Exp 2 EEG ocular control | Registered R-021 | First from-raw EEG run; the condition effect survives EOG regression with d_z changing by at most 0.08 |
 | RQ3 cleaning comparison | Registered R-022 | Modality ranking EEG > eye > ECG stable under both ICA and EOG regression; confirmatory version not executed |
 | Deep-learning component | Registered R-023 | Eye-only attention decoding at 0.797 against a 0.764 hand-crafted baseline; the auxiliary task, not RQ4 |
+| RQ4 Task C, eye only | Registered R-024 | Deep embeddings give no advantage for quiz prediction; Tasks A and B not attempted |
 | Eye quiz prediction | R-013 complete under DV-02 | Post-result correction. Across-modality inference pending. |
 | ECG and EEG processing | Batch code on physiology branch | Recovered physiology audited in R-015 and R-016 and used in exploratory R-017 |
 | ISC and multimodal fusion | Shared components or planned integration | Early fusion evaluated in R-017. Individual-versus-ISC comparison pending. |
-| Deep-learning track | Auxiliary attention decoder trained (R-023) | A trained BBBD model that does not beat hand-crafted features; RQ4 itself not attempted |
+| Deep-learning track | Auxiliary decoder (R-023) and Task C (R-024) | Deep models trained and evaluated; neither beats hand-crafted features. RQ4's contrastive and fusion tasks not attempted |
 
 The project's broad objectives are only partly achieved. A final scope decision, including the deep-learning requirement, remains for the team and faculty; this report does not treat an uncompleted objective as silently removed.
 
@@ -212,6 +213,7 @@ Results below come from the project run registry and saved artifacts. R-004 is e
 | Exp 2 EEG ocular control | R-021 | Exp 2 from raw; 264 of 291 recordings; 28 learners |
 | RQ3 cleaning comparison | R-022 | R-016 cohort fixed; 125 rows; 26 learners; EEG columns swapped |
 | Attention decoding | R-023 | Exp 2 both sessions; 297 recordings; 31 learners; 36,172 windows |
+| RQ4 Task C | R-024 | R-016 cohort; 125 rows; 26 learners; single repeat, three seeds |
 
 The validation and prediction samples are not interchangeable. In particular, the exploratory condition contrast must not be described as using the final prediction exclusion set.
 
@@ -388,6 +390,27 @@ The decoder works: about 0.80 balanced accuracy for learners it has never seen. 
 
 Two things keep this modest. The task is easy by construction — R-019 puts the saccade-rate condition effect at d_z = −1.17 — so high accuracy shows the pipeline is sound rather than that the architecture is good. And deciding the condition a learner was in is a different and simpler problem than predicting what they learned, which is what the rest of this report is about and where every model remains weak.
 
+### 8.11 RQ4 Task C: do learned eye features beat hand-crafted ones?
+
+Section 8.10 showed a deep model matching hand-crafted features on the easy auxiliary task. R-024 asks the question RQ4 was actually written to ask: do deep encoder embeddings make better features for **quiz prediction**? It answers that for the eye modality alone.
+
+**Tasks A and B were not attempted**, so RQ4 is still not executed as specified. D-43 records the reasoning rather than leaving it as an omission: contrastive EEG-eye alignment and three-modality fusion encoders, fitted on 125 rows from 26 learners, would produce a number with no interpretive value and a real risk of representation leakage in a pipeline assembled in one sitting.
+
+The design keeps the comparison honest in one specific way. For each outer fold the eye encoder is pretrained from scratch on the attend-versus-distract objective using **training-fold learners only**, then frozen before its embeddings are used. An encoder pretrained once on everybody would have shaped its representation around the test learners' signals, even without ever seeing their quiz scores. Embeddings are mean-pooled per recording and fed to ridge on the frozen R-016 rows and folds; the hand-crafted eight-feature ridge is rerun on the same single repeat so the two are paired.
+
+| Held-out Spearman rho, same 125 rows and folds | |
+| --- | --- |
+| deep embeddings, 64-d, three seeds averaged | **-0.077** |
+| \quad per seed | -0.102, +0.009, -0.048 |
+| hand-crafted, eight eye features | **-0.050** |
+| paired difference, 95% CI | **-0.026 [-0.206, +0.158]** |
+
+Table 7. R-024 Task C comparison. Both arms use identical rows, folds, target and repeat.
+
+**Learned features give no advantage.** The deep arm is slightly worse, the difference is indistinguishable from zero, and both correlations are negative, so neither ordering beats chance on this cohort. On RQ4's own question, the answer at this sample size is no.
+
+Three qualifications bound that. The run uses **one repeat rather than the preregistered ten**, which makes the levels unstable - the same hand-crafted features give -0.050 here against -0.216 in R-017's ten-repeat average, and the deep per-seed values span -0.102 to +0.009. Only the paired contrast within this run should be read, and neither number should be set against R-017's. Ridge on 64 dimensions over roughly 100 training rows is badly conditioned, and scikit-learn flagged ill-conditioning on three of the fifteen fits, so the deep arm is handicapped by dimensionality as much as by representation quality. And the encoder was pretrained for condition decoding, so this tests whether that particular representation transfers to quiz prediction, not whether any deep representation could.
+
 ## 9. Discussion
 
 ### 9.1 Interpretation and contributions
@@ -457,6 +480,7 @@ A fresh registered ECG detector validation remains a follow-up. R-015 documents 
 | R-021 from-raw EEG, corrected and uncorrected | `results/R-021_exp2_eeg_ocular_rerun/` |
 | R-022 EEG features by cleaning variant | `results/R-022_exp2_rq3_cleaning/` |
 | R-023 decoding scores and predictions | `results/R-023_exp2_attention_cnn/` |
+| R-024 Task C predictions, both arms | `results/R-024_exp2_rq4_taskc/` |
 | R-013 execution record | `results/R-013_eye_reconciliation/provenance/console.log` |
 
 ### 12.2 Example recorded output

@@ -1,0 +1,39 @@
+{
+  "run_id": "R-024",
+  "git_hash": "1ebc87e",
+  "task": "RQ4 Task C, eye only: deep encoder embeddings into ridge against quiz score",
+  "rq4_executed_as_specified": false,
+  "tasks_a_and_b_attempted": false,
+  "decision": "D-43 Proposed",
+  "deviation": "DV-13",
+  "cohort_run": "R-016",
+  "repeat": "group5_seed11",
+  "n_repeats": 1,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "embedding_dim": 64,
+  "n_rows": 125,
+  "n_learners": 26,
+  "encoder": "R-023 eye CNN, pretrained per outer fold on training learners only",
+  "deep": {
+    "spearman": -0.07673478523948712,
+    "r2": -0.023261414976072592,
+    "mae": 0.8200417742035291,
+    "n": 125
+  },
+  "handcrafted": {
+    "spearman": -0.05038133143525035,
+    "r2": -0.00891415415170238,
+    "mae": 0.8240590190170402,
+    "n": 125
+  },
+  "deep_minus_handcrafted": {
+    "estimate": -0.026353453804236773,
+    "ci_low": -0.20557397743339217,
+    "ci_high": 0.15795936005369793
+  },
+  "deep_beats_handcrafted": false
+}
