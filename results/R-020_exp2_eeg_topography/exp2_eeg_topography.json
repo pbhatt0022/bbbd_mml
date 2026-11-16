@@ -1,0 +1,79 @@
+{
+  "run_id": "R-020",
+  "git_hash": "8bbbe12",
+  "experiment": 2,
+  "decision": "D-39 Proposed",
+  "deviation": "DV-09",
+  "source": "Recovered regional EEG feature table",
+  "source_table": "MML_BBBD/04_results/eeg_full_features/eeg_features.csv",
+  "archive_sha256": "767f2d6be2c8933309ab14f5e01e71436a0adfed9754b0e510d379a5c95cf50a",
+  "raw_eeg_reprocessed": false,
+  "confirmatory": false,
+  "ocular_correction_applied": false,
+  "relative_power_is_near_compositional": true,
+  "n_recordings": 263,
+  "n_attentive": 139,
+  "n_distracted": 124,
+  "n_learners_paired": 28,
+  "primary": {
+    "name": "delta: frontal minus occipital",
+    "n_learners": 28,
+    "mean_diff": -0.006858440210844609,
+    "cohens_dz": -0.18663235558100394,
+    "t": -0.9875655989310282,
+    "p": 0.33213342799938944,
+    "pct_positive": 42.857142857142854,
+    "ci_low": -0.02060450026656278,
+    "ci_high": 0.006111834475103339,
+    "ci_level": 0.95,
+    "frontal_dominant": false
+  },
+  "delta_by_region": {
+    "frontal": {
+      "name": "frontal",
+      "n_learners": 28,
+      "mean_diff": 0.05023240938991128,
+      "cohens_dz": 1.0840986692073507,
+      "t": 5.736510950757451,
+      "p": 4.2478665047145045e-06,
+      "pct_positive": 85.71428571428571,
+      "p_holm_region_family": 1.2743599514143514e-05,
+      "band": "delta"
+    },
+    "central": {
+      "name": "central",
+      "n_learners": 28,
+      "mean_diff": 0.022314588831709503,
+      "cohens_dz": 0.7020906801618265,
+      "t": 3.715114675048765,
+      "p": 0.0009356442544784032,
+      "pct_positive": 67.85714285714286,
+      "p_holm_region_family": 0.0009356442544784032,
+      "band": "delta"
+    },
+    "parietal": {
+      "name": "parietal",
+      "n_learners": 28,
+      "mean_diff": 0.04655660844856232,
+      "cohens_dz": 1.0066639247650413,
+      "t": 5.32676479749707,
+      "p": 1.2672607053694174e-05,
+      "pct_positive": 78.57142857142857,
+      "p_holm_region_family": 2.534521410738835e-05,
+      "band": "delta"
+    },
+    "occipital": {
+      "name": "occipital",
+      "n_learners": 28,
+      "mean_diff": 0.057090849600755895,
+      "cohens_dz": 1.185219102619505,
+      "t": 6.271589989308705,
+      "p": 1.037601065878507e-06,
+      "pct_positive": 96.42857142857143,
+      "p_holm_region_family": 4.150404263514028e-06,
+      "band": "delta"
+    }
+  },
+  "n_bootstrap": 2000,
+  "seed": 2026
+}

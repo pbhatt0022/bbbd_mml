@@ -16,6 +16,7 @@ Draft: `report_draft.md` and editable Word export. This checklist is separate fr
 - [ ] Save executed notebooks with outputs; historical committed notebooks are currently empty of outputs.
 - [x] Incorporate R-013 and R-017 into the draft.
 - [x] Register the 15 Oct Experiment 2 EEG alpha analysis as R-018 (D-36 / DV-07) and report it in §8.5 as a session difference in absolute power that is **not** shown to be alpha-specific. A fresh raw EEG run remains pending, as does RQ3.
+- [x] Probe the ocular explanation a second way with R-020 (D-39 / DV-09): the low-frequency increase is distributed across the scalp, not frontal-dominant, which argues against it. Reported in §8.7. RQ3 remains the only thing that could settle it.
 - [x] Test the ocular explanation for R-018 by pairing the Experiment 2 eye conditions from raw (R-019, D-37 / DV-08). The test could not be run: blink rate is identically zero in all 302 recordings. §8.6 reports that, the saccade and fixation effects that did reproduce, and the indirect saccade argument. The ocular explanation for R-018 stays open and only RQ3 can close it.
 - [ ] Check final Word layout, figures, and submission copy.
 - [ ] Review report wording and remove pending-work statements only when evidence actually exists.

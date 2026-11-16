@@ -198,6 +198,10 @@
       & Saccades $-1.17$, fixations $-1.77$ in $d_z$; blink rate identically
         zero, so the ocular check could not run
       & Exploratory \\
+    \runid{R-020} & Exp 2 EEG topography
+      & Delta up in all four regions; frontal$-$occipital gradient
+        $-0.19$, $p = .33$ --- not frontal-dominant
+      & Retrospective \\
     \bottomrule
   \end{tabular}
 
@@ -311,6 +315,49 @@
         interpolated}, so a dropout rule finds nothing --- as the gaze rule
         did in Exp 1 (\runid{D-30}). \textbf{The ocular account stays open.}
       \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{The check that did work}
+  \framesubtitle{\runid{R-020}, recovered regional tables, 263 recordings, 28 learners, all paired}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \small
+      \begin{tabular}{@{}lrr@{}}
+        \toprule
+        delta, distract $-$ attend & $d_z$ & Holm $p$ \\
+        \midrule
+        occipital & $+1.19$ & 4.2e\text{-}06 \\
+        frontal   & $+1.08$ & 1.3e\text{-}05 \\
+        parietal  & $+1.01$ & 2.5e\text{-}05 \\
+        central   & $+0.70$ & 9.4e\text{-}04 \\
+        \midrule
+        \textbf{frontal $-$ occipital} & $\mathbf{-0.19}$ & $p = .33$ \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      \caveat{Primary statistic, fixed before the run: the within-learner
+      frontal-minus-occipital gradient. $-0.0069$, 95\% CI
+      $[-0.0206, +0.0061]$; 42.9\% of learners positive.}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Blinks are frontal. This isn't.}
+        \small
+        Ocular artefact projects to frontal electrodes, so an ocular source
+        predicts a \textbf{frontal gradient}. There is none --- the gradient
+        is indistinguishable from zero and leans \emph{posterior}. Delta
+        rises everywhere, most at occipital sites.
+
+        \vspace{0.3em}
+        \textbf{Evidence against the ocular account of \runid{R-018}.}
+      \end{block}
+      \caveat{It does not clear the EEG: no ocular correction was applied
+      anywhere, and only RQ3 could show the effect survives one. Relative
+      powers sum to $\approx$0.97, so delta rising forces the other bands
+      down --- only delta is primary. Different pipeline from
+      \runid{R-018}, so agreement is reassuring, not a replication.}
     \end{column}
   \end{columns}
 \end{frame}

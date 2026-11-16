@@ -20,6 +20,7 @@ r15 = R("results/R-015_exp2_ecg_recovery_audit/ecg_recovery_audit.json")
 r16 = R("results/R-016_exp2_common_cohort/exp2_cohort_audit.json")
 r18 = R("results/R-018_exp2_eeg_alpha_audit/eeg_alpha_audit.json")
 r19 = R("results/R-019_exp2_eye_condition/exp2_eye_condition.json")
+r20 = R("results/R-020_exp2_eeg_topography/exp2_eeg_topography.json")
 h0 = r4["h0b_attend_vs_distract"]
 
 # R-018 per-metric rows, keyed by metric name.
@@ -84,7 +85,20 @@ checks = [
     ("-1.77", f"{r19['contrasts']['fixation_rate_min']['cohens_dz']:+.2f}".replace("-0", "-")),
     ("31 learners", f"{r19['n_learners']} learners"),
     ("302 recordings", f"{r19['n_recordings']} recordings"),
+    # R-020: the four regional delta effects and the primary gradient.
+    ("+1.19", f"{r20['delta_by_region']['occipital']['cohens_dz']:+.2f}"),
+    ("+1.08", f"{r20['delta_by_region']['frontal']['cohens_dz']:+.2f}"),
+    ("+1.01", f"{r20['delta_by_region']['parietal']['cohens_dz']:+.2f}"),
+    ("+0.70", f"{r20['delta_by_region']['central']['cohens_dz']:+.2f}"),
+    ("-0.19", f"{r20['primary']['cohens_dz']:+.2f}".replace("-0.", "-0.")),
+    ("-0.0069", f"{r20['primary']['mean_diff']:+.4f}".replace("+", "")),
+    ("263 recordings", f"{r20['n_recordings']} recordings"),
+    ("28 learners", f"{r20['n_learners_paired']} learners"),
 ]
+
+# The deck says the gradient is not frontal-dominant; that must stay true.
+if r20["primary"]["frontal_dominant"]:
+    checks.append(("not frontal-dominant", "GRADIENT IS NOW FRONTAL-DOMINANT"))
 
 # The deck states blink rate is identically zero; that must stay true of the data.
 with (root / "results/R-019_exp2_eye_condition/"
