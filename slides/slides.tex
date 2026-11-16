@@ -2,9 +2,13 @@
 %
 % Build:  latexmk -pdf slides.tex        (from this directory)
 %
-% Every number on these slides comes from a registered run summary under
-% ../results/<RUN_ID>_*/ and is labelled with its run ID, per README rule 3.
-% Nothing here is computed at build time.
+% Written to be read by someone outside the project. Every abbreviation is
+% expanded, every number carries its interpretation, and no slide depends on
+% an internal run or decision identifier to make sense. Run identifiers appear
+% only as small provenance tags, explained once on the "How to read" slide.
+%
+% Every number here comes from a registered run under ../results/ and is
+% checked against those files by slides/check_slide_numbers.py.
 \documentclass[aspectratio=169,10pt]{beamer}
 
 \usetheme[workplace=vsu]{MU}
@@ -14,16 +18,19 @@
 \usepackage{booktabs}
 \usepackage{array}
 
-\newcommand{\runid}[1]{{\usebeamercolor[fg]{structure}\texttt{#1}}}
-\newcommand{\caveat}[1]{{\footnotesize\color{mubeamer@gray7}\sloppy\par#1\par}}
+% A small grey provenance tag. Never the only thing identifying a result.
+\newcommand{\runtag}[1]{{\scriptsize\color{mubeamer@gray7}[#1]}}
+\newcommand{\sidenote}[1]{{\scriptsize\color{mubeamer@gray7}\sloppy\par#1\par}}
+\newcommand{\reads}[1]{\textbf{How to read this:} #1}
 
-\title[Can eye tracking and ECG match EEG?]{Can eye tracking and ECG match EEG?}
-\subtitle{Predicting quiz performance for unseen learners from the Brain,
-  Body and Behavior Dataset}
+\title[Can eye tracking and heart signals match EEG?]%
+      {Can eye tracking and heart signals match brain recording?}
+\subtitle{Predicting how much a learner remembers from an educational video,
+  for learners the model has never seen}
 \author[Bhatt \& Tanmayee]{Priyanka Bhatt (2023UG000127) \and Tanmayee K M (2023UG000134)}
 \institute{DATA404 Multimodal Machine Learning \\ Vidyashilp University
   \quad$\cdot$\quad Dr.\ Minati Rath}
-\date[18 Nov 2026]{18 November 2026}
+\date{}
 
 \begin{document}
 
@@ -32,289 +39,444 @@
 \end{frame}
 
 % ---------------------------------------------------------------- question
-\begin{frame}{The question}
-  \begin{block}{Research question}
-    Educational-neuroscience work predicts learning from EEG. EEG is
-    expensive and intrusive. \textbf{Can cheaper sensors --- eye tracking and
-    ECG --- carry the same signal, and does combining them help?}
+\begin{frame}{The question we set out to answer}
+  \begin{block}{Motivation}
+    Research in educational neuroscience predicts how much a student learns
+    from \textbf{EEG} --- electroencephalography, which records electrical
+    brain activity through electrodes on the scalp. EEG is expensive,
+    uncomfortable, and impractical in a classroom.
   \end{block}
 
   \vspace{0.4em}
-  \begin{itemize}
-    \item Outcome: memory-item proportion correct, $z$-scored within video
-      (\runid{D-27}).
-    \item Evaluation: held-out \emph{learners}, never held-out rows from
-      learners the model has already seen.
-    \item Everything is predicted from \textbf{one learner's own} signal ---
-      no peer-group features.
+  \begin{block}{Our question}
+    Can \textbf{cheaper, less intrusive sensors} --- an eye tracker, and
+    \textbf{ECG} (electrocardiography, a heart-activity recording) --- predict
+    learning as well as EEG does? And does combining several sensors predict
+    better than the best single one?
+  \end{block}
+
+  \vspace{0.4em}
+  \begin{itemize}\small
+    \item \textbf{What we predict:} the proportion of memory questions a
+      learner answers correctly after watching a video, standardised within
+      each video so that videos of different difficulty are comparable.
+    \item \textbf{Who we predict for:} learners the model has \emph{never seen}
+      --- much harder than predicting a new video for a known learner.
+    \item \textbf{What we predict from:} that learner's own signals only, never
+      their similarity to the group.
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Research questions and what this deck reports}
+% ---------------------------------------------------------------- glossary
+\begin{frame}{How to read these slides}
   \small
-  \begin{tabular}{@{}p{0.07\textwidth}p{0.62\textwidth}p{0.24\textwidth}@{}}
-    \toprule
-    \textbf{ID} & \textbf{Question} & \textbf{Status} \\
-    \midrule
-    RQ0 & Do our from-raw pipelines reproduce the paper's effects?
-        & Eye \runid{R-004}; EEG \runid{R-018}, partly \\
-    RQ1 & How well does each modality and fusion predict quiz score for
-          unseen learners?
-        & Eye \runid{R-013}; matched \runid{R-017} \\
-    RQ2 & How much survives with individual-only features?
-        & Individual half only; \runid{R-013} is logged under RQ1 \\
-    RQ3 & Is the ranking stable under ICA instead of EOG regression?
-        & Answered on Exp 2 (\runid{R-022}) \\
-    RQ4 & Do deep encoders beat hand-crafted features?
-        & Task C only (\runid{R-024}): no. Contrastive and fusion
-          \alert{not attempted} \\
-    \bottomrule
-  \end{tabular}
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \textbf{Terms used throughout}
+      \begin{itemize}\small
+        \item \textbf{EEG} --- electroencephalography, brain electrical
+          activity from scalp electrodes.
+        \item \textbf{ECG} --- electrocardiography, heart electrical activity.
+        \item \textbf{Saccade} --- a rapid jump of the eyes between points.
+          \textbf{Fixation} --- a pause between saccades.
+        \item \textbf{Attentive / distracted} --- the two viewing conditions
+          in the dataset. Learners watched each video once while attending,
+          and once while performing a distracting task.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \textbf{Statistics used throughout}
+      \begin{itemize}\small
+        \item \textbf{Spearman's $\rho$ (rho)} --- rank correlation between
+          predicted and actual scores. $+1$ = perfect ordering of learners,
+          $0$ = chance, negative = ordered backwards.
+        \item \textbf{Cohen's $d_z$} --- size of a paired difference in
+          standard deviations. $0.2$ small, $0.5$ medium, $0.8$ large.
+        \item \textbf{95\% confidence interval} --- the range the true value
+          plausibly lies in. If it contains $0$, the effect is not established.
+        \item \textbf{$p$-value} --- probability of seeing this result if
+          nothing real were there. Below $.05$ is conventionally notable.
+      \end{itemize}
+    \end{column}
+  \end{columns}
 
-  \vspace{0.8em}
-  \caveat{RQ3 and RQ4 are stated as not executed throughout. No deep-learning
-  or fusion-encoder result is claimed anywhere in this deck or the report.}
+  \vspace{0.5em}
+  \sidenote{Every result in this deck was produced by a numbered, logged
+  analysis run, so each figure can be traced back to the exact code,
+  configuration and random seed that produced it. Those identifiers appear as
+  small grey tags like \runtag{Run R-013}. They are for traceability only --- no
+  slide depends on them to be understood.}
 \end{frame}
 
 % ---------------------------------------------------------------- data
-\begin{frame}{Data}
+\begin{frame}{The dataset}
   \begin{columns}[T]
-    \begin{column}{0.56\textwidth}
+    \begin{column}{0.55\textwidth}
       \small
-      \textbf{Brain, Body and Behavior Dataset} \\
-      Madsen, Kuppa \& Parra (2026), \emph{Scientific Data} 13:920.
-      Zenodo record 19241964, CC BY 4.0. Raw data is not in our repository.
+      \textbf{Brain, Body and Behavior Dataset (BBBD)} \\
+      Madsen, Kuppa \& Parra, \emph{Scientific Data}, 2026. Publicly released
+      under a Creative Commons licence. The raw recordings are not stored in
+      our code repository.
 
       \vspace{0.5em}
-      \textbf{Experiment 1} --- 27 learners with both gaze and quiz data,
-      5 videos, attentive and distracted sessions, 263 eye recordings. \\
-      \textbf{Experiment 2} --- a separate recording set: 155 attentive and
-      147 distracted gaze/pupil pairs. We use the attentive session only.
+      Learners watched \textbf{five educational videos} while EEG, ECG and
+      eye movements were recorded, then answered a quiz.
 
-      \vspace{0.6em}
-      Five educational videos and a quiz. We use \emph{memory} items only ---
-      \emph{domain} items probe prior knowledge, which the preregistration
-      lists as a covariate, not the outcome.
+      \vspace{0.5em}
+      \textbf{Experiment 1} --- 27 learners who have both eye-tracking and
+      quiz data; 263 eye recordings across attentive and distracted viewing.
 
-      \vspace{0.3em}
-      \caveat{Quiz timing is taken from the paper, not the release README,
-      which contradicts itself. The paper describes Experiment 2 as incidental
-      learning, quizzed after the attentive block and before distracted
-      viewing.}
+      \textbf{Experiment 2} --- a separate set of recordings: 155 attentive
+      and 147 distracted eye recordings.
+
+      \vspace{0.5em}
+      We score only the \textbf{memory questions} (what the learner took from
+      the video), not the \textbf{domain questions} (what they already knew
+      beforehand), because the latter measure prior knowledge rather than
+      learning.
     \end{column}
-    \begin{column}{0.40\textwidth}
-      \begin{block}{Two inferred mappings}
+    \begin{column}{0.41\textwidth}
+      \begin{block}{Two things the dataset does not state, which we had to infer}
         \small
-        \runid{D-29} \,\,\texttt{ses-01} is the \textbf{attend} session.
-        Identified from blink rates, which do not depend on calibration.
-        No source states it directly.
+        \textbf{Which session was the attentive one.} The documentation does
+        not say. We identified it from blink rates, which rise when distracted
+        and which do not depend on any screen measurement.
 
         \vspace{0.4em}
-        \runid{D-26} \,\,33.64 px/deg from a 27\,\textquotedbl{} screen at
-        60\,cm. The \textbf{resolution is inferred}; saccade and fixation
-        rates scale with it.
+        \textbf{The screen resolution.} Needed to convert eye positions from
+        pixels into degrees of visual angle. The published description gives
+        screen size and viewing distance but not resolution, so we inferred
+        it. Saccade and fixation rates scale with this number; blink rates do
+        not.
+      \end{block}
+      \sidenote{Both assumptions are stated wherever they affect a result.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------- method
+\begin{frame}{What we measured, and how we tested it}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{The eight eye measurements}
+      \begin{itemize}\small
+        \item how often the eyes jumped (saccade rate) and paused
+          (fixation rate), and how long pauses lasted
+        \item how often the learner blinked
+        \item average pupil size, and how much pupil size varied
+        \item how widely gaze was spread across the screen
+        \item the fraction of the recording with unusable eye data
+      \end{itemize}
+
+      \vspace{0.4em}
+      \textbf{Quality exclusions.} A recording is dropped if more than half
+      its pupil data is missing. In Experiment 1 this removed two learners
+      entirely, leaving \textbf{25 learners and 120 learner--video rows}.
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{How we evaluate}
+      \begin{itemize}\small
+        \item \textbf{Ridge regression}, a standard linear model that
+          penalises large coefficients to avoid overfitting small samples.
+        \item \textbf{Grouped cross-validation:} the data is split five ways
+          \emph{by learner}, so a learner is never in both training and test.
+          Repeated ten times with different splits and averaged.
+        \item The model's strength setting is chosen using only training
+          data, inside a further split, so test data never influences it.
+        \item \textbf{Permutation test} (1{,}000 times): shuffle the scores
+          and refit, to see how often chance alone does this well.
+        \item \textbf{Bootstrap} (2{,}000 times): resample learners to measure
+          how precisely the result is known.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------- pipeline
+\begin{frame}{The analysis pipeline}
+  \centering
+  \includegraphics[width=\textwidth,height=0.74\textheight,keepaspectratio]{figures/pipeline_talk.png}
+
+  \sidenote{\reads{Each box is a processing stage. Solid boxes were executed and
+  logged; the dashed boxes at the bottom were never run and no results are
+  claimed from them. The top band is the completed Experiment 1 eye analysis;
+  the middle band is the Experiment 2 multi-sensor comparison. All
+  preprocessing is our own, starting from the raw recordings.}}
+\end{frame}
+
+% ---------------------------------------------------------------- overview
+\begin{frame}{What we ran, in order}
+  \small
+  \begin{tabular}{@{}p{0.36\textwidth}p{0.58\textwidth}@{}}
+    \toprule
+    \textbf{Stage} & \textbf{What it established} \\
+    \midrule
+    Validating the eye pipeline
+      & Our own processing reproduces the published attentive-versus-distracted
+        differences in eye movement \\
+    Predicting quiz score from eye data
+      & A weak ordering of learners, with wide uncertainty \\
+    Auditing our own analysis code
+      & Three implementation defects found and disclosed; the analysis was
+        rerun correctly \\
+    Building a matched multi-sensor sample
+      & 125 learner--video rows with eye, heart and brain data all present \\
+    Comparing sensors against each other
+      & Brain recording ranked above eye, eye above heart; combining sensors
+        did not help \\
+    Checking the brain result is not eye artefact
+      & Four separate checks, including reprocessing the raw brain recordings \\
+    Deep learning
+      & Two neural-network experiments; neither beat simple hand-designed
+        measurements \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.6em}
+  \sidenote{Each stage is a separately logged analysis run. Where an earlier
+  result was superseded, the original was kept unchanged rather than edited.}
+\end{frame}
+
+% ---------------------------------------------------------------- RQ0 eye
+\begin{frame}{Validation: our pipeline reproduces the published effects}
+  \framesubtitle{Experiment 1, 27 learners, 263 recordings \runtag{Run R-004}}
+  \centering
+  \includegraphics[width=\textwidth,height=0.50\textheight,keepaspectratio]{figures/r004_rates_talk.png}
+
+  \vspace{0.2em}
+  {\footnotesize
+  Saccades: $t(26) = 6.18$, $p = 1.6\mathrm{e}{-6}$, $d_z = 1.19$ (very large)
+  \quad\quad
+  Blinks: $t = -3.04$, $p = .005$, $d_z = -0.58$ (medium)}
+
+  \par\vspace{0.2em}
+  \raggedright
+  \sidenote{\reads{Each pair of bars compares the same learners in the two viewing
+  conditions. When distracted, learners made \emph{fewer} eye movements
+  (138.0 down to 93.2 per minute) and blinked \emph{more} (1.25 up to 2.90 per
+  minute). Both differences match the direction and size reported by the
+  dataset's authors, which tells us our processing is working correctly. The
+  blink result is the more convincing of the two because blinks are computed
+  from pupil data and do not depend on the screen measurement we had to
+  infer.}}
+\end{frame}
+
+% ---------------------------------------------------------------- audit
+\begin{frame}{We audited our own analysis code --- and found three defects}
+  \framesubtitle{Disclosed before rerunning, not after seeing the new result}
+  \small
+  \begin{tabular}{@{}p{0.45\textwidth}p{0.49\textwidth}@{}}
+    \toprule
+    \textbf{What the first analysis actually did} & \textbf{What the corrected
+    analysis does} \\
+    \midrule
+    Chose the model's strength setting with a shortcut that ignored the
+    learner grouping
+      & Chooses it inside a properly grouped split, so no learner influences
+        their own prediction \\
+    The significance test used one data split while the reported result used
+    all ten
+      & All ten splits refitted for every one of the 1{,}000 permutations \\
+    Measured prediction error against the wrong baseline
+      & Uses the conventional baseline, and reports the alternative
+        separately rather than instead \\
+    Corrected for multiple comparisons across one sensor only
+      & Leaves the across-sensor correction explicitly unresolved \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.7em}
+  \begin{block}{What this costs us, stated plainly}
+    Because the correction was designed \emph{after} seeing the original
+    result, it cannot count as a clean confirmatory test, and we do not claim
+    it as one. The original analysis and its outputs are preserved unchanged
+    rather than overwritten.
+  \end{block}
+\end{frame}
+
+\begin{frame}{Predicting quiz score from eye movements alone}
+  \framesubtitle{Experiment 1, 25 learners, 120 learner--video rows \runtag{Run R-013}}
+  \begin{columns}[T]
+    \begin{column}{0.44\textwidth}
+      \scriptsize
+      \begin{tabular}{@{}lr@{}}
+        \toprule
+        Rank correlation, Spearman $\rho$ & $+0.108$ \\
+        95\% confidence interval & $[-0.126, +0.354]$ \\
+        Permutation $p$-value & $.032$ \\
+        Variance explained, $R^2$ & $-0.031$ \\
+        Gain over guessing the mean & $+0.027$ \\
+        Mean absolute error & $0.759$ \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      \sidenote{Across the ten repeated splits the correlation ranged from
+      $-0.077$ to $+0.279$ --- a single split could easily have shown nothing
+      at all.}
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Two statistics that disagree --- and both are right}
+        \small
+        The \textbf{permutation test} asks: could chance alone order learners
+        this well? It says probably not ($p = .032$).
+
+        The \textbf{confidence interval} asks: how precisely do we know this
+        correlation from only 25 learners? It says barely at all --- the
+        interval includes zero.
+      \end{block}
+      \sidenote{\textbf{What this means:} the eye measurements carry a weak signal
+      about who scored better, but not enough to state the effect's size with
+      confidence. The negative $R^2$ says the model orders learners slightly
+      better than chance while predicting \emph{how much} they scored worse
+      than simply guessing the average. We therefore describe this as a weak
+      ordering, not a working predictor.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------- Exp 2
+\begin{frame}{Building a fair multi-sensor comparison}
+  \small
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      To compare sensors honestly, every sensor must be judged on
+      \textbf{exactly the same learners, videos and data splits}. Otherwise a
+      sensor could look better simply by being measured on an easier sample.
+
+      \vspace{0.5em}
+      \textbf{Eye} --- processed from the raw recordings; 5 recordings
+      excluded for poor pupil quality.
+
+      \textbf{Heart} --- we required the heartbeat detector to have found at
+      least 80\% of the reference heartbeats: \textbf{140 eligible}, with
+      \textbf{15 unevaluable} because processing had failed.
+
+      \textbf{Brain} --- \textbf{139 attentive rows} passed quality control.
+
+      \vspace{0.5em}
+      Keeping only rows where all three sensors and a quiz score exist gives
+      the shared sample: \textbf{125 learner--video rows, 26 learners,
+      5 videos}.
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{A limitation we state before the results, not after}
+        \small
+        The heart and brain measurements for this comparison come from
+        \textbf{previously computed tables} recovered from our earlier
+        processing, not from a fresh run at the time. We verified the code
+        that produced them matches our repository, but we cannot certify the
+        exact execution.
+      \end{block}
+      \sidenote{Everything built on those tables is therefore labelled
+      exploratory. The brain results were later re-derived from the raw
+      recordings, which is reported three slides on. The Experiment 1
+      analysis is entirely separate and unaffected.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Comparing the sensors}
+  \framesubtitle{Same 125 rows, same learners, same splits for every sensor \runtag{Run R-017}}
+  \centering
+  \includegraphics[width=\textwidth]{figures/r017_matched_talk.png}
+
+  \vspace{-0.2em}
+  \sidenote{\reads{\emph{Left:} how well each sensor predicted quiz score, as a
+  rank correlation. Zero is chance; bars to the left of zero ordered learners
+  backwards. \emph{Right:} differences between sensors, with the horizontal
+  line showing the 95\% confidence interval. The grey band marks the margin
+  within which two sensors would be considered equivalent. A difference is
+  established only if its whole interval sits clear of zero.}}
+\end{frame}
+
+\begin{frame}{What the sensor comparison does and does not show}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \textbf{What we can say:}
+      \begin{itemize}\small
+        \item Brain recording ordered learners better than eye tracking by
+          $+.269$, and better than eye and heart combined by $+.380$. Both
+          intervals sit clear of zero.
+        \item Neither interval fits inside the pre-set equivalence margin, so
+          \textbf{we did not show that the cheaper sensors match EEG}.
+        \item The eye interval overlaps that margin, so neither did we show
+          they are meaningfully \emph{worse}.
+        \item Combining all sensors scored $-.044$ against the best single
+          sensor, 95\% interval $[-.177, +.073]$ ---
+          \textbf{no benefit from combining}.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{block}{Four reasons to hold this loosely}
+        \small
+        \begin{enumerate}
+          \item Brain recording itself scored only $+.053$ --- barely above
+            chance. A comparison between a weak predictor and weaker ones is
+            not a strong claim about EEG.
+          \item The intervals resample learners but do not refit the models.
+          \item No permutation test was run for this comparison.
+          \item The heart and brain inputs come from recovered tables.
+        \end{enumerate}
       \end{block}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Pipeline}
-  \centering
-  \includegraphics[width=\textwidth,height=0.83\textheight,keepaspectratio]{figures/pipeline.png}
-
-  \caveat{Solid boxes carry the run ID that registered them; dashed boxes were
-  never executed.}
-\end{frame}
-
-\begin{frame}{Method}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \textbf{Features (individual only, eye)}
-      \begin{itemize}\small
-        \item invalid fraction, saccade rate, blink rate
-        \item fixation rate, mean fixation duration
-        \item mean pupil, pupil difference SD, gaze dispersion
-      \end{itemize}
-
-      \vspace{0.5em}
-      \textbf{Exclusions} \,\,\runid{D-30} \\
-      {\small Pupil validity, $>50\%$ dropout. Drops two learners entirely:
-      25 learners, 120 rows in Experiment 1.}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \textbf{Evaluation}
-      \begin{itemize}\small
-        \item Ridge, 5-fold grouped by learner $\times$ 10 repeats,
-          predictions averaged
-        \item Inner 3-fold \texttt{GroupKFold} for $\alpha$; scaling fitted
-          \emph{inside} each inner fold
-        \item 1{,}000 within-video permutations, full CV refit
-        \item 2{,}000 learner-bootstrap resamples; seed 2026
-      \end{itemize}
-
-      \vspace{0.5em}
-      \caveat{Folds frozen once and shared. Experiment 1 uses
-      \texttt{results/folds.json}; Experiment 2 uses a separate artifact
-      (\runid{R-016}). The permutation and bootstrap counts above are the
-      Experiment 1 inference (\runid{R-013}); \runid{R-017} ran the bootstrap
-      only, with no permutation test.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ---------------------------------------------------------------- ledger
-\begin{frame}{Evidence ledger --- Experiment 1}
-  \scriptsize
-  \begin{tabular}{@{}llp{0.50\textwidth}l@{}}
-    \toprule
-    \textbf{Run} & \textbf{What} & \textbf{Headline} & \textbf{Type} \\
-    \midrule
-    \runid{R-004} & Exp 1 eye validation
-      & Attend $\rightarrow$ distract: saccades 138.0 $\rightarrow$ 93.2/min;
-        blinks 1.25 $\rightarrow$ 2.90/min
-      & Exploratory \\
-    \runid{R-012} & Exp 1 eye prediction
-      & Superseded; implementation discrepancies disclosed in \runid{DV-02}
-      & Historical \\
-    \runid{R-013} & Corrected eye baseline
-      & $\rho = +0.108$, 95\% CI $[-0.126, +0.354]$, raw $p = .032$
-      & Post-result \\
-    \bottomrule
-  \end{tabular}
-
-  \vspace{0.8em}
-  \caveat{A number appears in this deck only if it has a run ID. Historical
-  rows are preserved, never edited.}
-\end{frame}
-
-\begin{frame}{Evidence ledger --- Experiment 2}
-  \scriptsize
-  \begin{tabular}{@{}llp{0.50\textwidth}l@{}}
-    \toprule
-    \textbf{Run} & \textbf{What} & \textbf{Headline} & \textbf{Type} \\
-    \midrule
-    \runid{R-014} & Exp 2 eye features
-      & 155 rows, 5 pupil-quality exclusions; \runid{D-26} calibration assumed
-      & Preprocessing \\
-    \runid{R-015} & Exp 2 ECG audit
-      & 140 eligible, 15 unevaluable, 0 below the 0.80 recall cutoff
-      & Retrospective \\
-    \runid{R-016} & Exp 2 cohort + folds
-      & 139 EEG rows pass QC; common cohort 125 rows, 26 learners, 5 videos
-      & Preparation \\
-    \runid{R-017} & Matched comparison
-      & EEG $+.053$ vs eye $-.216$, ECG $-.292$, eye+ECG $-.327$
-      & Exploratory \\
-    \runid{R-018} & Exp 2 EEG condition audit
-      & Power up when distracted, posterior alpha $d_z = +.80$; delta, theta
-        and beta move too, so not confined to alpha
-      & Retrospective \\
-    \runid{R-019} & Exp 2 eye, both sessions
-      & Saccades $-1.17$, fixations $-1.77$ in $d_z$; blink rate identically
-        zero, so the ocular check could not run
-      & Exploratory \\
-    \runid{R-020} & Exp 2 EEG topography
-      & Delta up in all four regions; frontal$-$occipital gradient
-        $-0.19$, $p = .33$ --- not frontal-dominant
-      & Retrospective \\
-    \runid{R-021} & Exp 2 EEG from raw
-      & Effect survives EOG regression: $d_z$ moves by at most $0.08$,
-        all four regions still significant
-      & From raw \\
-    \runid{R-022} & RQ3 cleaning comparison
-      & Ranking EEG $>$ eye $>$ ECG holds under both ICA and EOG regression;
-        fusion still no help
-      & Exploratory \\
-    \runid{R-023} & Attention decoding (Aux)
-      & CNN $0.797$ vs hand-crafted $0.764$ balanced accuracy --- works, but
-        no real gain. Not RQ4
-      & Exploratory \\
-    \runid{R-024} & RQ4 Task C, eye only
-      & Deep embeddings $\rho = -.077$ vs hand-crafted $-.050$;
-        difference $-.026$, CI spans zero
-      & Exploratory \\
-    \bottomrule
-  \end{tabular}
-
-  \vspace{0.8em}
-  \caveat{A number appears in this deck only if it has a run ID. Historical
-  rows are preserved, never edited.}
-\end{frame}
-
-% ---------------------------------------------------------------- RQ0
-\begin{frame}{RQ0 --- our pipeline reproduces the published effects}
-  \framesubtitle{\runid{R-004}, Experiment 1, 27 learners, 263 recordings}
-  \centering
-  \includegraphics[width=\textwidth,height=0.56\textheight,keepaspectratio]{figures/r004_rates.png}
-
-  \vspace{0.2em}
-  {\footnotesize
-  Saccades $t(26) = 6.18$, $p = 1.6\mathrm{e}{-6}$, $d_z = 1.19$\\
-  Blinks $t = -3.04$, $p = .005$, $d_z = -0.58$}
-
-  \par\vspace{0.2em}
-  \raggedright
-  \caveat{Blinks come from pupil dropout and are independent of the px/deg
-  calibration --- the strongest evidence the pipeline is correct. Our saccade
-  rates (138 $\rightarrow$ 93) sit close to the authors' own derivative counts
-  (136 $\rightarrow$ 89). Exploratory: \texttt{prereg-v1} was not yet tagged.}
-\end{frame}
-
-\begin{frame}{RQ0, the EEG half --- a result we had to argue down}
-  \framesubtitle{\runid{R-018}, Experiment 2, 291 recordings, 30 learners, all paired}
+% ---------------------------------------------------------------- EEG arc
+\begin{frame}{A brain-activity difference between the two conditions}
+  \framesubtitle{Experiment 2, 291 recordings, 30 learners \runtag{Run R-018}}
   \begin{columns}[T]
     \begin{column}{0.52\textwidth}
       \scriptsize
       \begin{tabular}{@{}lrr@{}}
         \toprule
-        distracted $-$ attentive & $d_z$ & Holm $p$ \\
+        distracted minus attentive & $d_z$ & corrected $p$ \\
         \midrule
-        log alpha, posterior      & $+0.80$ & $.0009$ \\
-        log alpha, all            & $+0.65$ & $.0061$ \\
-        relative alpha, all       & $+0.11$ & $1.00$ \\
-        relative alpha, posterior & $-0.00$ & $1.00$ \\
-        alpha vs flanks, all      & $+0.00$ & $1.00$ \\
-        alpha vs flanks, posterior& $+0.41$ & $.13$ \\
+        alpha power, rear of head  & $+0.80$ & $.0009$ \\
+        alpha power, whole scalp   & $+0.65$ & $.0061$ \\
+        alpha share, whole scalp   & $+0.11$ & $1.00$ \\
+        alpha share, rear of head  & $-0.00$ & $1.00$ \\
+        alpha vs neighbours, whole scalp & $+0.00$ & $1.00$ \\
+        alpha vs neighbours, rear of head & $+0.41$ & $.13$ \\
         \midrule
-        \textit{log delta, posterior} & $+0.71$ & --- \\
-        \textit{log delta, all}       & $+0.60$ & --- \\
+        \textit{delta power, rear of head} & $+0.71$ & --- \\
+        \textit{delta power, whole scalp}  & $+0.60$ & --- \\
         \bottomrule
       \end{tabular}
 
       \vspace{0.4em}
-      \caveat{Control bands are descriptive, outside the Holm family.
-      Relative alpha divides by 1--40\,Hz power, which includes the rising
-      delta, so its null is biased toward zero here. No EOG regression or ICA,
-      and blinks more than double when distracted (\runid{R-004}), so ocular
-      contamination is live. Audit of saved tables, not a raw rerun.}
+      \sidenote{\reads{Alpha and delta are frequency bands of brain activity.
+      Published work reports \emph{alpha specifically} rising when attention
+      drops, so our test is whether the rise is confined to alpha.}}
     \end{column}
     \begin{column}{0.44\textwidth}
-      \begin{block}{Why we do not claim the replication}
+      \begin{block}{Why we do not claim a replication}
         \small
-        Alpha has the largest $d_z$ of any band --- but the rise is
-        \textbf{not confined to alpha}. Delta, theta and posterior beta move
-        too, delta furthest in raw terms ($+.143$ vs $+.058$), and the profile
-        falls away with frequency.
+        Alpha shows the largest effect of any band --- but the rise is
+        \textbf{not confined to alpha}. Delta, theta and beta move too, and
+        delta shifts furthest of all ($+.143$ against alpha's $+.058$).
 
         \vspace{0.3em}
-        Alpha above its own flanking bands, the alpha-specific test, is
-        $d_z = +0.41$, \textbf{Holm $p = .13$} --- suggestive at $n = 30$,
-        not established.
+        The test designed to isolate alpha --- comparing it against its
+        neighbouring frequencies --- gives $d_z = +0.41$ but does not survive
+        correction for multiple comparisons ($p = .13$).
       \end{block}
-      \caveat{30 learners, not the 26 behind \runid{R-017}. Pre-freeze, so
-      exploratory. No quiz scores, so RQ1 and RQ2 are untouched.}
+      \sidenote{So brain activity does differ between conditions, but we cannot
+      attribute the difference to the alpha band specifically. The next three
+      slides ask whether it is a real brain signal at all.}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{The check we could not run}
-  \framesubtitle{\runid{R-019}, Experiment 2 from raw, both sessions, 31 learners, all paired}
+\begin{frame}{Is it really brain activity, or just the eyes?}
+  \framesubtitle{Test 1 of 3: count blinks in both conditions \runtag{Run R-019}}
   \begin{columns}[T]
     \begin{column}{0.50\textwidth}
-      \small
+      \scriptsize
       \begin{tabular}{@{}lrrr@{}}
         \toprule
-        per minute & attend & distract & $d_z$ \\
+        events per minute & attent. & distr. & $d_z$ \\
         \midrule
         \textbf{blinks}   & \textbf{0.00} & \textbf{0.00} & \alert{---} \\
         saccades  & 148.1 & 106.4 & $-1.17$ \\
@@ -322,367 +484,246 @@
         \bottomrule
       \end{tabular}
 
-      \vspace{0.6em}
-      \caveat{Rates use one constant px/deg for both sessions, so a wrong
-      scale moves both equally and the contrast survives it. Mean fixation
-      duration omitted: the distracted distribution reaches 184{,}773\,ms.
-
-      Saccades are \emph{fewer} when distracted, so saccade artefact would be
-      lower where power is \emph{higher} --- the wrong direction to explain
-      \runid{R-018}. Nothing about blinks. An amplitude-based blink rule
-      chosen now would be post-hoc: left open as \runid{D-38}. This also
-      reproduces RQ0 on Experiment 2, with sidecar labels.}
+      \vspace{0.5em}
+      \sidenote{Saccade and fixation rates reproduce the Experiment 1
+      validation, here with condition labels stated in the data files rather
+      than inferred. Mean fixation duration is omitted: a few recordings give
+      implausible values.}
     \end{column}
     \begin{column}{0.46\textwidth}
-      \begin{block}{Blinks were the test --- and there are none}
+      \begin{block}{Blinks were the test --- and there are none to count}
         \small
-        \runid{R-018}'s rise looks like blink contamination, so we processed
-        both sessions from raw to count blinks. \textbf{Blink rate is
-        identically zero in all 302 recordings.}
+        Blinking produces large electrical artefacts that can masquerade as
+        brain activity, and blinks increase when attention drops. So we
+        reprocessed both conditions to count them. \textbf{The blink rate is
+        exactly zero in all 302 recordings.}
 
         \vspace{0.3em}
-        Not a bug: of 9.5\,M pupil samples, only six files hold a gap and
-        five are empty end to end. \textbf{The release ships pupil
-        interpolated}, so a dropout rule finds nothing --- as the gaze rule
-        did in Exp 1 (\runid{D-30}). \textbf{The ocular account stays open.}
+        This is not a software fault. Of 9.5 million pupil samples only six
+        files contain any gap, and five of those are empty throughout.
+        \textbf{The published data has already been smoothed}, erasing the
+        gaps that mark a blink.
       \end{block}
+      \sidenote{A clue: saccades are \emph{fewer} when distracted, so eye
+      artefact would be \emph{lower} where brain power is \emph{higher} ---
+      the wrong direction to explain it.}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{The check that did work}
-  \framesubtitle{\runid{R-020}, recovered regional tables, 263 recordings, 28 learners, all paired}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \small
-      \begin{tabular}{@{}lrr@{}}
-        \toprule
-        delta, distract $-$ attend & $d_z$ & Holm $p$ \\
-        \midrule
-        occipital & $+1.19$ & 4.2e\text{-}06 \\
-        frontal   & $+1.08$ & 1.3e\text{-}05 \\
-        parietal  & $+1.01$ & 2.5e\text{-}05 \\
-        central   & $+0.70$ & 9.4e\text{-}04 \\
-        \midrule
-        \textbf{frontal $-$ occipital} & $\mathbf{-0.19}$ & $p = .33$ \\
-        \bottomrule
-      \end{tabular}
-
-      \vspace{0.5em}
-      \caveat{Primary statistic, fixed before the run: the within-learner
-      frontal-minus-occipital gradient. $-0.0069$, 95\% CI
-      $[-0.0206, +0.0061]$; 42.9\% of learners positive.}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{block}{Blinks are frontal. This isn't.}
-        \small
-        Ocular artefact projects to frontal electrodes, so an ocular source
-        predicts a \textbf{frontal gradient}. There is none --- the gradient
-        is indistinguishable from zero and leans \emph{posterior}. Delta
-        rises everywhere, most at occipital sites.
-
-        \vspace{0.3em}
-        \textbf{Evidence against the ocular account of \runid{R-018}.}
-      \end{block}
-      \caveat{It does not clear the EEG: no ocular correction was applied
-      anywhere, and only RQ3 could show the effect survives one. Relative
-      powers sum to $\approx$0.97, so delta rising forces the other bands
-      down --- only delta is primary. Different pipeline from
-      \runid{R-018}, so agreement is reassuring, not a replication.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{And it survives the correction}
-  \framesubtitle{\runid{R-021}, Experiment 2 from raw --- 264 of 291 recordings, 28 learners}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \small
-      \begin{tabular}{@{}lrrr@{}}
-        \toprule
-        delta $d_z$ & raw & \textbf{EOG reg.} & Holm \\
-        \midrule
-        occipital & $+1.24$ & $\mathbf{+1.26}$ & 1.4e\text{-}06 \\
-        frontal   & $+1.14$ & $\mathbf{+1.06}$ & 1.7e\text{-}05 \\
-        parietal  & $+0.99$ & $\mathbf{+1.03}$ & 1.8e\text{-}05 \\
-        central   & $+0.63$ & $\mathbf{+0.59}$ & 4.1e\text{-}03 \\
-        \bottomrule
-      \end{tabular}
-
-      \vspace{0.5em}
-      \caveat{Each recording filtered once, then preprocessed twice from that
-      copy --- with EOG channels and without. The only difference is the
-      regression. 27 recordings dropped: no EOG file in the archive.}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{block}{Not ocular}
-        \small
-        Every region still significant after correction, and the effect sizes
-        barely move. Largest change is frontal, $-0.08$; parietal and
-        occipital go slightly \emph{up}.
-
-        \vspace{0.3em}
-        A small frontal trim is what a little eye artefact \emph{on top of} a
-        real effect looks like. An ocular effect would have collapsed.
-      \end{block}
-      \caveat{Our first from-raw EEG run --- every other EEG result here
-      audits saved tables. Still not RQ3: the modality ranking was not
-      re-evaluated. EOG regression removes what the EOG channels explain, not
-      what they miss.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ---------------------------------------------------------------- DV-02
-\begin{frame}{What we found when we audited our own code}
-  \framesubtitle{\runid{DV-02} --- disclosed before the corrected run, not after it}
-  \small
-  \begin{tabular}{@{}p{0.44\textwidth}p{0.50\textwidth}@{}}
-    \toprule
-    \textbf{What \runid{R-012} actually did} & \textbf{What \runid{R-013} does} \\
-    \midrule
-    Tuned with default \texttt{RidgeCV}, not the stated inner three folds
-      & Nested learner-grouped 3-fold, mean inner MSE, scaling inside the
-        inner fit \\
-    Permutation used only the first repeat; the estimate used all ten
-      & All ten repeats refitted for \emph{every} permutation \\
-    $R^2$ used the evaluated-target mean
-      & Conventional $R^2$, plus training-mean skill reported separately \\
-    Holm family contained only eye
-      & Across-modality inference left \textbf{pending} \\
-    \bottomrule
-  \end{tabular}
-
-  \vspace{0.7em}
-  \begin{block}{What this costs us}
-    \runid{R-013} is labelled a \textbf{post-result correction}, not a clean
-    confirmatory test. We do not repeat \runid{R-012}'s claim that H1a was
-    supported. \runid{R-012} and its outputs are preserved unchanged.
-  \end{block}
-\end{frame}
-
-\begin{frame}{RQ1 / RQ2 --- the corrected eye-only baseline}
-  \framesubtitle{\runid{R-013}, Experiment 1, 25 learners, 120 rows}
-  \begin{columns}[T]
-    \begin{column}{0.46\textwidth}
-      \begin{tabular}{@{}lr@{}}
-        \toprule
-        Spearman $\rho$ & $+0.108$ \\
-        95\% learner-bootstrap CI & $[-0.126, +0.354]$ \\
-        Raw permutation $p$ & $.032$ \\
-        Conventional $R^2$ & $-0.031$ \\
-        Training-mean skill & $+0.027$ \\
-        MAE & $0.759$ \\
-        \bottomrule
-      \end{tabular}
-
-      \vspace{0.6em}
-      {\footnotesize Per-repeat $\rho$ ranged $-0.077$ to $+0.279$.}
-    \end{column}
-    \begin{column}{0.50\textwidth}
-      \begin{block}{Read both numbers together}
-        The permutation asks whether this $\rho$ beats a shuffled-target null.
-        The bootstrap asks how precisely $\rho$ is known from 25 learners.
-        \textbf{They disagree, and both are correct.}
-      \end{block}
-      \caveat{Negative $R^2$: the model orders learners slightly better than
-      chance while predicting the magnitude of their scores worse than the
-      training mean. The signal is ordinal at best. Across-modality Holm
-      correction remains pending, so the raw $p$ is \emph{not} a
-      family-corrected claim.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ---------------------------------------------------------------- Exp 2
-\begin{frame}{Experiment 2 --- building a matched cohort}
-  \small
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \textbf{\runid{R-014}} --- eye features from raw, attentive session,
-      155 rows, 5 pupil-quality exclusions. Applies the \runid{D-26}
-      calibration as an \emph{explicit assumption}.
-
-      \vspace{0.5em}
-      \textbf{\runid{R-015}} --- ECG eligibility: 140 eligible, 15 unevaluable
-      (processing failures), none below the 0.80 recall cutoff, all evaluable
-      rows meet $F_1 \ge 0.95$.
-
-      \vspace{0.5em}
-      \textbf{\runid{R-016}} --- EEG QC: 139 attentive rows pass, 0 excluded.
-      Intersecting all four sources gives the common cohort:
-      \textbf{125 rows, 26 learners, 5 videos}, with its own learner-grouped
-      5-fold $\times$ 10-seed split file.
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{block}{Provenance limit --- stated up front}
-        \runid{R-015} and \runid{R-016} \textbf{audit saved physiology
-        tables}. They are not fresh detector or MNE runs. The recovered tables
-        have no original registered execution record; the EEG source matches
-        commit \texttt{de3b603} apart from line endings, which establishes
-        source agreement but \textbf{not} proof of exact execution.
-      \end{block}
-      \caveat{Everything downstream of these tables is therefore exploratory,
-      and we label it so. The Experiment 1 folds are untouched --- Experiment 2
-      uses a separate artifact.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{The matched comparison}
-  \framesubtitle{\runid{R-017}, exploratory --- 125 rows, 26 learners, one fixed set of rows and folds}
-  \centering
-  \includegraphics[width=\textwidth]{figures/r017_matched.png}
-\end{frame}
-
-\begin{frame}{What \runid{R-017} does and does not show}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \textbf{Reads honestly as:}
-      \begin{itemize}\small
-        \item EEG beat eye by $+.269$ and eye+ECG by $+.380$ in paired
-          $\Delta\rho$, with 90\% intervals clear of zero.
-        \item Neither equivalence interval fits inside $\pm.10$, so
-          \textbf{we did not establish that cheap sensors match EEG}.
-        \item The eye interval overlaps the margin, so neither did we
-          establish a difference \emph{larger} than the margin.
-        \item All sensors minus the training-selected single modality is
-          $-.044$, 95\% CI $[-.177, +.073]$ --- \textbf{no fusion benefit}.
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.44\textwidth}
-      \begin{block}{Four reasons to hold this loosely}
-        \small
-        \begin{enumerate}
-          \item EEG's own $\rho = +.053$ is \textbf{weak in absolute terms}.
-            A comparison between a weak predictor and worse ones is not a
-            result about EEG.
-          \item Intervals resample learners over \textbf{fixed predictions};
-            models are not refitted.
-          \item \textbf{No permutation test} was run (\runid{D-35}).
-          \item Recovered physiology provenance is incomplete.
-        \end{enumerate}
-      \end{block}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{RQ3 --- the ranking holds}
-  \framesubtitle{\runid{R-022}, \runid{R-016} cohort fixed: same 125 rows, same folds, only EEG recleaned}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \small
-      \begin{tabular}{@{}lrr@{}}
-        \toprule
-        held-out $\rho$ & EOG reg. & ICA \\
-        \midrule
-        \textbf{EEG}     & $+.080$ & $+.123$ \\
-        eye              & $-.216$ & $-.216$ \\
-        ECG              & $-.292$ & $-.292$ \\
-        eye+ECG          & $-.327$ & $-.327$ \\
-        all sensors      & $-.049$ & $-.098$ \\
-        selected single  & $+.025$ & $+.051$ \\
-        \bottomrule
-      \end{tabular}
-
-      \vspace{0.5em}
-      \caveat{Eye, ECG and eye+ECG are identical to four decimals --- the
-      check that nothing but the EEG features moved.}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{block}{Ranking stable: EEG $>$ eye $>$ ECG}
-        \small
-        Both EEG contrasts exclude zero under either cleaning. Fusion still
-        never beats the best single modality, and under ICA its deficit
-        excludes zero: $-.149$, 95\% CI $[-.291, -.007]$.
-      \end{block}
-      \caveat{Answered on the \emph{exploratory} Exp 2 cohort --- the only
-      place a ranking exists. The confirmatory RQ3 needs Exp 1 physiology
-      that was never processed. FastICA did not converge on 19 of 125
-      recordings, so read the ICA column as indicative. A stable ordering
-      among three weak predictors is a modest claim: EEG itself is only
-      $+.08$ to $+.12$.}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{The deep-learning component --- and what it isn't}
-  \framesubtitle{\runid{R-023}, the plan's \emph{auxiliary} task: attend vs distract, eye only, learners held out}
+\begin{frame}{Where on the scalp does the difference appear?}
+  \framesubtitle{Test 2 of 3: eye artefact appears at the front of the head \runtag{Run R-020}}
   \begin{columns}[T]
     \begin{column}{0.47\textwidth}
-      \small
+      \scriptsize
+      delta power, distracted minus attentive:
+
+      \vspace{0.2em}
+      \begin{tabular}{@{}lrr@{}}
+        \toprule
+        scalp region & $d_z$ & corrected $p$ \\
+        \midrule
+        rear of head  & $+1.19$ & 4.2e\text{-}06 \\
+        front of head & $+1.08$ & 1.3e\text{-}05 \\
+        upper rear    & $+1.01$ & 2.5e\text{-}05 \\
+        middle        & $+0.70$ & 9.4e\text{-}04 \\
+        \midrule
+        \textbf{front minus rear}  & $\mathbf{-0.19}$ & $p = .33$ \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      \sidenote{The front-minus-rear difference was fixed as the decisive test
+      \emph{before} the run: $-0.0069$, 95\% interval $[-0.0206, +0.0061]$,
+      with 42.9\% of learners positive.}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{Eye artefact is strongest at the front. This is not.}
+        \small
+        Blinks and eye movements project most strongly onto electrodes at the
+        \textbf{front} of the head, so an eye-driven effect should be much
+        larger there. It is not: the front-versus-rear difference is
+        indistinguishable from zero, and if anything the effect is
+        \emph{largest at the back}.
+
+        \vspace{0.3em}
+        \textbf{Evidence against an eye-artefact explanation.}
+      \end{block}
+      \sidenote{This argues from the pattern rather than correcting anything,
+      so it weakens the eye explanation without ruling it out. The next slide
+      removes the eye contribution directly.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Removing the eye contribution directly}
+  \framesubtitle{Test 3 of 3: reprocessed from the raw brain recordings \runtag{Run R-021}}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \scriptsize
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        delta power $d_z$ & before & \textbf{after} & corr.\ $p$ \\
+        \midrule
+        rear of head  & $+1.24$ & $\mathbf{+1.26}$ & 1.4e\text{-}06 \\
+        front of head & $+1.14$ & $\mathbf{+1.06}$ & 1.7e\text{-}05 \\
+        upper rear    & $+0.99$ & $\mathbf{+1.03}$ & 1.8e\text{-}05 \\
+        middle        & $+0.63$ & $\mathbf{+0.59}$ & 4.1e\text{-}03 \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      \sidenote{\reads{Each recording was processed twice from the same starting
+      point --- once with the eye-movement contribution mathematically
+      subtracted using dedicated eye electrodes, once without. The only
+      difference between the two columns is that subtraction. 264 of 291
+      recordings could be used; the other 27 have no eye-electrode file.}}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{The effect survives. It is not an eye artefact.}
+        \small
+        Every region remains statistically significant after the correction,
+        and the effect sizes barely move. The largest change is at the front
+        of the head and amounts to $-0.08$; the rear regions move slightly
+        \emph{upward}.
+
+        \vspace{0.3em}
+        A small reduction at the front and none elsewhere is what a little
+        eye contamination \emph{sitting on top of a genuine effect} looks
+        like. A purely eye-driven effect would have collapsed.
+      \end{block}
+      \sidenote{Our only brain result computed from the raw recordings rather
+      than saved tables. The correction removes what the eye electrodes can
+      explain, not eye activity they miss.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------- RQ3
+\begin{frame}{Does the sensor ranking depend on how we clean the brain data?}
+  \framesubtitle{Same 125 rows and splits; only the brain-cleaning method changed \runtag{Run R-022}}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \scriptsize
+      \begin{tabular}{@{}lrr@{}}
+        \toprule
+        rank correlation & method A & method B \\
+        \midrule
+        \textbf{brain (EEG)} & $+.080$ & $+.123$ \\
+        eye              & $-.216$ & $-.216$ \\
+        heart (ECG)      & $-.292$ & $-.292$ \\
+        eye + heart      & $-.327$ & $-.327$ \\
+        all sensors      & $-.049$ & $-.098$ \\
+        best single sensor & $+.025$ & $+.051$ \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.4em}
+      \sidenote{Method A subtracts the eye contribution using eye electrodes.
+      Method B separates the recording into independent sources and removes
+      the eye-related ones. Eye and heart rows are identical to four decimal
+      places --- the check that nothing but the brain data changed.}
+    \end{column}
+    \begin{column}{0.50\textwidth}
+      \begin{block}{The ranking is stable: brain $>$ eye $>$ heart}
+        \small
+        The ordering is the same under both cleaning methods, and the
+        brain-versus-eye advantage sits clear of zero either way. Combining
+        sensors still never beats the best single sensor --- under method B
+        it is measurably \emph{worse}: $-.149$, 95\% interval
+        $[-.291, -.007]$.
+      \end{block}
+      \sidenote{\textbf{But a stable ordering among weak predictors is a modest
+      claim.} Brain recording itself only reaches $+.08$ to $+.12$. The
+      second method failed to converge on 19 of the 125 recordings, so that
+      column should be read as indicative. This was tested on the exploratory
+      Experiment 2 sample, the only place a sensor ranking exists.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ---------------------------------------------------------------- DL
+\begin{frame}{Deep learning, part 1: telling the conditions apart}
+  \framesubtitle{A neural network reading raw eye signals, tested on unseen learners \runtag{Run R-023}}
+  \begin{columns}[T]
+    \begin{column}{0.46\textwidth}
+      \scriptsize
       \begin{tabular}{@{}lr@{}}
         \toprule
-        recording balanced accuracy & \\
+        balanced accuracy per recording & \\
         \midrule
-        CNN, 3 seeds averaged  & \textbf{0.797} \\
-        \quad per seed         & .787 .794 .773 \\
-        hand-crafted baseline  & \textbf{0.764} \\
+        neural network, 3 runs averaged & \textbf{0.797} \\
+        \quad individual runs           & .787 .794 .773 \\
+        eight hand-designed measures    & \textbf{0.764} \\
         \midrule
         difference             & $+0.034$ \\
         \bottomrule
       \end{tabular}
 
       \vspace{0.5em}
-      \caveat{297 recordings, 31 learners, 36{,}172 windows of 4\,s at 50\%
-      overlap (\runid{D-21}, fixed 6 Nov). Folds grouped by learner, both
-      sessions together; early-stopping learners from inside the training
-      fold. Baseline fixed \emph{before} fitting.}
+      \sidenote{\reads{Balanced accuracy averages accuracy over both
+      conditions; 0.5 is chance, 1.0 perfect. 297 recordings, 31 learners,
+      36{,}172 four-second windows. The comparison method was fixed
+      \emph{before} training, so it could not be chosen to flatter the
+      result.}}
     \end{column}
-    \begin{column}{0.49\textwidth}
-      \begin{block}{It works. It doesn't help.}
+    \begin{column}{0.50\textwidth}
+      \begin{block}{It works, but it adds nothing}
         \small
-        A CNN on raw gaze and pupil tells attentive from distracted viewing
-        at $\approx$0.80 for unseen learners. But $+0.034$ over eight
-        hand-crafted numbers is barely above the \textbf{0.021 spread across
-        seeds}, and we computed no interval for it. We do not claim the
-        network is better.
+        The network correctly identifies which condition a learner was in
+        about 80\% of the time, for learners it has never seen. But its
+        $+0.034$ advantage over eight hand-designed numbers is barely larger
+        than the \textbf{0.021 variation between its own training runs}, and
+        we computed no confidence interval for it. \textbf{We do not claim the
+        network is better.}
       \end{block}
-      \caveat{\textbf{This is not RQ4.} No quiz score is used anywhere, so it
-      bears on RQ1, RQ2 and RQ4 not at all. The task is easy by construction
-      --- saccade rate alone separates the conditions at $d_z = -1.17$
-      (\runid{R-019}). Deciding which condition someone was in is a different,
-      simpler problem than predicting what they learned.}
+      \sidenote{This task is easy by design: eye-movement rate alone nearly
+      separates the conditions, so high accuracy shows the pipeline works, not
+      that the architecture is good. Identifying \emph{which condition}
+      someone was in is also far simpler than predicting \emph{what they
+      learned}.}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{RQ4's actual question --- and the answer}
-  \framesubtitle{\runid{R-024}, Task C eye-only: deep embeddings vs hand-crafted, same 125 rows and folds}
+\begin{frame}{Deep learning, part 2: predicting what was learned}
+  \framesubtitle{Network features versus hand-designed ones, same 125 rows and splits \runtag{Run R-024}}
   \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \small
+    \begin{column}{0.46\textwidth}
+      \scriptsize
       \begin{tabular}{@{}lr@{}}
         \toprule
-        held-out $\rho$ vs \texttt{quiz\_z} & \\
+        rank correlation with quiz score & \\
         \midrule
-        deep embeddings, 64-d  & $\mathbf{-.077}$ \\
-        \quad per seed         & $-.102$ $+.009$ $-.048$ \\
-        hand-crafted, 8 features & $\mathbf{-.050}$ \\
+        64 network-derived features & $\mathbf{-.077}$ \\
+        8 hand-designed measures    & $\mathbf{-.050}$ \\
         \midrule
         difference             & $-.026$ \\
-        \quad 95\% CI          & $[-.206, +.158]$ \\
+        \quad 95\% interval    & $[-.206, +.158]$ \\
         \bottomrule
       \end{tabular}
 
+      \vspace{0.3em}
+      {\scriptsize Individual network runs: $-.102$, $+.009$, $-.048$.}
+
       \vspace{0.5em}
-      \caveat{Encoder pretrained \emph{inside each fold} on training learners
-      only --- otherwise the representation sees the test learners, even
-      without their quiz scores.}
+      \sidenote{The network was retrained from scratch \emph{inside every
+      split}, on training learners only. Trained once on everyone, it would
+      have shaped its features around the test learners.}
     \end{column}
-    \begin{column}{0.48\textwidth}
+    \begin{column}{0.50\textwidth}
       \begin{block}{Learned features give no advantage}
         \small
-        Slightly worse, difference indistinguishable from zero, and
-        \textbf{both negative} --- neither ordering beats chance here. On
-        RQ4's own question, at this sample size, the answer is no.
+        The network-derived features score slightly \emph{worse}, the
+        difference is indistinguishable from zero, and both correlations are
+        negative --- neither approach orders learners better than chance on
+        this sample. \textbf{On this question, at this sample size, deep
+        learning does not help.}
       \end{block}
-      \caveat{\textbf{One repeat, not ten}, so the levels are unstable: the
-      same hand-crafted features give $-.050$ here against $-.216$ in
-      \runid{R-017}. Read the contrast, not the levels. 64 dimensions on
-      $\approx$100 training rows is ill-conditioned (flagged on 3 of 15 fits),
-      so the deep arm is handicapped by dimensionality too. \textbf{Tasks A
-      and B not attempted} --- see \runid{D-43}.}
+      \sidenote{Two caveats. One data split rather than ten, so the individual
+      values are unstable --- read the \emph{difference}, not the levels. And
+      64 features on roughly 100 training rows is unstable in itself, so the
+      network is handicapped by having too many features.}
     \end{column}
   \end{columns}
 \end{frame}
@@ -691,77 +732,71 @@
 \begin{frame}{Limitations}
   \small
   \begin{itemize}
-    \item \textbf{Two inferred mappings underpin everything eye-based.}
-      \texttt{ses-01} as attend (\runid{D-29}) and the screen resolution
-      behind 33.64 px/deg (\runid{D-26}). If either is wrong, every eye number
-      is on the wrong footing.
-    \item \textbf{25--26 learners.} Bootstrap intervals are wide by
-      construction; a single 5-fold split could have shown nothing, which is
-      why ten repeats were preregistered.
-    \item \textbf{Negative $R^2$ throughout.} No model predicts score
-      magnitude better than the training mean.
-    \item \textbf{Video 5 sits near ceiling} (38.7\% of learners at
-      $\ge 90\%$, \runid{R-006}), compressing the variance we are trying to
+    \item \textbf{Two inferred assumptions underpin every eye result.} Which
+      session was the attentive one, and the screen resolution used to convert
+      gaze into degrees. If either is wrong, the eye numbers shift.
+    \item \textbf{Only 25--26 learners.} Confidence intervals are necessarily
+      wide, and a single unlucky data split could show nothing at all --- which
+      is exactly why we repeated every split ten times.
+    \item \textbf{No model predicts quiz scores usefully.} Every model orders
+      learners at best weakly, and none predicts the actual score better than
+      simply guessing the average.
+    \item \textbf{One video is too easy} --- 38.7\% of learners scored 90\% or
+      above on it, which compresses the very differences we are trying to
       predict.
-    \item \textbf{Recovered physiology tables, not reruns} (\runid{R-015},
-      \runid{R-016}).
-    \item \textbf{Across-modality multiplicity is unresolved.} Every $p$ on
-      these slides is raw.
-    \item \textbf{Every decision row is still \emph{Proposed}}, pending
-      joint review by both members.
+    \item \textbf{Most heart and brain measurements come from recovered
+      tables}, not from a fresh run at the time. The brain results were later
+      re-derived from raw recordings; the heart results were not.
+    \item \textbf{The correction for testing several sensors at once is
+      unresolved}, so every $p$-value here is uncorrected across sensors and
+      is presented as such.
   \end{itemize}
 \end{frame}
 
 \begin{frame}{What we did not do}
-  \begin{block}{Stated plainly, because the plan promised it}
-    \begin{itemize}
-      \item \textbf{RQ3} --- answered on the Experiment 2 cohort
-        (\runid{R-022}). The preregistered \emph{confirmatory} version, on the
-        Experiment 1 track, was not executed: that physiology was never
-        processed.
-      \item \textbf{RQ4} --- only Task C, eye-only (\runid{R-024}): learned
-        features give no advantage for quiz prediction. \textbf{Task A
-        (contrastive EEG--eye alignment) and Task B (fusion encoders) were not
-        attempted} --- 26 learners cannot support them, and \runid{D-43}
-        records that as a judgement, not an oversight.
-      \item A fresh ECG detector run on Experiment 2 raw remains pending;
-        \runid{R-015} audits saved tables instead.
+  \begin{block}{Stated plainly, because the project plan promised it}
+    \begin{itemize}\small
+      \item \textbf{The planned deep-learning track was only partly
+        attempted.} We did not build encoders that learn a shared
+        representation across brain and eye signals, and we did not build a
+        combined multi-sensor network. On a sample of 26 learners these would
+        produce numbers we could not interpret or defend, so we chose not to
+        run them and recorded that choice in advance.
+      \item \textbf{The robustness check was answered on the exploratory
+        sample only.} The version planned for the main analysis needs heart
+        and brain processing for Experiment 1 that was never completed.
+      \item \textbf{The heartbeat detector was never rerun} on the Experiment
+        2 raw recordings; we audited the previously saved output instead.
     \end{itemize}
   \end{block}
 
-  \vspace{0.5em}
-  \caveat{A small eye-only Experiment 2 attention CNN was discussed as a
-  possible partial response to the deep-learning requirement. It is not
-  approved, not implemented and not started. If it is pursued, its scope and
-  evaluation will be registered before fitting, with whole learners held out.}
+  \vspace{0.4em}
+  \sidenote{We report these as scope decisions rather than omissions, and each
+  was logged before the corresponding work was skipped.}
 \end{frame}
 
 \begin{frame}{Conclusion}
   \begin{block}{Answering the question we asked}
-    On a matched Experiment 2 cohort, \textbf{we could not show that eye
-    tracking or ECG matches EEG}, and \textbf{early fusion gave no benefit
-    over the best single modality}. Neither equivalence interval fitted
-    inside $\pm.10$, so this is a failure to establish equivalence, not a
-    demonstration that the cheap sensors are worse by more than the margin.
-    EEG itself predicted only weakly ($\rho = +.053$) and the comparison is
-    exploratory, so this is evidence about \emph{our} pipeline on \emph{this}
-    sample --- not a general verdict on cheap sensors.
+    On a matched sample with all three sensors present, \textbf{we could not
+    show that eye tracking or heart activity matches brain recording} for
+    predicting learning, and \textbf{combining sensors gave no benefit} over
+    the best single one. But brain recording itself predicted only weakly
+    ($\rho = +.053$), so this is evidence about \emph{our} pipeline on
+    \emph{this} sample --- not a general verdict on cheap sensors.
   \end{block}
 
   \vspace{0.3em}
   \begin{itemize}\small
-    \item Our from-raw preprocessing reproduces the published distraction
-      effects (\runid{R-004}).
-    \item Individual-only eye features carry weak ordinal signal about quiz
-      score for unseen learners (\runid{R-013}), with a CI spanning zero.
-    \item We found and disclosed three defects in our own first analysis
-      before reporting the corrected one (\runid{DV-02}).
+    \item Our processing, built from the raw recordings, reproduces the
+      published attention effects in both eye movement and brain activity.
+    \item Eye measurements from a single learner carry a weak signal about
+      quiz performance for unseen learners, with an interval spanning zero.
+    \item The brain-activity difference between conditions is genuine, not an
+      eye artefact --- confirmed by reprocessing the raw recordings.
+    \item Neither neural network beat simple hand-designed measurements.
+    \item We audited our own code, found three defects, and disclosed them
+      before reporting the corrected analysis.
   \end{itemize}
-
-  \vspace{0.3em}
-  \caveat{Next: resolve the multiplicity family, obtain joint sign-off on the
-  \emph{Proposed} decisions, and run RQ3 and a registered deep-learning
-  component.}
 \end{frame}
 
 % ---------------------------------------------------------------- refs
@@ -792,17 +827,13 @@
     \item A.\ Gramfort et al., ``MEG and EEG data analysis with MNE-Python,''
       \emph{Frontiers in Neuroscience}, vol.\ 7, art.\ 267, 2013.
     \item J.\ Madsen, N.\ Kuppa and L.\ Parra, BBBD, Zenodo dataset record
-      19241964, accessed 13 November 2026.
+      19241964.
     \item F.\ Pedregosa et al., ``Scikit-learn: Machine Learning in Python,''
       \emph{JMLR}, vol.\ 12, pp.\ 2825--2830, 2011.
   \end{enumerate}
-
-  \vspace{0.3em}
-  \caveat{Numbering matches the report's reference list. All sources verified
-  13 November 2026. No cross-paper numerical leaderboard is claimed.}
 \end{frame}
 
-\setoutrotext{Questions?}
+\setoutrotext{Thank you}
 \makeoutro
 
 \end{document}
