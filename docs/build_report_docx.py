@@ -15,7 +15,7 @@ Markdown supported is exactly what the report uses -- no more, deliberately:
 
     # x          Title              | a | b |     Table Grid, bold header row
     ## x         Heading 1          ![alt](p)     inline image, 6.75in wide
-    ### x        Heading 2          Figure N. x   Caption style
+    ### x        Heading 2          Figure/Table N.  Caption style
     everything else                 Normal, with **bold** and `code` runs
 
 This writes no numbers of its own: it only moves text and images that already
@@ -41,7 +41,7 @@ CODE_FONT = "Consolas"
 
 RE_IMAGE = re.compile(r"^!\[(?P<alt>[^\]]*)\]\((?P<path>[^)]+)\)\s*$")
 RE_HEADING = re.compile(r"^(?P<hashes>#{1,3})\s+(?P<text>.+?)\s*$")
-RE_CAPTION = re.compile(r"^Figure\s+\d+\.\s")
+RE_CAPTION = re.compile(r"^(?:Figure|Table)\s+\d+\.\s")
 RE_SEPARATOR = re.compile(r"^\|[\s|:-]+\|$")
 # One pass over bold and code so neither can swallow the other.
 RE_INLINE = re.compile(r"\*\*(?P<bold>[^*]+)\*\*|`(?P<code>[^`]+)`")
