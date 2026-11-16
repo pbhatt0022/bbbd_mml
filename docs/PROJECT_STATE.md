@@ -1,6 +1,6 @@
-# Project state — 15 November 2026
+# Project state — 16 November 2026
 
-**Submission: Tuesday, 17 November 2026 (latest date supplied by Priyanka). Presentation: Wednesday, 18 November per the existing course notes.** The original faculty brief and D-08 record Monday, 16 November EOD. Keep that historical record and confirm the current portal deadline if there is any doubt.
+**Submission: Tuesday, 17 November 2026. Presentation: Wednesday, 18 November per the existing course notes.** Priyanka confirmed the 17 November date on Monday 16 November 2026, after being asked directly because that day was itself the older deadline. The original faculty brief and D-08 record Monday, 16 November EOD; that is kept as the historical record and is superseded. Treat 17 November as settled and do not re-open it.
 
 DATA404 Multimodal Machine Learning, Vidyashilp University, Dr. Minati Rath. Priyanka Bhatt and Tanmayee K M. Priyanka reported running the experiments so far. The project asks whether eye tracking and ECG can match EEG for held-out learners' quiz performance, and whether fusion improves prediction.
 
