@@ -49,10 +49,11 @@ The objectives are to reconstruct signals and events from released raw files, va
 | Exp 2 EEG topography | Registered R-020 | Low-frequency increase is distributed, not frontal-dominant |
 | Exp 2 EEG ocular control | Registered R-021 | First from-raw EEG run; the condition effect survives EOG regression with d_z changing by at most 0.08 |
 | RQ3 cleaning comparison | Registered R-022 | Modality ranking EEG > eye > ECG stable under both ICA and EOG regression; confirmatory version not executed |
+| Deep-learning component | Registered R-023 | Eye-only attention decoding at 0.797 against a 0.764 hand-crafted baseline; the auxiliary task, not RQ4 |
 | Eye quiz prediction | R-013 complete under DV-02 | Post-result correction. Across-modality inference pending. |
 | ECG and EEG processing | Batch code on physiology branch | Recovered physiology audited in R-015 and R-016 and used in exploratory R-017 |
 | ISC and multimodal fusion | Shared components or planned integration | Early fusion evaluated in R-017. Individual-versus-ISC comparison pending. |
-| Deep-learning track | Encoders, heads and synthetic tests | No trained BBBD experiment or deep-learning result |
+| Deep-learning track | Auxiliary attention decoder trained (R-023) | A trained BBBD model that does not beat hand-crafted features; RQ4 itself not attempted |
 
 The project's broad objectives are only partly achieved. A final scope decision, including the deep-learning requirement, remains for the team and faculty; this report does not treat an uncompleted objective as silently removed.
 
@@ -210,6 +211,7 @@ Results below come from the project run registry and saved artifacts. R-004 is e
 | Exp 2 EEG topography | R-020 | Exp 2; 263 recovered recordings; 28 learners, all paired |
 | Exp 2 EEG ocular control | R-021 | Exp 2 from raw; 264 of 291 recordings; 28 learners |
 | RQ3 cleaning comparison | R-022 | R-016 cohort fixed; 125 rows; 26 learners; EEG columns swapped |
+| Attention decoding | R-023 | Exp 2 both sessions; 297 recordings; 31 learners; 36,172 windows |
 
 The validation and prediction samples are not interchangeable. In particular, the exploratory condition contrast must not be described as using the final prediction exclusion set.
 
@@ -367,6 +369,25 @@ Table 5. R-022 modality scores under the two cleanings. The eye, ECG and eye+ECG
 
 Three qualifications matter. **FastICA failed to converge on 19 of the 125 recordings**, so the ICA column rests partly on unconverged decompositions and should be read as indicative rather than definitive. The from-raw EOG-regression variant agrees with R-017 in ranking and in the direction of every contrast but not in magnitude - R-017 reported EEG +0.053, all sensors -0.111 and selected single -0.066 against +0.080, -0.049 and +0.025 here - because R-017 used the recovered feature tables while this run recomputes from raw; it is a reproduction in direction, not in value. And stability of a ranking among three weak predictors is a modest claim: it says the ordering survives a processing choice, not that any modality predicts well. EEG's own correlation is +0.08 to +0.12.
 
+### 8.10 A deep-learning component: eye-only attention decoding
+
+The project plan lists an auxiliary task alongside the main research questions: decoding attentive from distracted viewing for held-out learners. R-023 fits it as the project's deep-learning component. **It is not RQ4.** RQ4 asks whether deep encoders give better features for quiz prediction under fusion; no quiz score enters this run at all, so it bears on RQ1, RQ2 and RQ4 not at all. Whether it satisfies the course's deep-learning requirement is a decision for the team and the faculty, not something this result settles.
+
+Everything was fixed in D-42 before any fitting, and most of it was fixed long before. Windows are 4 seconds at 50 per cent overlap, decided in D-21 on 6 November. Training follows the methods plan: AdamW at learning rate 1e-3, weight decay 1e-2, batch 256, three seeds, the encoder refit in every outer fold. The five D-32 pupil-quality exclusions are applied, leaving 297 recordings from 31 learners and 36,172 windows. Folds are grouped by learner with both sessions of a learner always together, and the early-stopping learners come from inside the training fold, so no learner is ever seen during training and testing. Inputs are gaze x, gaze y and pupil, each standardized within recording so the model cannot key on a learner's absolute offsets. The model is a small three-block 1D convolutional network with global pooling.
+
+| Recording-level balanced accuracy | |
+| --- | --- |
+| CNN, three seeds averaged | **0.797** |
+| CNN per seed | 0.787, 0.794, 0.773 |
+| Hand-crafted baseline, same folds | **0.764** |
+| Difference | +0.034 |
+
+Table 6. R-023 decoding scores. The baseline is logistic regression on the eight eye features, fixed as mandatory in D-42 before fitting rather than chosen afterwards.
+
+The decoder works: about 0.80 balanced accuracy for learners it has never seen. **It does not meaningfully beat the hand-crafted features.** The margin of 0.034 is only slightly larger than the 0.021 spread across three seeds, and no interval was computed for it, so we do not claim the network is better. Both approaches separate the conditions well, and the deep model buys little over eight numbers per recording.
+
+Two things keep this modest. The task is easy by construction — R-019 puts the saccade-rate condition effect at d_z = −1.17 — so high accuracy shows the pipeline is sound rather than that the architecture is good. And deciding the condition a learner was in is a different and simpler problem than predicting what they learned, which is what the rest of this report is about and where every model remains weak.
+
 ## 9. Discussion
 
 ### 9.1 Interpretation and contributions
@@ -435,6 +456,7 @@ A fresh registered ECG detector validation remains a follow-up. R-015 documents 
 | R-020 regional EEG condition contrasts | `results/R-020_exp2_eeg_topography/` |
 | R-021 from-raw EEG, corrected and uncorrected | `results/R-021_exp2_eeg_ocular_rerun/` |
 | R-022 EEG features by cleaning variant | `results/R-022_exp2_rq3_cleaning/` |
+| R-023 decoding scores and predictions | `results/R-023_exp2_attention_cnn/` |
 | R-013 execution record | `results/R-013_eye_reconciliation/provenance/console.log` |
 
 ### 12.2 Example recorded output

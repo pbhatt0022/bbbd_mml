@@ -23,6 +23,7 @@ r19 = R("results/R-019_exp2_eye_condition/exp2_eye_condition.json")
 r20 = R("results/R-020_exp2_eeg_topography/exp2_eeg_topography.json")
 r21 = R("results/R-021_exp2_eeg_ocular_rerun/exp2_eeg_ocular_rerun.json")
 r22 = R("results/R-022_exp2_rq3_cleaning/exp2_rq3_cleaning.json")
+r23 = R("results/R-023_exp2_attention_cnn/exp2_attention_cnn.json")
 h0 = r4["h0b_attend_vs_distract"]
 
 # R-018 per-metric rows, keyed by metric name.
@@ -115,7 +116,22 @@ checks = [
     ("+.051", s3(r22["variants"]["ica"]["metrics"]["selected_single"]["spearman"])),
     ("-.149", s3(r22["variants"]["ica"]["comparisons"]["all_sensors_minus_selected_single"]["estimate"])),
     ("125 rows", f"{r22['n_rows']} rows"),
+    # R-023: the decoder against its mandatory baseline.
+    ("0.797", f"{r23['cnn_recording_balanced_accuracy']:.3f}"),
+    ("0.764", f"{r23['baseline_recording_balanced_accuracy']:.3f}"),
+    ("+0.034", f"{r23['cnn_minus_baseline']:+.3f}"),
+    ("297 recordings", f"{r23['n_recordings']} recordings"),
+    ("31 learners", f"{r23['n_learners']} learners"),
 ]
+
+# The deck leans on the seed spread being comparable to the margin, and on
+# this run using no quiz scores.
+spread = (max(d["recording_balanced_accuracy"] for d in r23["cnn_per_seed"])
+          - min(d["recording_balanced_accuracy"] for d in r23["cnn_per_seed"]))
+if f"{spread:.3f}" != "0.021":
+    checks.append(("seed spread 0.021", f"SPREAD IS NOW {spread:.3f}"))
+if r23["quiz_scores_used"] or r23["is_rq4"]:
+    checks.append(("no quiz scores, not RQ4", "R-023 NOW CLAIMS QUIZ SCORES OR RQ4"))
 
 # The deck says the ranking is stable and that eye/ECG were untouched.
 if not r22["ranking_stable"]:

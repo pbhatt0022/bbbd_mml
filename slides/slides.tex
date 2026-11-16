@@ -66,7 +66,7 @@
     RQ3 & Is the ranking stable under ICA instead of EOG regression?
         & Answered on Exp 2 (\runid{R-022}) \\
     RQ4 & Do deep encoders beat hand-crafted features?
-        & \alert{Not executed} \\
+        & \alert{Not attempted}; auxiliary decoder only (\runid{R-023}) \\
     \bottomrule
   \end{tabular}
 
@@ -162,7 +162,7 @@
 \end{frame}
 
 % ---------------------------------------------------------------- ledger
-\begin{frame}{Evidence ledger}
+\begin{frame}{Evidence ledger --- Experiment 1}
   \scriptsize
   \begin{tabular}{@{}llp{0.50\textwidth}l@{}}
     \toprule
@@ -178,6 +178,20 @@
     \runid{R-013} & Corrected eye baseline
       & $\rho = +0.108$, 95\% CI $[-0.126, +0.354]$, raw $p = .032$
       & Post-result \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.8em}
+  \caveat{A number appears in this deck only if it has a run ID. Historical
+  rows are preserved, never edited.}
+\end{frame}
+
+\begin{frame}{Evidence ledger --- Experiment 2}
+  \scriptsize
+  \begin{tabular}{@{}llp{0.50\textwidth}l@{}}
+    \toprule
+    \textbf{Run} & \textbf{What} & \textbf{Headline} & \textbf{Type} \\
+    \midrule
     \runid{R-014} & Exp 2 eye features
       & 155 rows, 5 pupil-quality exclusions; \runid{D-26} calibration assumed
       & Preprocessing \\
@@ -209,6 +223,10 @@
     \runid{R-022} & RQ3 cleaning comparison
       & Ranking EEG $>$ eye $>$ ECG holds under both ICA and EOG regression;
         fusion still no help
+      & Exploratory \\
+    \runid{R-023} & Attention decoding (Aux)
+      & CNN $0.797$ vs hand-crafted $0.764$ balanced accuracy --- works, but
+        no real gain. Not RQ4
       & Exploratory \\
     \bottomrule
   \end{tabular}
@@ -583,6 +601,47 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{The deep-learning component --- and what it isn't}
+  \framesubtitle{\runid{R-023}, the plan's \emph{auxiliary} task: attend vs distract, eye only, learners held out}
+  \begin{columns}[T]
+    \begin{column}{0.47\textwidth}
+      \small
+      \begin{tabular}{@{}lr@{}}
+        \toprule
+        recording balanced accuracy & \\
+        \midrule
+        CNN, 3 seeds averaged  & \textbf{0.797} \\
+        \quad per seed         & .787 .794 .773 \\
+        hand-crafted baseline  & \textbf{0.764} \\
+        \midrule
+        difference             & $+0.034$ \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      \caveat{297 recordings, 31 learners, 36{,}172 windows of 4\,s at 50\%
+      overlap (\runid{D-21}, fixed 6 Nov). Folds grouped by learner, both
+      sessions together; early-stopping learners from inside the training
+      fold. Baseline fixed \emph{before} fitting.}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{block}{It works. It doesn't help.}
+        \small
+        A CNN on raw gaze and pupil tells attentive from distracted viewing
+        at $\approx$0.80 for unseen learners. But $+0.034$ over eight
+        hand-crafted numbers is barely above the \textbf{0.021 spread across
+        seeds}, and we computed no interval for it. We do not claim the
+        network is better.
+      \end{block}
+      \caveat{\textbf{This is not RQ4.} No quiz score is used anywhere, so it
+      bears on RQ1, RQ2 and RQ4 not at all. The task is easy by construction
+      --- saccade rate alone separates the conditions at $d_z = -1.17$
+      (\runid{R-019}). Deciding which condition someone was in is a different,
+      simpler problem than predicting what they learned.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 % ---------------------------------------------------------------- limits
 \begin{frame}{Limitations}
   \small
@@ -615,9 +674,10 @@
         (\runid{R-022}). The preregistered \emph{confirmatory} version, on the
         Experiment 1 track, was not executed: that physiology was never
         processed.
-      \item \textbf{RQ4} --- no deep encoder, no contrastive EEG--eye
-        alignment, no attention decoding was fitted. \textbf{There is no
-        registered deep-learning result in this project.}
+      \item \textbf{RQ4} --- not attempted. No contrastive EEG--eye alignment,
+        no fusion encoder, no deep model of quiz score. We did fit the plan's
+        \emph{auxiliary} attention decoder (\runid{R-023}), which uses no quiz
+        scores and answers a different, easier question.
       \item A fresh ECG detector run on Experiment 2 raw remains pending;
         \runid{R-015} audits saved tables instead.
     \end{itemize}

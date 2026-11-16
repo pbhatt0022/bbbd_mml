@@ -1,0 +1,44 @@
+{
+  "run_id": "R-023",
+  "git_hash": "24fa32e",
+  "task": "attend vs distract decoding, eye only (methods plan Aux / Task A)",
+  "is_rq4": false,
+  "quiz_scores_used": false,
+  "decision": "D-42 Proposed",
+  "deviation": "DV-12",
+  "window_s": 4.0,
+  "overlap": 0.5,
+  "window_decision": "D-21",
+  "n_windows": 36172,
+  "n_recordings": 297,
+  "n_learners": 31,
+  "n_splits": 5,
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "grouping": "learner; both sessions of a learner in the same fold",
+  "cnn_recording_balanced_accuracy": 0.7970068027210884,
+  "cnn_per_seed": [
+    {
+      "seed": 0,
+      "window_balanced_accuracy": 0.6771976425425017,
+      "recording_balanced_accuracy": 0.7872108843537415
+    },
+    {
+      "seed": 1,
+      "window_balanced_accuracy": 0.6769675755417026,
+      "recording_balanced_accuracy": 0.7938095238095237
+    },
+    {
+      "seed": 2,
+      "window_balanced_accuracy": 0.673050532121288,
+      "recording_balanced_accuracy": 0.7731292517006803
+    }
+  ],
+  "baseline": "logistic regression on 8 hand-crafted eye features, same folds",
+  "baseline_recording_balanced_accuracy": 0.7635374149659864,
+  "cnn_minus_baseline": 0.0335,
+  "cnn_beats_baseline": true
+}
