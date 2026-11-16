@@ -21,6 +21,7 @@ r16 = R("results/R-016_exp2_common_cohort/exp2_cohort_audit.json")
 r18 = R("results/R-018_exp2_eeg_alpha_audit/eeg_alpha_audit.json")
 r19 = R("results/R-019_exp2_eye_condition/exp2_eye_condition.json")
 r20 = R("results/R-020_exp2_eeg_topography/exp2_eeg_topography.json")
+r21 = R("results/R-021_exp2_eeg_ocular_rerun/exp2_eeg_ocular_rerun.json")
 h0 = r4["h0b_attend_vs_distract"]
 
 # R-018 per-metric rows, keyed by metric name.
@@ -94,7 +95,24 @@ checks = [
     ("-0.0069", f"{r20['primary']['mean_diff']:+.4f}".replace("+", "")),
     ("263 recordings", f"{r20['n_recordings']} recordings"),
     ("28 learners", f"{r20['n_learners_paired']} learners"),
+    # R-021: corrected and uncorrected effect sizes, and the sample.
+    ("+1.26", f"{r21['corrected']['delta_by_region']['occipital']['cohens_dz']:+.2f}"),
+    ("+1.06", f"{r21['corrected']['delta_by_region']['frontal']['cohens_dz']:+.2f}"),
+    ("+1.03", f"{r21['corrected']['delta_by_region']['parietal']['cohens_dz']:+.2f}"),
+    ("+0.59", f"{r21['corrected']['delta_by_region']['central']['cohens_dz']:+.2f}"),
+    ("+1.24", f"{r21['uncorrected']['delta_by_region']['occipital']['cohens_dz']:+.2f}"),
+    ("+1.14", f"{r21['uncorrected']['delta_by_region']['frontal']['cohens_dz']:+.2f}"),
+    ("+0.99", f"{r21['uncorrected']['delta_by_region']['parietal']['cohens_dz']:+.2f}"),
+    ("+0.63", f"{r21['uncorrected']['delta_by_region']['central']['cohens_dz']:+.2f}"),
+    ("264 of 291", f"{r21['n_recordings']} of {r21['n_recordings_attempted']}"),
 ]
+
+# The deck claims the effect survives correction in every region.
+if not all(r21["survives_correction"].values()):
+    checks.append(("survives in every region", "A REGION NO LONGER SURVIVES"))
+# ...and that the largest shift is at most 0.08.
+if max(abs(v) for v in r21["dz_change"].values()) > 0.085:
+    checks.append(("d_z moves by at most 0.08", "A LARGER SHIFT APPEARED"))
 
 # The deck says the gradient is not frontal-dominant; that must stay true.
 if r20["primary"]["frontal_dominant"]:

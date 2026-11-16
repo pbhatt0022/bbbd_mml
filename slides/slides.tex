@@ -202,6 +202,10 @@
       & Delta up in all four regions; frontal$-$occipital gradient
         $-0.19$, $p = .33$ --- not frontal-dominant
       & Retrospective \\
+    \runid{R-021} & Exp 2 EEG from raw
+      & Effect survives EOG regression: $d_z$ moves by at most $0.08$,
+        all four regions still significant
+      & From raw \\
     \bottomrule
   \end{tabular}
 
@@ -358,6 +362,46 @@
       powers sum to $\approx$0.97, so delta rising forces the other bands
       down --- only delta is primary. Different pipeline from
       \runid{R-018}, so agreement is reassuring, not a replication.}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{And it survives the correction}
+  \framesubtitle{\runid{R-021}, Experiment 2 from raw --- 264 of 291 recordings, 28 learners}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \small
+      \begin{tabular}{@{}lrrr@{}}
+        \toprule
+        delta $d_z$ & raw & \textbf{EOG reg.} & Holm \\
+        \midrule
+        occipital & $+1.24$ & $\mathbf{+1.26}$ & 1.4e\text{-}06 \\
+        frontal   & $+1.14$ & $\mathbf{+1.06}$ & 1.7e\text{-}05 \\
+        parietal  & $+0.99$ & $\mathbf{+1.03}$ & 1.8e\text{-}05 \\
+        central   & $+0.63$ & $\mathbf{+0.59}$ & 4.1e\text{-}03 \\
+        \bottomrule
+      \end{tabular}
+
+      \vspace{0.5em}
+      \caveat{Each recording filtered once, then preprocessed twice from that
+      copy --- with EOG channels and without. The only difference is the
+      regression. 27 recordings dropped: no EOG file in the archive.}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Not ocular}
+        \small
+        Every region still significant after correction, and the effect sizes
+        barely move. Largest change is frontal, $-0.08$; parietal and
+        occipital go slightly \emph{up}.
+
+        \vspace{0.3em}
+        A small frontal trim is what a little eye artefact \emph{on top of} a
+        real effect looks like. An ocular effect would have collapsed.
+      \end{block}
+      \caveat{Our first from-raw EEG run --- every other EEG result here
+      audits saved tables. Still not RQ3: the modality ranking was not
+      re-evaluated. EOG regression removes what the EOG channels explain, not
+      what they miss.}
     \end{column}
   \end{columns}
 \end{frame}
