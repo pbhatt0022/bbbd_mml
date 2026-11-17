@@ -29,7 +29,10 @@ Draft: `report_draft.md` and editable Word export. This checklist is separate fr
       on 16 Nov for an external reader: no presentation date, every abbreviation expanded,
       every figure carrying a "how to read this" line, and no slide depending on an internal
       run or decision identifier to make sense. Run identifiers remain only as small grey
-      provenance tags, explained once. Rehearsal still outstanding.
+      provenance tags, explained once. `docs/presentation_guide.md` covers the slide split
+      between presenters, a per-slide speaking guide written for someone with no prior
+      knowledge, anticipated follow-up probes with answers, timings with a cut list, and a
+      viva question bank. Rehearsal still outstanding.
 - [ ] Submit report, PPT and executable source with outputs by 18 Nov 2026 (moved from 17 Nov; same day as the presentation).
 
 ## Figure provenance
