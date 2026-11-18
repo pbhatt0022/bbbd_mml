@@ -39,6 +39,8 @@ The objectives are to reconstruct signals and events from released raw files, va
 
 ### 2.3 Scope and completion
 
+Table 1. Project objectives against the evidence obtained for each, with the scope of the claim that evidence supports. "Registered" indicates a logged analysis run; entries without one denote implemented code that has not produced a reportable result.
+
 | Component | Current evidence | Scope of the claim |
 | --- | --- | --- |
 | Eye event validation | Registered R-004 | Exploratory attention-condition contrast |
@@ -53,8 +55,6 @@ The objectives are to reconstruct signals and events from released raw files, va
 | ECG and EEG processing | Batch code on physiology branch | Recovered physiology audited in R-015 and R-016 and used in exploratory R-017 |
 | Inter-subject correlation and multimodal fusion | Shared components or planned integration | Early fusion evaluated in R-017. Individual-versus-ISC comparison pending. |
 | Deep-learning track | Auxiliary decoder (R-023) and Task C (R-024) | Deep models trained and evaluated; neither beats hand-crafted features. RQ4's contrastive and fusion tasks not attempted |
-
-Table 1. Project objectives against the evidence obtained for each, with the scope of the claim that evidence supports. "Registered" indicates a logged analysis run; entries without one denote implemented code that has not produced a reportable result.
 
 The project's broad objectives are only partly achieved. Objectives that were planned but not carried out are listed as such in Section 8 rather than omitted, and the scope of the deep-learning component remains subject to confirmation with the course faculty.
 
@@ -78,6 +78,8 @@ Varoquaux [6] demonstrates that prediction estimates can have substantial uncert
 
 ### 3.3 Comparison of relevant work
 
+Table 2. Related work positioned against the present project. The final column states what each study motivates methodologically; it is not a performance comparison, which the differing tasks and evaluation procedures would not support.
+
 | Study | Signals and representation | Main contribution | Relationship to this project |
 | --- | --- | --- | --- |
 | Cohen et al. [2] | EEG ISC during educational videos | Links neural engagement with recall and attention | Motivates EEG validation and prediction |
@@ -85,8 +87,6 @@ Varoquaux [6] demonstrates that prediction estimates can have substantial uncert
 | Madsen and Parra [4] | Neural, eye and cardiac synchrony | Examines common modulation across signals | Motivates multimodal comparison without presuming fusion gains |
 | Lawhern et al. [5] | Compact convolutional EEG representations | EEG-specific feature learning across BCI tasks | Architectural reference for the unexecuted DL track |
 | Varoquaux [6] | Cross-validation uncertainty | Shows the importance of sample size and uncertainty | Motivates cautious interpretation and learner bootstrap |
-
-Table 2. Related work positioned against the present project. The final column states what each study motivates methodologically; it is not a performance comparison, which the differing tasks and evaluation procedures would not support.
 
 This comparison identifies differences in questions and representations, not a numerical ranking of studies. The current project cannot establish improvement over these papers without a matched evaluation.
 
@@ -118,6 +118,8 @@ For prediction, the invalid fraction returned by the pupil-processing routine in
 
 ### 5.3 Individual representations
 
+Table 3. The eight individual eye features used for prediction, with their interpretation. All are computed from a single learner's recording and none requires data from other viewers.
+
 | Feature in R-010/R-012 | Interpretation |
 | --- | --- |
 | `eye_invalid_frac` | Fraction of padded invalid pupil samples; a quality-related predictor |
@@ -128,8 +130,6 @@ For prediction, the invalid fraction returned by the pupil-processing routine in
 | `pupil_mean_raw` | Mean pupil signal after invalid samples are masked |
 | `pupil_diff_sd_z` | Variability of successive differences in standardized pupil signal |
 | `gaze_dispersion_deg` | Spatial dispersion of the gaze coordinates in degrees |
-
-Table 3. The eight individual eye features used for prediction, with their interpretation. All are computed from a single learner's recording and none requires data from other viewers.
 
 All eight predictors are derived from one learner's recording; none requires peer recordings. This does not guarantee that they measure cognition alone. For example, pupil level and invalid fraction can reflect measurement conditions as well as behaviour.
 
@@ -147,6 +147,8 @@ The primary model family is standardized ridge regression, with random forest an
 
 The intended analysis uses Spearman correlation for ranking, mean absolute error (MAE) for error magnitude, a baseline comparison, within-video target permutations and learner-resampled confidence intervals. The original R-012 implementation and the completed DV-02 correction (R-013) differ as set out in Table 4. The original output is preserved rather than silently replaced.
 
+Table 4. Differences between the original Experiment 1 analysis and its registered correction. Rows marked unchanged confirm that the observations, folds and reported prediction were not altered; the correction concerns tuning, the permutation statistic, baseline reporting and multiplicity.
+
 | Element | Original R-012 | Correction under D-31 / DV-02 |
 | --- | --- | --- |
 | Outer observations and folds | R-006/R-010 inputs; R-011 folds | Unchanged |
@@ -155,8 +157,6 @@ The intended analysis uses Spearman correlation for ranking, mean absolute error
 | Permutation statistic | First repeat only | Same ten-repeat average as observed statistic |
 | Baseline reporting | Conventional R² labelled as training-mean performance | Conventional R² and separately named training-mean skill |
 | Multiplicity | Eye-only Holm family | Raw eye p; across-modality inference explicitly pending |
-
-Table 4. Differences between the original Experiment 1 analysis and its registered correction. Rows marked unchanged confirm that the observations, folds and reported prediction were not altered; the correction concerns tuning, the permutation statistic, baseline reporting and multiplicity.
 
 The correction uses the existing 30 logarithmically spaced ridge penalties from 10⁻³ to 10⁴, selects by mean inner-fold squared error, retains 1,000 permutations and 2,000 learner bootstrap resamples, and does not alter significance thresholds. It was designed after seeing R-012 and is therefore labelled a post-result correction. R-013 completed this analysis. D-31 remains Proposed.
 
@@ -176,6 +176,8 @@ For future multimodal integration, signals must be aligned to a common recording
 
 The project uses Python with NumPy, pandas, SciPy and scikit-learn [10] for tabular processing and classical evaluation. MNE supports EEG processing [8], NeuroKit2 supports cardiac and respiration routines [7], and PyTorch supplies the unexecuted deep-learning components. Configuration is centralized in `config.yaml`. Core modules are in `src/bbbd/`; numbered notebooks provide the execution interface.
 
+Table 5. Software modules and their responsibilities. Configuration, run logging and fold construction are separated from modality-specific processing so that evaluation choices are applied uniformly across modalities.
+
 | Module or artifact | Responsibility |
 | --- | --- |
 | `io.py`, `config.py` | File discovery, metadata access and configuration |
@@ -185,8 +187,6 @@ The project uses Python with NumPy, pandas, SciPy and scikit-learn [10] for tabu
 | `models_dl.py` | Encoders, contrastive objective and fusion heads |
 | `runlog.py`, `docs/run_registry.csv` | Run identity and provenance |
 | `reconcile_eye.py`, `85_statistics.ipynb` | Separately registered DV-02 correction and resumable Colab execution |
-
-Table 5. Software modules and their responsibilities. Configuration, run logging and fold construction are separated from modality-specific processing so that evaluation choices are applied uniformly across modalities.
 
 Some older notebooks still contain data-assembly and analysis logic. The corrected evaluation is centralized in a tested module; the existence of the library does not mean every historical notebook already follows that organization completely.
 
@@ -208,6 +208,8 @@ Priyanka Bhatt carried out the experiments reported here. The original division 
 
 Every quantitative result in this report was produced by a logged analysis run and is cited by its run identifier, of the form R-0NN. Each identifier resolves to a stored directory containing the code revision, configuration hash, random seed and output tables for that run, so any figure or number can be traced to the execution that produced it. Analysis choices made before a run are recorded separately and cited as D-NN, and documented departures from the preregistered plan as DV-NN. Run R-004 is exploratory because it preceded the preregistration tag. Run R-012 was originally labelled confirmatory; deviation DV-02 records implementation discrepancies in it, and R-013 provides the separately registered corrected evaluation.
 
+Table 6. Registered analysis runs and the population each was computed on. Sample sizes differ between stages because validation, prediction and multimodal comparison apply different inclusion criteria; the populations are therefore not interchangeable.
+
 | Stage | Registered output | Population or artifact |
 | --- | --- | --- |
 | Eye condition validation | R-004 | 27 learners; 263 recordings |
@@ -223,13 +225,13 @@ Every quantitative result in this report was produced by a logged analysis run a
 | Attention decoding | R-023 | Exp 2 both sessions; 297 recordings; 31 learners; 36,172 windows |
 | RQ4 Task C | R-024 | R-016 cohort; 125 rows; 26 learners; single repeat, three seeds |
 
-Table 6. Registered analysis runs and the population each was computed on. Sample sizes differ between stages because validation, prediction and multimodal comparison apply different inclusion criteria; the populations are therefore not interchangeable.
-
 The validation and prediction samples are not interchangeable. In particular, the exploratory condition contrast must not be described as using the final prediction exclusion set.
 
 ### 8.2 Exploratory eye validation
 
 Table 7 reports the paired condition contrast from R-004. Values are means of learner-level summaries; the sign of the t statistic follows session 01 minus session 02. Session 01 is inferred to be attend and session 02 distract under D-29; that mapping is not directly stated in the released labels.
+
+Table 7. Paired condition contrasts in Experiment 1 eye measures (run R-004). Values are means of learner-level summaries and the sign of t follows attentive minus distracted. Saccade and fixation rates fall under distraction while blink rate and fixation duration rise, which is the expected pattern for reduced visual engagement.
 
 | Measure | Inferred attend | Inferred distract | Paired t | p | Run |
 | --- | --- | --- | --- | --- | --- |
@@ -237,8 +239,6 @@ Table 7 reports the paired condition contrast from R-004. Values are means of le
 | Blinks per minute | 1.25 | 2.90 | −3.04 | .0054 | R-004 |
 | Fixations per minute | 131.8 | 84.1 | 7.02 | 1.9 × 10⁻⁷ | R-004 |
 | Mean of recording median fixation durations, ms | 245 | 332 | −4.82 | 5.4 × 10⁻⁵ | R-004 |
-
-Table 7. Paired condition contrasts in Experiment 1 eye measures (run R-004). Values are means of learner-level summaries and the sign of t follows attentive minus distracted. Saccade and fixation rates fall under distraction while blink rate and fixation duration rise, which is the expected pattern for reduced visual engagement.
 
 ![Saccade and blink rates in the attentive and distracted conditions](report_assets/r004_rates.png)
 
@@ -248,13 +248,13 @@ The opposite directions of the saccade and blink changes are consistent with the
 
 ### 8.3 Original eye prediction and implementation review
 
+Table 8. Prediction results from the original Experiment 1 analysis (run R-012), with predictions averaged across ten learner-grouped repeats. MAE is expressed in within-video standardized quiz-score units. Only the ridge row was subject to a permutation test; the two secondary models are exploratory, so the table does not establish a ranking among model families.
+
 | Model | Spearman ρ | 95% learner-bootstrap CI | Conventional R² | MAE | Status |
 | --- | --- | --- | --- | --- | --- |
 | Ridge | +0.149 | [−0.104, +0.411] | −0.073 | 0.764 | R-012 original ridge estimate |
 | Random forest | +0.231 | [+0.023, +0.415] | +0.005 | 0.733 | R-012 exploratory; unpermuted |
 | MLP | +0.037 | [−0.252, +0.361] | −0.590 | 0.901 | R-012 exploratory; unpermuted |
-
-Table 8. Prediction results from the original Experiment 1 analysis (run R-012), with predictions averaged across ten learner-grouped repeats. MAE is expressed in within-video standardized quiz-score units. Only the ridge row was subject to a permutation test; the two secondary models are exploratory, so the table does not establish a ranking among model families.
 
 All entries in Table 8 are from R-012, using predictions averaged across ten learner-grouped repeats. MAE is in within-video standardized quiz-score units. These estimates do not establish a statistically supported model ranking.
 
@@ -284,6 +284,8 @@ Section 8.2 validates the eye pipeline against the published condition effects. 
 
 The sample is 291 recordings from 30 learners, all 30 contributing both sessions. Values are averaged within learner and session and compared with paired tests; the six alpha metrics are Holm-corrected together and the other frequency bands are descriptive. The session mapping is the assumed `ses-1 = attentive`, as in D-29 for Experiment 1.
 
+Table 9. Condition contrasts in Experiment 2 EEG band power, distracted minus attentive, paired within learner (run R-018). "post." denotes the 17 occipito-parietal channels. The six alpha metrics form the Holm-corrected family; control-band rows are descriptive and are not corrected. Read the d_z column for effect size and the Holm p column for significance after correction: only the two absolute alpha measures survive.
+
 | Metric | Family | Attentive | Distracted | Difference | d_z | t(29) | p | Holm p |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | log alpha, post. | alpha | 0.083 | 0.157 | +0.074 | +0.80 | 4.37 | .0001 | .0009 |
@@ -297,8 +299,6 @@ The sample is 291 recordings from 30 learners, all 30 contributing both sessions
 | log theta, all | control | 0.343 | 0.413 | +0.070 | +0.43 | 2.36 | .025 | — |
 | log beta, post. | control | −0.461 | −0.435 | +0.026 | +0.49 | 2.71 | .011 | — |
 
-Table 9. Condition contrasts in Experiment 2 EEG band power, distracted minus attentive, paired within learner (run R-018). "post." denotes the 17 occipito-parietal channels. The six alpha metrics form the Holm-corrected family; control-band rows are descriptive and are not corrected. Read the d_z column for effect size and the Holm p column for significance after correction: only the two absolute alpha measures survive.
-
 Absolute log power is higher in the session labelled distracted, which is the direction the reference paper reports for alpha. In standardized terms alpha is among the largest movers: posterior log alpha gives d_z = +0.80, the largest effect of any band in Table 9. The effect is not, however, confined to alpha. Posterior delta reaches d_z = +0.71, theta across all channels +0.43 and posterior beta +0.49, and delta has by far the largest raw shift, +0.143 against alpha's +0.058. The profile falls away with frequency — delta above theta and alpha, with beta and low gamma near zero — which is the shape of a low-frequency-weighted increase in power rather than a change confined to one rhythm.
 
 Whether an alpha-specific component sits on top of that shift is unresolved. The metric designed for exactly that question, alpha measured against its 4–7 Hz and 13–20 Hz flanking bands, gives posterior d_z = +0.41 with raw p = .032 but Holm p = .13 within the six-metric family. That is suggestive at 30 learners and not established. The relative-alpha null is weaker evidence than it first appears: relative alpha divides alpha power by mean power over 1–40 Hz, a denominator that contains the rising delta, so it is biased toward zero in precisely the situation observed here. We report it for completeness rather than as a decisive negative.
@@ -311,13 +311,13 @@ In summary, the EEG preprocessing recovers a session difference in absolute low-
 
 R-019 processes both Experiment 2 sessions from the raw archive under D-37 and DV-08, so that attentive and distracted recordings can be paired within learner. R-014 covered the attentive session only, which was right for prediction and left no way to examine the ocular explanation for Section 8.5. The sample is 155 attentive and 147 distracted recordings from 31 learners, all 31 contributing both sessions, with five pupil-quality exclusions and condition taken from the sidecars. R-014 is unchanged.
 
+Table 10. Paired condition contrasts in Experiment 2 eye measures, over learner means (run R-019). Blink rate derives from pupil dropout and is independent of the pixel-to-degree conversion; saccade and fixation rates depend on it, but a single constant applies to both sessions, so the within-learner contrast is unaffected by an error in that constant even though the absolute values are not. Mean fixation duration is omitted: its distracted distribution extends to 184,773 ms, with ten recordings above 2,000 ms.
+
 | Metric | Attentive | Distracted | Difference | d_z | t(30) | p |
 | --- | --- | --- | --- | --- | --- | --- |
 | blink rate, per minute | 0.00 | 0.00 | 0.00 | — | — | — |
 | saccade rate, per minute | 148.08 | 106.37 | −41.70 | −1.17 | −6.52 | 3.3e-07 |
 | fixation rate, per minute | 128.93 | 84.08 | −44.85 | −1.77 | −9.85 | 6.5e-11 |
-
-Table 10. Paired condition contrasts in Experiment 2 eye measures, over learner means (run R-019). Blink rate derives from pupil dropout and is independent of the pixel-to-degree conversion; saccade and fixation rates depend on it, but a single constant applies to both sessions, so the within-learner contrast is unaffected by an error in that constant even though the absolute values are not. Mean fixation duration is omitted: its distracted distribution extends to 184,773 ms, with ten recordings above 2,000 ms.
 
 This test could not be carried out. Blink rate is identically zero in all 302 recordings, in both conditions, and the reason lies in the released data rather than in our implementation. Reading every pupil file in the archive and counting its samples gives 158,178 non-finite values and one non-positive value out of 9,522,842, and all of them fall in six session-01 files: five are non-finite from end to end, which are the five R-014 exclusions, and the sixth holds a single bad sample, far short of the six consecutive samples a 50 ms blink needs at 128 Hz. Every one of the 147 distracted files is gap-free. The traces are continuous floats with almost as many distinct values as samples, so the pupil has been interpolated before release. Our blink rule keys on dropout (D-25), so there is nothing for it to find, exactly as the greater-than-50-per-cent gaze validity rule had nothing to find in Experiment 1 (D-30). This is not evidence that learners did not blink. Defining a second, amplitude-based blink criterion at this point, having already observed that the intended test failed, would constitute a post-hoc rule selected to rescue a result; the question is therefore recorded as open (D-38) and deferred. The ocular explanation for the finding in Section 8.5 consequently remains untested by its most direct route.
 
@@ -329,6 +329,8 @@ The section also extends RQ0. Our Experiment 2 eye pipeline reproduces the Exper
 
 With the blink route closed, one piece of evidence on the ocular question remains reachable without reprocessing raw EEG. Blink and eye-movement artefact projects maximally to frontal electrodes, so if the low-frequency increase in Section 8.5 is ocular it should be frontal-dominant. R-020 tests that under D-39 and DV-09 in the recovered regional band tables, which hold relative band power for frontal, central, parietal and occipital groupings across 139 attentive and 124 distracted recordings from 28 learners with both sessions. The primary statistic, the correction and the limits below were fixed before the run.
 
+Table 11. Regional delta-band contrasts over learner means, Holm-corrected across the four scalp regions (run R-020). The final row is the primary statistic, fixed before the run: the within-learner frontal-minus-occipital gradient, −0.0069, 95% learner-bootstrap CI [−0.0206, +0.0061], with 42.9 per cent of learners positive. A positive gradient would indicate a frontally dominant effect, as ocular artefact produces; the observed value is indistinguishable from zero.
+
 | Delta, distracted − attentive | d_z | p | Holm p |
 | --- | --- | --- | --- |
 | occipital | +1.19 | 1.0e-06 | 4.2e-06 |
@@ -336,8 +338,6 @@ With the blink route closed, one piece of evidence on the ocular question remain
 | parietal | +1.01 | 1.3e-05 | 2.5e-05 |
 | central | +0.70 | 9.4e-04 | 9.4e-04 |
 | **frontal − occipital (primary)** | **−0.19** | **.33** | — |
-
-Table 11. Regional delta-band contrasts over learner means, Holm-corrected across the four scalp regions (run R-020). The final row is the primary statistic, fixed before the run: the within-learner frontal-minus-occipital gradient, −0.0069, 95% learner-bootstrap CI [−0.0206, +0.0061], with 42.9 per cent of learners positive. A positive gradient would indicate a frontally dominant effect, as ocular artefact produces; the observed value is indistinguishable from zero.
 
 The effect is not frontal-dominant. The gradient is indistinguishable from zero and its point estimate is slightly posterior. Delta rises in all four regions and survives correction in all four, most strongly at occipital sites. That is not the topography of ocular contamination, and it is therefore evidence against an ocular explanation of Section 8.5.
 
@@ -349,14 +349,14 @@ Taken with Section 8.6, the indirect position on the ocular question was this. W
 
 R-021 reprocesses the raw Experiment 2 EEG and applies EOG regression, the approach the preregistered V1 pipeline specifies and the one the dataset authors use (D-12). It is the project's first from-raw EEG run; every earlier EEG result in this report audits saved tables. Each recording is filtered once and then preprocessed twice from that same copy, once with its EOG channels attached and once without, so the only difference between the two outputs is the regression. Of 291 raw recordings, 264 were processed and 27 excluded because the archive holds no matching EOG physio file; 28 learners contribute. The primary statistic and the correction were fixed in D-40 before the run.
 
+Table 12. Regional delta-band contrasts with and without EOG regression, Holm-corrected across the four scalp regions (run R-021). The two numeric columns derive from the same filtered recordings and differ only in whether the EOG-explained variance was removed, so their difference isolates the ocular contribution. The corrected frontal-minus-occipital gradient is −0.0078, 95% learner-bootstrap CI [−0.0214, +0.0049].
+
 | Delta, distracted − attentive | uncorrected d_z | **corrected d_z** | Holm p, corrected |
 | --- | --- | --- | --- |
 | occipital | +1.24 | **+1.26** | 1.4e-06 |
 | frontal | +1.14 | **+1.06** | 1.7e-05 |
 | parietal | +0.99 | **+1.03** | 1.8e-05 |
 | central | +0.63 | **+0.59** | 4.1e-03 |
-
-Table 12. Regional delta-band contrasts with and without EOG regression, Holm-corrected across the four scalp regions (run R-021). The two numeric columns derive from the same filtered recordings and differ only in whether the EOG-explained variance was removed, so their difference isolates the ocular contribution. The corrected frontal-minus-occipital gradient is −0.0078, 95% learner-bootstrap CI [−0.0214, +0.0049].
 
 The effect survives the correction. All four regions remain significant after correction and after Holm, and the effect sizes barely move. The largest change is frontal and amounts to d_z −0.08; parietal and occipital shift slightly the other way. A small frontal reduction with nothing elsewhere is what a little frontal ocular contamination sitting on top of a real neural effect looks like. It is not what an ocular effect looks like, which would have collapsed once the EOG-explained variance was removed. The corrected gradient remains non-frontal, agreeing with Section 8.7.
 
@@ -370,6 +370,8 @@ RQ3 asks whether the modality ranking survives cleaning EEG with ICA instead of 
 
 The comparison holds the R-016 cohort and its frozen folds fixed — 125 rows, 26 learners, the same eye features, ECG features and targets — and swaps only the 24 EEG columns between two cleanings of the same raw recordings. Each recording is filtered, bad-channel corrected and re-referenced once, then branches into EOG regression or ICA, so the cleaning method is the only difference. The D-35 matched ridge is rerun unchanged for each. All 125 recordings processed without failure.
 
+Table 13. Modality scores under two EEG cleaning methods, on identical rows, learners and splits (run R-022). The eye, ECG and eye-plus-ECG rows are identical to four decimal places, confirming that nothing but the EEG features changed between columns. Higher values indicate better ordering of learners by quiz score; zero is chance.
+
 | Held-out Spearman ρ | EOG regression | ICA |
 | --- | --- | --- |
 | EEG | +0.080 | +0.123 |
@@ -378,8 +380,6 @@ The comparison holds the R-016 cohort and its frozen folds fixed — 125 rows, 2
 | eye + ECG | -0.327 | -0.327 |
 | all sensors | -0.049 | -0.098 |
 | training-selected single | +0.025 | +0.051 |
-
-Table 13. Modality scores under two EEG cleaning methods, on identical rows, learners and splits (run R-022). The eye, ECG and eye-plus-ECG rows are identical to four decimal places, confirming that nothing but the EEG features changed between columns. Higher values indicate better ordering of learners by quiz score; zero is chance.
 
 The ranking is stable: EEG above eye above ECG under both cleaning methods. The EEG minus eye contrast is +0.296, 90% CI [+0.115, +0.495] under EOG regression and +0.339 [+0.145, +0.522] under ICA; EEG minus eye+ECG is +0.407 [+0.238, +0.580] and +0.451 [+0.264, +0.609]. Every interval excludes zero. The fusion conclusion also holds and hardens: early fusion over all sensors never beats the training-selected single modality, at -0.074, 95% CI [-0.226, +0.059] under EOG regression and -0.149 [-0.291, -0.007] under ICA, where the interval excludes zero.
 
@@ -391,14 +391,14 @@ The project plan lists an auxiliary task alongside the main research questions: 
 
 The analysis settings were fixed before any model was fitted (D-42), and the principal ones considerably earlier. Windows are 4 seconds at 50 per cent overlap (D-21). Training follows the methods plan: AdamW at learning rate 1e-3, weight decay 1e-2, batch 256, three seeds, the encoder refit in every outer fold. The five D-32 pupil-quality exclusions are applied, leaving 297 recordings from 31 learners and 36,172 windows. Folds are grouped by learner with both sessions of a learner always together, and the early-stopping learners come from inside the training fold, so no learner is ever seen during training and testing. Inputs are gaze x, gaze y and pupil, each standardized within recording so the model cannot key on a learner's absolute offsets. The model is a small three-block 1D convolutional neural network (CNN) with global pooling.
 
+Table 14. Attend-versus-distract decoding accuracy at recording level (run R-023). Balanced accuracy averages performance over the two conditions, so 0.5 is chance and 1.0 is perfect. The baseline is logistic regression on the eight hand-designed eye measurements, evaluated on the same folds and specified before fitting. The per-seed row indicates the variability attributable to network initialisation alone.
+
 | Recording-level balanced accuracy | |
 | --- | --- |
 | CNN, three seeds averaged | **0.797** |
 | CNN per seed | 0.787, 0.794, 0.773 |
 | Hand-crafted baseline, same folds | **0.764** |
 | Difference | +0.034 |
-
-Table 14. Attend-versus-distract decoding accuracy at recording level (run R-023). Balanced accuracy averages performance over the two conditions, so 0.5 is chance and 1.0 is perfect. The baseline is logistic regression on the eight hand-designed eye measurements, evaluated on the same folds and specified before fitting. The per-seed row indicates the variability attributable to network initialisation alone.
 
 The decoder works: about 0.80 balanced accuracy for learners it has never seen. It does not meaningfully improve on the hand-designed features. The margin of 0.034 is only slightly larger than the 0.021 spread across the three seeds, and no interval was computed for it, so the network cannot be said to outperform the baseline. Both approaches separate the conditions well, and the learned model adds little to eight hand-designed measurements per recording.
 
@@ -412,14 +412,14 @@ Tasks A and B were not attempted, so RQ4 is not executed as specified. The reaso
 
 One aspect of the design is essential to the validity of the comparison. For each outer fold the eye encoder is pretrained from scratch on the attend-versus-distract objective using training-fold learners only, then frozen before its embeddings are used. An encoder pretrained once on everybody would have shaped its representation around the test learners' signals, even without ever seeing their quiz scores. Embeddings are mean-pooled per recording and fed to ridge on the frozen R-016 rows and folds; the hand-crafted eight-feature ridge is rerun on the same single repeat so the two are paired.
 
+Table 15. Learned against hand-designed eye features for quiz prediction (run R-024). Both arms use identical rows, folds, target and cross-validation repeat, so the contrast reflects the feature representation alone. Negative correlations indicate ordering worse than chance; the paired difference is the quantity of interest, since the absolute levels rest on a single repeat.
+
 | Held-out Spearman ρ, same 125 rows and folds | |
 | --- | --- |
 | deep embeddings, 64-d, three seeds averaged | **-0.077** |
 | individual seeds | -0.102, +0.009, -0.048 |
 | hand-crafted, eight eye features | **-0.050** |
 | paired difference, 95% CI | **-0.026 [-0.206, +0.158]** |
-
-Table 15. Learned against hand-designed eye features for quiz prediction (run R-024). Both arms use identical rows, folds, target and cross-validation repeat, so the contrast reflects the feature representation alone. Negative correlations indicate ordering worse than chance; the paired difference is the quantity of interest, since the absolute levels rest on a single repeat.
 
 Learned features confer no advantage. The deep arm is slightly worse, the difference is indistinguishable from zero, and both correlations are negative, so neither ordering beats chance on this cohort. On RQ4's own question, the answer at this sample size is no.
 
@@ -479,6 +479,8 @@ A fresh registered ECG detector validation remains a follow-up. R-015 documents 
 
 ### 12.1 Evidence map
 
+Table 16. Evidence map: each reported result against the stored artifact that contains it. Paths are relative to the project repository root.
+
 | Evidence | Repository artifact |
 | --- | --- |
 | R-004 validation and event table | `results/R-004_eye_rq0_exp1/` |
@@ -496,8 +498,6 @@ A fresh registered ECG detector validation remains a follow-up. R-015 documents 
 | R-023 decoding scores and predictions | `results/R-023_exp2_attention_cnn/` |
 | R-024 Task C predictions, both arms | `results/R-024_exp2_rq4_taskc/` |
 | R-013 execution record | `results/R-013_eye_reconciliation/provenance/console.log` |
-
-Table 16. Evidence map: each reported result against the stored artifact that contains it. Paths are relative to the project repository root.
 
 ### 12.2 Example recorded output
 
