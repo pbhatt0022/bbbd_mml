@@ -57,3 +57,6 @@ Thumbs.db
 *.toc
 slides/*.log
 slides/*.out
+
+# Submission bundle, rebuilt on demand with: git archive --format=zip --prefix=bbbd_mml/ -o bbbd_mml_submission.zip HEAD
+bbbd_mml_submission.zip
